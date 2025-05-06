@@ -9,7 +9,7 @@ namespace Krosmoz.Core.Network.Protocols.Dofus;
 /// <summary>
 /// Represents an abstract base class for network messages.
 /// </summary>
-public abstract class NetworkMessage
+public abstract class DofusMessage
 {
     /// <summary>
     /// Gets the static protocol identifier for the message.

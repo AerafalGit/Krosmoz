@@ -9,7 +9,7 @@ namespace Krosmoz.Core.Network.Protocols.Dofus;
 /// <summary>
 /// Represents an abstract base class for network types.
 /// </summary>
-public abstract class NetworkType
+public abstract class DofusType
 {
     /// <summary>
     /// Gets the static protocol identifier for the network type.

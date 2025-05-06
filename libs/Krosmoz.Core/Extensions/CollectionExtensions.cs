@@ -3,6 +3,7 @@
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
 using System.Collections.Concurrent;
+using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 
 namespace Krosmoz.Core.Extensions;
@@ -20,6 +21,7 @@ public static class CollectionExtensions
     /// <param name="source">The source collection to retrieve a random element from.</param>
     /// <returns>A random element from the source collection.</returns>
     /// <exception cref="ArgumentException">Thrown if the source collection is empty.</exception>
+    [Pure]
     public static T RandomElement<T>(this IEnumerable<T> source)
     {
         switch (source)
@@ -46,6 +48,7 @@ public static class CollectionExtensions
                 return sourceAsArray[Random.Shared.Next(sourceAsArray.Length)];
         }
 
+        [Pure]
         static void ThrowIfEmpty(int length, [CallerArgumentExpression(nameof(length))] string? paramName = null)
         {
             if (length is 0)
@@ -61,6 +64,7 @@ public static class CollectionExtensions
     /// <param name="predicate">A function to test each element for a condition.</param>
     /// <returns>A random element from the source collection that matches the predicate.</returns>
     /// <exception cref="ArgumentException">Thrown if no elements match the predicate.</exception>
+    [Pure]
     public static T RandomElement<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
         var filteredSource = source.Where(predicate).ToArray();
@@ -77,6 +81,7 @@ public static class CollectionExtensions
     /// <typeparam name="T">The type of elements in the source collection.</typeparam>
     /// <param name="source">The source collection to retrieve a random element from.</param>
     /// <returns>A random element from the source collection, or the default value if the collection is empty.</returns>
+    [Pure]
     public static T? RandomElementOrDefault<T>(this IEnumerable<T> source)
     {
         switch (source)
@@ -107,6 +112,7 @@ public static class CollectionExtensions
     /// <param name="source">The source collection to retrieve a random element from.</param>
     /// <param name="predicate">A function to test each element for a condition.</param>
     /// <returns>A random element from the source collection that matches the predicate, or the default value if no elements match.</returns>
+    [Pure]
     public static T? RandomElementOrDefault<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
         var filteredSource = source.Where(predicate).ToArray();
@@ -123,6 +129,7 @@ public static class CollectionExtensions
     /// <param name="first">The first collection to compare.</param>
     /// <param name="second">The second collection to compare.</param>
     /// <returns>True if the collections contain the same elements, otherwise false.</returns>
+    [Pure]
     public static bool CompareEnumerable<T>(this IEnumerable<T> first, IEnumerable<T> second)
     {
         var firstArray = first.ToArray();
@@ -140,6 +147,7 @@ public static class CollectionExtensions
     /// <typeparam name="TValue">The type of elements in the source.</typeparam>
     /// <param name="source">The IEnumerable source to convert.</param>
     /// <returns>A ConcurrentBag containing the elements of the source.</returns>
+    [Pure]
     public static ConcurrentBag<TValue> ToConcurrentBag<TValue>(this IEnumerable<TValue> source)
     {
         return new ConcurrentBag<TValue>(source);
@@ -153,6 +161,7 @@ public static class CollectionExtensions
     /// <param name="source">The IEnumerable source to convert.</param>
     /// <param name="keySelector">A function to extract a key from each element.</param>
     /// <returns>A ConcurrentDictionary containing the elements of the source.</returns>
+    [Pure]
     public static ConcurrentDictionary<TKey, TValue> ToConcurrentDictionary<TKey, TValue>(this IEnumerable<TValue> source, Func<TValue, TKey> keySelector)
         where TKey : notnull
     {
@@ -168,6 +177,7 @@ public static class CollectionExtensions
     /// <param name="keySelector">A function to extract a key from each element.</param>
     /// <param name="comparer">An IEqualityComparer to compare keys.</param>
     /// <returns>A ConcurrentDictionary containing the elements of the source.</returns>
+    [Pure]
     public static ConcurrentDictionary<TKey, TValue> ToConcurrentDictionary<TKey, TValue>(this IEnumerable<TValue> source, Func<TValue, TKey> keySelector, IEqualityComparer<TKey> comparer)
         where TKey : notnull
     {
@@ -183,6 +193,7 @@ public static class CollectionExtensions
     /// <param name="keySelector">A function to extract a key from each element.</param>
     /// <param name="valueSelector">A function to extract a value from each element.</param>
     /// <returns>A ConcurrentDictionary containing the elements of the source.</returns>
+    [Pure]
     public static ConcurrentDictionary<TKey, TValue> ToConcurrentDictionary<TKey, TValue>(this IEnumerable<TValue> source, Func<TValue, TKey> keySelector, Func<TValue, TValue> valueSelector)
         where TKey : notnull
     {
@@ -199,6 +210,7 @@ public static class CollectionExtensions
     /// <param name="valueSelector">A function to extract a value from each element.</param>
     /// <param name="comparer">An IEqualityComparer to compare keys.</param>
     /// <returns>A ConcurrentDictionary containing the elements of the source.</returns>
+    [Pure]
     public static ConcurrentDictionary<TKey, TValue> ToConcurrentDictionary<TKey, TValue>(this IEnumerable<TValue> source, Func<TValue, TKey> keySelector, Func<TValue, TValue> valueSelector, IEqualityComparer<TKey> comparer)
         where TKey : notnull
     {

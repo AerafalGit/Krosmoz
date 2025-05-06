@@ -4,7 +4,6 @@
 
 using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
-using Krosmoz.Core.Network.Metadata;
 
 namespace Krosmoz.Core.Network.Framing;
 
@@ -13,7 +12,7 @@ namespace Krosmoz.Core.Network.Framing;
 /// </summary>
 /// <typeparam name="TMessage">The type of the network message to decode.</typeparam>
 public interface IMessageDecoder<TMessage>
-    where TMessage : NetworkMessage
+    where TMessage : class
 {
     /// <summary>
     /// Attempts to decode a network message from the provided byte sequence.

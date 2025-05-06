@@ -15,16 +15,16 @@ namespace Krosmoz.Core.Network.Transport;
 /// <summary>
 /// Represents an abstract TCP server for managing network communication sessions.
 /// </summary>
-/// <typeparam name="TMessage">The type of the network message to handle.</typeparam>
 /// <typeparam name="TSession">The type of the TCP session associated with the server.</typeparam>
-public abstract class TcpServer<TMessage, TSession> : IHostedService, IDisposable
+/// <typeparam name="TMessage">The type of the network message to handle.</typeparam>
+public abstract class TcpServer<TSession, TMessage> : IHostedService, IDisposable
     where TSession : TcpSession<TMessage>
     where TMessage : class
 {
     private readonly Socket _socket;
     private readonly IServiceProvider _services;
     private readonly CancellationTokenSource _cts;
-    private readonly ILogger<TcpServer<TMessage, TSession>> _logger;
+    private readonly ILogger<TcpServer<TSession, TMessage>> _logger;
     private readonly ConcurrentDictionary<string, TSession> _sessions;
     private readonly TcpServerOptions _options;
 
@@ -52,7 +52,7 @@ public abstract class TcpServer<TMessage, TSession> : IHostedService, IDisposabl
     /// <param name="services">The service provider for dependency injection.</param>
     /// <param name="logger">The logger for logging server events.</param>
     /// <param name="options">The configuration options for the server.</param>
-    protected TcpServer(IServiceProvider services, ILogger<TcpServer<TMessage, TSession>> logger, IOptions<TcpServerOptions> options)
+    protected TcpServer(IServiceProvider services, ILogger<TcpServer<TSession, TMessage>> logger, IOptions<TcpServerOptions> options)
     {
         _services = services;
         _options = options.Value;

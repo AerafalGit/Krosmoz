@@ -47,10 +47,5 @@ public enum Languages
     /// <summary>
     /// Portuguese language.
     /// </summary>
-    Portuguese,
-
-    /// <summary>
-    /// Russian language.
-    /// </summary>
-    Russian
+    Portuguese
 }

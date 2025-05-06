@@ -149,7 +149,6 @@ public sealed class I18NWrapper
             "de" => Languages.German,
             "ja" => Languages.Japanese,
             "es" => Languages.Spanish,
-            "ru" => Languages.Russian,
             "it" => Languages.Italian,
             "pt" => Languages.Portuguese,
             "nl" => Languages.Dutch,

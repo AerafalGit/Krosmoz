@@ -118,10 +118,10 @@ public sealed class D2IFile
     /// </summary>
     public void Save()
     {
-        var writer = new BinaryBufferWriter();
-        var indexWriter = new BinaryBufferWriter();
-        var namedWriter = new BinaryBufferWriter();
-        var sortedWriter = new BinaryBufferWriter();
+        using var writer = new BinaryBufferWriter();
+        using var indexWriter = new BinaryBufferWriter();
+        using var namedWriter = new BinaryBufferWriter();
+        using var sortedWriter = new BinaryBufferWriter();
 
         writer.Seek(SeekOrigin.Begin, sizeof(int));
 

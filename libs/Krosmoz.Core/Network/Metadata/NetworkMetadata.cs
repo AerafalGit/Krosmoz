@@ -9,7 +9,7 @@ namespace Krosmoz.Core.Network.Metadata;
 /// </summary>
 /// <typeparam name="TMessage">The type of the network message.</typeparam>
 public readonly struct NetworkMetadata<TMessage>
-    where TMessage : NetworkMessage
+    where TMessage : class
 {
     /// <summary>
     /// Gets the network message associated with the metadata, if any.

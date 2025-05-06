@@ -8,7 +8,7 @@ using System.Buffers.Binary;
 namespace Krosmoz.Core.IO.Binary;
 
 /// <inheritdoc />
-public sealed class BinaryBufferWriter : BinaryWriter
+public sealed class BinaryBufferWriter : BinaryBufferStreamWriter
 {
     private byte[] _buffer;
     private int _position;

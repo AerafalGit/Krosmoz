@@ -7,7 +7,7 @@ using System.Buffers.Binary;
 namespace Krosmoz.Core.IO.Binary;
 
 /// <inheritdoc />
-public sealed class BinaryStreamWriter : BinaryWriter
+public sealed class BinaryStreamWriter : BinaryBufferStreamWriter
 {
     private readonly Stream _stream;
 

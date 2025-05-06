@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace Krosmoz.Core.IO.Binary;
 
 /// <inheritdoc />
-public sealed class BinaryBufferReader : BinaryReader
+public sealed class BinaryBufferReader : BinaryBufferStreamReader
 {
     private readonly ReadOnlyMemory<byte> _buffer;
 

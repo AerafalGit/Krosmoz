@@ -5,7 +5,7 @@
 namespace Krosmoz.Core.IO.Binary;
 
 /// <inheritdoc />
-public sealed class BinaryStreamReader : BinaryReader
+public sealed class BinaryStreamReader : BinaryBufferStreamReader
 {
     private readonly Stream _stream;
 

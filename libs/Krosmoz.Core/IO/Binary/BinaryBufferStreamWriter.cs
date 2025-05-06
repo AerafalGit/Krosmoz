@@ -9,7 +9,7 @@ namespace Krosmoz.Core.IO.Binary;
 /// <summary>
 /// Represents an abstract base class for writing binary data to a buffer or stream.
 /// </summary>
-public abstract class BinaryWriter : IDisposable
+public abstract class BinaryBufferStreamWriter : IDisposable
 {
     /// <summary>
     /// Gets the total length of the buffer.
@@ -161,7 +161,7 @@ public abstract class BinaryWriter : IDisposable
     public abstract void Seek(SeekOrigin origin, int offset);
 
     /// <summary>
-    /// Releases all resources used by the current instance of the <see cref="BinaryWriter"/> class.
+    /// Releases all resources used by the current instance of the <see cref="BinaryBufferStreamWriter"/> class.
     /// </summary>
     public abstract void Dispose();
 }

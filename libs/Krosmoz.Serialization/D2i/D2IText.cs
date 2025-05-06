@@ -8,7 +8,7 @@ namespace Krosmoz.Serialization.D2i;
 /// Represents a D2i text entry.
 /// </summary>
 /// <typeparam name="T">The type of the identifier.</typeparam>
-public sealed class D2iText<T>
+public sealed class D2IText<T>
     where T : notnull
 {
     /// <summary>
@@ -32,11 +32,11 @@ public sealed class D2iText<T>
     public string NotDiacriticalText { get; set; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="D2iText{T}"/> class with the specified identifier and text.
+    /// Initializes a new instance of the <see cref="D2IText{T}"/> class with the specified identifier and text.
     /// </summary>
     /// <param name="id">The identifier of the D2i text entry.</param>
     /// <param name="text">The main text of the D2i entry.</param>
-    public D2iText(T id, string text)
+    public D2IText(T id, string text)
     {
         Id = id;
         Text = text;
@@ -44,12 +44,12 @@ public sealed class D2iText<T>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="D2iText{T}"/> class with the specified identifier, text, and non-diacritical text.
+    /// Initializes a new instance of the <see cref="D2IText{T}"/> class with the specified identifier, text, and non-diacritical text.
     /// </summary>
     /// <param name="id">The identifier of the D2i text entry.</param>
     /// <param name="text">The main text of the D2i entry.</param>
     /// <param name="notDiacriticalText">The non-diacritical version of the text.</param>
-    public D2iText(T id, string text, string notDiacriticalText)
+    public D2IText(T id, string text, string notDiacriticalText)
     {
         Id = id;
         Text = text;

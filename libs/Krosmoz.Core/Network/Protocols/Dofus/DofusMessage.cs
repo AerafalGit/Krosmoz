@@ -12,6 +12,16 @@ namespace Krosmoz.Core.Network.Protocols.Dofus;
 public abstract class DofusMessage
 {
     /// <summary>
+    /// The number of bits to right-shift the length of the packet ID.
+    /// </summary>
+    public const byte BitRightShiftLenPacketId = 2;
+
+    /// <summary>
+    /// The bitmask used for extracting specific bits for the packet length.
+    /// </summary>
+    public const byte BitMask = 3;
+
+    /// <summary>
     /// Gets the static protocol identifier for the message.
     /// </summary>
     public const uint StaticProtocolId = 0;

@@ -2,6 +2,8 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
+using System.Diagnostics.Contracts;
+
 namespace Krosmoz.Core.IO.Bits;
 
 /// <summary>
@@ -17,6 +19,7 @@ public static class BooleanByteWrapper
     /// <param name="value">The value to set the bit to (true to set, false to clear).</param>
     /// <returns>The modified byte with the specified bit set or cleared.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the offset is greater than or equal to 8.</exception>
+    [Pure]
     public static byte SetFlag(byte flag, byte offset, bool value)
     {
         ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(offset, 8);
@@ -31,6 +34,7 @@ public static class BooleanByteWrapper
     /// <param name="offset">The bit position (0-7) to retrieve.</param>
     /// <returns>True if the specified bit is set, otherwise false.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the offset is greater than or equal to 8.</exception>
+    [Pure]
     public static bool GetFlag(byte flag, byte offset)
     {
         ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(offset, 8);

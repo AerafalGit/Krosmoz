@@ -61,34 +61,32 @@ public static class ServiceCollectionExtensions
 
         return services.AddPooledDbContextFactory<T>(dbContextOptions =>
         {
-            dbContextOptions
-                .UseNpgsql(connectionString, static npgsqlOptions =>
-                {
-                    npgsqlOptions
-                        .MigrationsAssembly(typeof(T).Assembly)
-                        .MigrationsHistoryTable("migrations");
-                });
+            dbContextOptions.UseNpgsql(connectionString, static npgsqlOptions =>
+            {
+                npgsqlOptions
+                    .MigrationsAssembly(typeof(T).Assembly)
+                    .MigrationsHistoryTable("migrations");
+            });
         });
     }
 
     /// <summary>
-    /// Adds a NATS client to the service collection with a specified serializer context and connection string.
+    /// Adds a NATS client to the service collection with a specified connection string and serializer contexts.
     /// </summary>
-    /// <typeparam name="T">The type of the JSON serializer context.</typeparam>
+    /// <typeparam name="T">The type associated with the NATS client.</typeparam>
     /// <param name="services">The service collection to add the NATS client to.</param>
-    /// <param name="context">The JSON serializer context to use.</param>
-    /// <param name="connectionString">The connection string for the NATS client.</param>
+    /// <param name="connectionString">The connection string for the NATS server.</param>
+    /// <param name="contexts">The JSON serializer contexts to use for the NATS client.</param>
     /// <returns>The updated service collection.</returns>
     /// <exception cref="ArgumentException">Thrown if the connection string is null or empty.</exception>
-    public static IServiceCollection AddNats<T>(this IServiceCollection services, T context, string? connectionString)
-        where T : JsonSerializerContext
+    public static IServiceCollection AddNats<T>(this IServiceCollection services, string? connectionString, params JsonSerializerContext[] contexts)
     {
         ArgumentException.ThrowIfNullOrEmpty(connectionString);
 
         return services.AddNatsClient(natsOptions =>
         {
             natsOptions
-                .WithSerializerRegistry(new NatsJsonContextSerializerRegistry(context))
+                .WithSerializerRegistry(new NatsJsonContextSerializerRegistry(contexts))
                 .ConfigureOptions(options => options with { Url = connectionString });
         });
     }

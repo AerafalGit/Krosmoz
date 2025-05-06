@@ -10,7 +10,7 @@ namespace Krosmoz.Core.Network.Dispatcher;
 /// Defines a dispatcher for handling and processing network messages.
 /// </summary>
 /// <typeparam name="TMessage">The type of the network message to dispatch.</typeparam>
-public interface IMessageDispatcher<in TMessage>
+public interface IMessageDispatcher<TMessage>
     where TMessage : class
 {
     /// <summary>
@@ -19,5 +19,5 @@ public interface IMessageDispatcher<in TMessage>
     /// <param name="session">The TCP session associated with the message.</param>
     /// <param name="message">The network message to dispatch.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    Task DispatchMessageAsync(TcpSession session, TMessage message);
+    Task DispatchMessageAsync(TcpSession<TMessage> session, TMessage message);
 }

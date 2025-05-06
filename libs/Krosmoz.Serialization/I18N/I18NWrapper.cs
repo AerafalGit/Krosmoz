@@ -5,7 +5,7 @@
 using System.Collections.Concurrent;
 using Krosmoz.Serialization.D2I;
 
-namespace Krosmoz.Serialization.I18n;
+namespace Krosmoz.Serialization.I18N;
 
 /// <summary>
 /// Provides functionality to manage internationalization (I18N) by wrapping multiple D2I files.

@@ -2,7 +2,7 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
-namespace Krosmoz.Serialization.I18n;
+namespace Krosmoz.Serialization.I18N;
 
 /// <summary>
 /// Represents the supported languages for D2i serialization.

@@ -8,7 +8,7 @@ using Krosmoz.Core.IO.Binary;
 using Krosmoz.Core.Network.Factory;
 using Krosmoz.Core.Network.Framing;
 
-namespace Krosmoz.Core.Network.Protocols.Dofus;
+namespace Krosmoz.Core.Network.Protocol.Dofus;
 
 /// <summary>
 /// Decodes Dofus network messages from a sequence of bytes.

@@ -4,7 +4,7 @@
 
 using Krosmoz.Core.IO.Binary;
 
-namespace Krosmoz.Core.Network.Protocols.Dofus;
+namespace Krosmoz.Core.Network.Protocol.Dofus;
 
 /// <summary>
 /// Represents an abstract base class for network messages.

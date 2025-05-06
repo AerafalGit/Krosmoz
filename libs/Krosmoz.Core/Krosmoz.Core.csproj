@@ -11,6 +11,7 @@
     <PackageReference Include="MemoryPack" Version="1.21.4" />
     <PackageReference Include="NATS.Extensions.Microsoft.DependencyInjection" Version="2.6.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
   </ItemGroup>
 
 </Project>

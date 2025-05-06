@@ -153,7 +153,7 @@ csharp_space_between_parentheses = false
 csharp_space_between_square_brackets = false
 
 # License header
-file_header_template = // Copyright (c) Krosmoz 2025.\n// Krosmoz licenses this file to you under the MIT license.\n// See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
+file_header_template = Copyright (c) Krosmoz 2025.\nKrosmoz licenses this file to you under the MIT license.\nSee the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
 # C++ Files
 [*.{cpp,h,in}]

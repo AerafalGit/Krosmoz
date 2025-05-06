@@ -5,7 +5,7 @@
 using Krosmoz.Core.Extensions;
 using Krosmoz.Core.IO.Binary;
 
-namespace Krosmoz.Serialization.D2i;
+namespace Krosmoz.Serialization.D2I;
 
 /// <summary>
 /// Represents a D2I file, providing functionality to load, save, and manage D2I text entries.

@@ -2,6 +2,7 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
+using System.Diagnostics.Contracts;
 using System.IO.Compression;
 using ComponentAce.Compression.Libs.zlib;
 
@@ -41,6 +42,7 @@ public static class ZipCompressor
     /// </summary>
     /// <param name="buffer">The byte array containing compressed data.</param>
     /// <returns>A byte array containing the decompressed data.</returns>
+    [Pure]
     public static byte[] Decompress(byte[] buffer)
     {
         var input = new MemoryStream(buffer);
@@ -54,6 +56,7 @@ public static class ZipCompressor
     /// </summary>
     /// <param name="buffer">The byte array containing uncompressed data.</param>
     /// <returns>A byte array containing the compressed data.</returns>
+    [Pure]
     public static byte[] Deflate(byte[] buffer)
     {
         var input = new MemoryStream(buffer);

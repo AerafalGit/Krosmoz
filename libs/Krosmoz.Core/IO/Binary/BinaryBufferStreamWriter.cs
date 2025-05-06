@@ -133,7 +133,7 @@ public abstract class BinaryBufferStreamWriter : IDisposable
     /// Writes a UTF-8 encoded string prefixed with a 16-bit length to the buffer.
     /// </summary>
     /// <param name="value">The string to write.</param>
-    public void WriteUtfLengthPrefxed16(string value)
+    public void WriteUtfLengthPrefixed16(string value)
     {
         var bytes = Encoding.UTF8.GetBytes(value);
         var length = (ushort)bytes.Length;
@@ -145,7 +145,7 @@ public abstract class BinaryBufferStreamWriter : IDisposable
     /// Writes a UTF-8 encoded string prefixed with a 32-bit length to the buffer.
     /// </summary>
     /// <param name="value">The string to write.</param>
-    public void WriteUtfLengthPrefxed32(string value)
+    public void WriteUtfLengthPrefixed32(string value)
     {
         var bytes = Encoding.UTF8.GetBytes(value);
         var length = bytes.Length;

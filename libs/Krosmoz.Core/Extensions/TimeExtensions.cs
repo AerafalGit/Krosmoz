@@ -2,6 +2,8 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
+using System.Diagnostics.Contracts;
+
 namespace Krosmoz.Core.Extensions;
 
 /// <summary>
@@ -19,6 +21,7 @@ public static class TimeExtensions
     /// </summary>
     /// <param name="dateTime">The <see cref="DateTime"/> to convert.</param>
     /// <returns>The Unix timestamp in seconds.</returns>
+    [Pure]
     public static int GetUnixTimestampSeconds(this DateTime dateTime)
     {
         return (int)(dateTime - s_unixEpoch.ToLocalTime()).TotalSeconds;
@@ -29,6 +32,7 @@ public static class TimeExtensions
     /// </summary>
     /// <param name="dateTime">The <see cref="DateTime"/> to convert.</param>
     /// <returns>The Unix timestamp in milliseconds.</returns>
+    [Pure]
     public static long GetUnixTimestampMilliseconds(this DateTime dateTime)
     {
         return (long)(dateTime - s_unixEpoch.ToLocalTime()).TotalMilliseconds;
@@ -39,6 +43,7 @@ public static class TimeExtensions
     /// </summary>
     /// <param name="unixTimestamp">The Unix timestamp in seconds.</param>
     /// <returns>A <see cref="DateTime"/> object representing the specified Unix timestamp.</returns>
+    [Pure]
     public static DateTime FromUnixTimestampSeconds(this int unixTimestamp)
     {
         return s_unixEpoch.AddSeconds(unixTimestamp).ToLocalTime();
@@ -49,6 +54,7 @@ public static class TimeExtensions
     /// </summary>
     /// <param name="unixTimestamp">The Unix timestamp in milliseconds.</param>
     /// <returns>A <see cref="DateTime"/> object representing the specified Unix timestamp.</returns>
+    [Pure]
     public static DateTime FromUnixTimestampMilliseconds(this long unixTimestamp)
     {
         return s_unixEpoch.AddMilliseconds(unixTimestamp).ToLocalTime();

@@ -146,12 +146,7 @@ public sealed class I18NWrapper
         {
             "fr" => Languages.French,
             "en" => Languages.English,
-            "de" => Languages.German,
-            "ja" => Languages.Japanese,
             "es" => Languages.Spanish,
-            "it" => Languages.Italian,
-            "pt" => Languages.Portuguese,
-            "nl" => Languages.Dutch,
             _ => throw new ArgumentOutOfRangeException(nameof(shortName))
         };
     }

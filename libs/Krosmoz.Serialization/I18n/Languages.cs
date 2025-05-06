@@ -20,32 +20,7 @@ public enum Languages
     French,
 
     /// <summary>
-    /// German language.
-    /// </summary>
-    German,
-
-    /// <summary>
     /// Spanish language.
     /// </summary>
-    Spanish,
-
-    /// <summary>
-    /// Italian language.
-    /// </summary>
-    Italian,
-
-    /// <summary>
-    /// Japanese language.
-    /// </summary>
-    Japanese,
-
-    /// <summary>
-    /// Dutch language.
-    /// </summary>
-    Dutch,
-
-    /// <summary>
-    /// Portuguese language.
-    /// </summary>
-    Portuguese
+    Spanish
 }

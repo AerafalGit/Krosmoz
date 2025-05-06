@@ -1,0 +1,80 @@
+﻿// Copyright (c) Krosmoz 2025.
+// Krosmoz licenses this file to you under the MIT license.
+// See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
+
+using System.Buffers;
+using System.Diagnostics.CodeAnalysis;
+using Krosmoz.Core.IO.Binary;
+using Krosmoz.Core.Network.Factory;
+using Krosmoz.Core.Network.Framing;
+
+namespace Krosmoz.Core.Network.Protocols.Dofus;
+
+/// <summary>
+/// Decodes Dofus network messages from a sequence of bytes.
+/// </summary>
+public sealed class DofusMessageDecoder : IMessageDecoder<DofusMessage>
+{
+    private readonly IMessageFactory<DofusMessage> _messageFactory;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DofusMessageDecoder"/> class.
+    /// </summary>
+    /// <param name="messageFactory">The factory used to create Dofus messages.</param>
+    public DofusMessageDecoder(IMessageFactory<DofusMessage> messageFactory)
+    {
+        _messageFactory = messageFactory;
+    }
+
+    /// <summary>
+    /// Attempts to decode a Dofus message from the provided byte sequence.
+    /// </summary>
+    /// <param name="sequence">The sequence of bytes to decode the message from.</param>
+    /// <param name="consumed">The position in the sequence up to which data has been consumed.</param>
+    /// <param name="examined">The position in the sequence up to which data has been examined.</param>
+    /// <param name="message">The decoded Dofus message, or null if decoding fails.</param>
+    /// <returns><c>true</c> if the message was successfully decoded; otherwise, <c>false</c>.</returns>
+    public bool TryDecodeMessage(in ReadOnlySequence<byte> sequence, ref SequencePosition consumed, ref SequencePosition examined, [NotNullWhen(true)] out DofusMessage? message)
+    {
+        message = null;
+
+        using var reader = new BinaryBufferReader(sequence);
+
+        if (!reader.TryReadUShort(out var header))
+            return false;
+
+        if (reader.Remaining < sizeof(int))
+            return false;
+
+        reader.Seek(SeekOrigin.Current, sizeof(int));
+
+        var messageId = (uint)(header >> DofusMessage.BitRightShiftLenPacketId);
+        var messageSize = (byte)(header & DofusMessage.BitMask);
+
+        message = _messageFactory.CreateMessage(messageId);
+
+        if (messageSize is 0)
+        {
+            consumed = sequence.GetPosition(reader.Position);
+            examined = consumed;
+            return true;
+        }
+
+        if (reader.Remaining < messageSize)
+            return false;
+
+        var messageLength = 0;
+
+        for (var i = messageSize - 1; i >= 0; i--)
+            messageLength |= reader.ReadByte() << (i * sizeof(long));
+
+        if (reader.Remaining < messageLength)
+            return false;
+
+        message.Deserialize(reader);
+
+        consumed = sequence.GetPosition(reader.Position);
+        examined = consumed;
+        return true;
+    }
+}

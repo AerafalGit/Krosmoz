@@ -8,7 +8,7 @@ namespace Krosmoz.Core.Network.Metadata;
 /// Represents metadata for a network operation involving a specific message type.
 /// </summary>
 /// <typeparam name="TMessage">The type of the network message.</typeparam>
-public readonly struct NetworkMetadata<TMessage>
+public readonly struct MessageMetadata<TMessage>
     where TMessage : class
 {
     /// <summary>
@@ -27,25 +27,25 @@ public readonly struct NetworkMetadata<TMessage>
     public bool IsCompleted { get; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="NetworkMetadata{TMessage}"/> struct
+    /// Initializes a new instance of the <see cref="MessageMetadata{TMessage}"/> struct
     /// with the specified cancellation and completion states.
     /// </summary>
     /// <param name="isCanceled">Indicates whether the network operation was canceled.</param>
     /// <param name="isCompleted">Indicates whether the network operation was completed.</param>
-    public NetworkMetadata(bool isCanceled, bool isCompleted)
+    public MessageMetadata(bool isCanceled, bool isCompleted)
     {
         IsCanceled = isCanceled;
         IsCompleted = isCompleted;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="NetworkMetadata{TMessage}"/> struct
+    /// Initializes a new instance of the <see cref="MessageMetadata{TMessage}"/> struct
     /// with the specified message, cancellation state, and completion state.
     /// </summary>
     /// <param name="message">The network message associated with the metadata.</param>
     /// <param name="isCanceled">Indicates whether the network operation was canceled.</param>
     /// <param name="isCompleted">Indicates whether the network operation was completed.</param>
-    public NetworkMetadata(TMessage message, bool isCanceled, bool isCompleted)
+    public MessageMetadata(TMessage message, bool isCanceled, bool isCompleted)
     {
         IsCanceled = isCanceled;
         IsCompleted = isCompleted;

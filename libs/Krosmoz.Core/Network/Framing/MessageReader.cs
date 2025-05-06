@@ -42,10 +42,10 @@ internal sealed class MessageReader<TMessage> : IAsyncDisposable
     /// </summary>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous read operation, containing the network metadata.</returns>
-    public ValueTask<NetworkMetadata<TMessage>> ReadAsync(CancellationToken cancellationToken)
+    public ValueTask<MessageMetadata<TMessage>> ReadAsync(CancellationToken cancellationToken)
     {
         if (_disposed)
-            return new ValueTask<NetworkMetadata<TMessage>>(new NetworkMetadata<TMessage>(true, true));
+            return new ValueTask<MessageMetadata<TMessage>>(new MessageMetadata<TMessage>(true, true));
 
         if (_hasMessage)
             throw new InvalidOperationException($"{nameof(Advance)} must be called before calling {nameof(ReadAsync)}.");
@@ -56,7 +56,7 @@ internal sealed class MessageReader<TMessage> : IAsyncDisposable
         if (_decoder.TryDecodeMessage(_buffer, ref _consumed, ref _examined, out var message))
         {
             _hasMessage = true;
-            return new ValueTask<NetworkMetadata<TMessage>>(new NetworkMetadata<TMessage>(message, _isCanceled, false));
+            return new ValueTask<MessageMetadata<TMessage>>(new MessageMetadata<TMessage>(message, _isCanceled, false));
         }
 
         _reader.AdvanceTo(_consumed, _examined);
@@ -73,7 +73,7 @@ internal sealed class MessageReader<TMessage> : IAsyncDisposable
             if (!_buffer.IsEmpty)
                 throw new OutOfMemoryException("The buffer should be empty when the reader is completed.");
 
-            return new ValueTask<NetworkMetadata<TMessage>>(new NetworkMetadata<TMessage>(_isCanceled, true));
+            return new ValueTask<MessageMetadata<TMessage>>(new MessageMetadata<TMessage>(_isCanceled, true));
         }
 
         return DoAsyncRead(cancellationToken);
@@ -84,7 +84,7 @@ internal sealed class MessageReader<TMessage> : IAsyncDisposable
     /// </summary>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous read operation, containing the network metadata.</returns>
-    private ValueTask<NetworkMetadata<TMessage>> DoAsyncRead(CancellationToken cancellationToken)
+    private ValueTask<MessageMetadata<TMessage>> DoAsyncRead(CancellationToken cancellationToken)
     {
         while (!cancellationToken.IsCancellationRequested)
         {
@@ -100,13 +100,13 @@ internal sealed class MessageReader<TMessage> : IAsyncDisposable
             var (shouldContinue, hasMessage) = TrySetMessage(result, out var readResult);
 
             if (hasMessage)
-                return new ValueTask<NetworkMetadata<TMessage>>(readResult);
+                return new ValueTask<MessageMetadata<TMessage>>(readResult);
 
             if (!shouldContinue)
                 break;
         }
 
-        return new ValueTask<NetworkMetadata<TMessage>>(new NetworkMetadata<TMessage>(_isCanceled, _isCompleted));
+        return new ValueTask<MessageMetadata<TMessage>>(new MessageMetadata<TMessage>(_isCanceled, _isCompleted));
     }
 
     /// <summary>
@@ -115,7 +115,7 @@ internal sealed class MessageReader<TMessage> : IAsyncDisposable
     /// <param name="readTask">The read task to await.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous read operation, containing the network metadata.</returns>
-    private async ValueTask<NetworkMetadata<TMessage>> ReadAsyncCore(ValueTask<ReadResult> readTask, CancellationToken cancellationToken)
+    private async ValueTask<MessageMetadata<TMessage>> ReadAsyncCore(ValueTask<ReadResult> readTask, CancellationToken cancellationToken)
     {
         while (!cancellationToken.IsCancellationRequested)
         {
@@ -132,7 +132,7 @@ internal sealed class MessageReader<TMessage> : IAsyncDisposable
             readTask = _reader.ReadAsync(cancellationToken);
         }
 
-        return new NetworkMetadata<TMessage>(_isCanceled, _isCompleted);
+        return new MessageMetadata<TMessage>(_isCanceled, _isCompleted);
     }
 
     /// <summary>
@@ -141,7 +141,7 @@ internal sealed class MessageReader<TMessage> : IAsyncDisposable
     /// <param name="result">The result of the read operation.</param>
     /// <param name="metadata">The network metadata to set if a message is decoded.</param>
     /// <returns>A tuple indicating whether to continue reading and whether a message was decoded.</returns>
-    private (bool ShouldContinue, bool HasMessage) TrySetMessage(ReadResult result, out NetworkMetadata<TMessage> metadata)
+    private (bool ShouldContinue, bool HasMessage) TrySetMessage(ReadResult result, out MessageMetadata<TMessage> metadata)
     {
         _buffer = result.Buffer;
         _isCanceled = result.IsCanceled;
@@ -158,7 +158,7 @@ internal sealed class MessageReader<TMessage> : IAsyncDisposable
         if (_decoder.TryDecodeMessage(_buffer, ref _consumed, ref _examined, out var message))
         {
             _hasMessage = true;
-            metadata = new NetworkMetadata<TMessage>(message, _isCanceled, false);
+            metadata = new MessageMetadata<TMessage>(message, _isCanceled, false);
             return (false, true);
         }
 

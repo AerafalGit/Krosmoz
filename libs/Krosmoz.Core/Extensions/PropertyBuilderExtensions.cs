@@ -3,6 +3,7 @@
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
 using MemoryPack;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -40,6 +41,7 @@ public static class PropertyBuilderExtensions
     /// <param name="property">The property to serialize.</param>
     /// <returns>A byte array representing the serialized property.</returns>
     /// <exception cref="MemoryPackSerializationException">Thrown if serialization fails.</exception>
+    [Pure]
     private static byte[] Serialize<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TProperty>(TProperty property)
         where TProperty : IMemoryPackable<TProperty>
     {
@@ -53,6 +55,7 @@ public static class PropertyBuilderExtensions
     /// <param name="data">The byte array to deserialize.</param>
     /// <returns>The deserialized property.</returns>
     /// <exception cref="MemoryPackSerializationException">Thrown if deserialization fails.</exception>
+    [Pure]
     private static TProperty Deserialize<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TProperty>(byte[] data)
         where TProperty : IMemoryPackable<TProperty>
     {

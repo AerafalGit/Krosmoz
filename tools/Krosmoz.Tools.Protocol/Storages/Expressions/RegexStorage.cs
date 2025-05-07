@@ -41,4 +41,14 @@ public static partial class RegexStorage
     /// </returns>
     [GeneratedRegex(@"public\s+static\s+const\s+(?<name>[\w|_]+)\s*:\s*(?<type>[\w]+)\s*=\s*(?<value>[-+|\d||\w]+)\s*;", RegexOptions.Multiline)]
     public static partial Regex EnumProperty();
+
+    /// <summary>
+    /// Matches protocol identifier declarations in the source code.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="Regex"/> for matching protocol identifier declarations,
+    /// including the name, type, and value of the identifier.
+    /// </returns>
+    [GeneratedRegex(@"public\s*static\s*const\s*(?<name>[\w]+)\s*:\s*(?<type>[\w]+)\s*=\s*(?<value>[\w]+)\s*;", RegexOptions.Multiline)]
+    public static partial Regex ProtocolId();
 }

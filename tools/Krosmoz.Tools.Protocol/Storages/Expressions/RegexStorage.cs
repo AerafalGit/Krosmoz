@@ -31,4 +31,14 @@ public static partial class RegexStorage
     /// <returns>A <see cref="Regex"/> for matching package declarations.</returns>
     [GeneratedRegex(@"package\s+(?<name>[\w|\.]+)", RegexOptions.Multiline)]
     public static partial Regex NamespaceDeclaration();
+
+    /// <summary>
+    /// Matches enumeration property declarations in the source code.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="Regex"/> for matching enumeration property declarations,
+    /// including the name, type, and value of the property.
+    /// </returns>
+    [GeneratedRegex(@"public\s+static\s+const\s+(?<name>[\w|_]+)\s*:\s*(?<type>[\w]+)\s*=\s*(?<value>[-+|\d||\w]+)\s*;", RegexOptions.Multiline)]
+    public static partial Regex EnumProperty();
 }

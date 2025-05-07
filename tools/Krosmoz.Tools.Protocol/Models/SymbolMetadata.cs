@@ -43,6 +43,8 @@ public sealed class SymbolMetadata
     /// <returns>A string describing the metadata.</returns>
     public override string ToString()
     {
-        return $"Namespace: {Namespace}, Name: {Name}, Parent: {ParentName}";
+        return string.IsNullOrEmpty(ParentName)
+            ? $"Namespace: {Namespace}, Name: {Name}"
+            : $"Namespace: {Namespace}, Name: {Name}, Parent: {ParentName}";
     }
 }

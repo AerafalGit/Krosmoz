@@ -2,6 +2,7 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
+using System.Diagnostics.Contracts;
 using System.Text.RegularExpressions;
 
 namespace Krosmoz.Tools.Protocol.Extensions;
@@ -16,76 +17,70 @@ public static partial class StringExtensions
     /// </summary>
     /// <returns>A <see cref="Regex"/> for matching and capturing the "is" ending rule.</returns>
     [GeneratedRegex(@"(?<keep>.*)(is)$", RegexOptions.Compiled)]
-    public static partial Regex IsToEsRule();
+    private static partial Regex IsToEsRule();
 
     /// <summary>
     /// Matches strings ending with "f" or "fe" and captures the preceding part of the string.
     /// </summary>
     /// <returns>A <see cref="Regex"/> for matching and capturing the "f" or "fe" ending rule.</returns>
     [GeneratedRegex(@"(?<keep>.*[^f])(f|fe)$", RegexOptions.Compiled)]
-    public static partial Regex FToVesRule();
+    private static partial Regex FToVesRule();
 
     /// <summary>
     /// Matches strings ending with a consonant followed by "y" and captures the preceding part of the string.
     /// </summary>
     /// <returns>A <see cref="Regex"/> for matching and capturing the consonant + "y" ending rule.</returns>
     [GeneratedRegex(@"(?<keep>.*[^aeiou])(y)$", RegexOptions.Compiled)]
-    public static partial Regex ConsonantYToIesRule();
+    private static partial Regex ConsonantYToIesRule();
 
     /// <summary>
     /// Matches strings ending with a consonant followed by "o" and captures the preceding part of the string.
     /// </summary>
     /// <returns>A <see cref="Regex"/> for matching and capturing the consonant + "o" ending rule.</returns>
     [GeneratedRegex(@"(?<keep>.*[^aeiou])(o)$", RegexOptions.Compiled)]
-    public static partial Regex ConsonantOToOesRule();
+    private static partial Regex ConsonantOToOesRule();
 
     /// <summary>
     /// Matches strings ending with "us" and captures the preceding part of the string.
     /// </summary>
     /// <returns>A <see cref="Regex"/> for matching and capturing the "us" ending rule.</returns>
     [GeneratedRegex(@"(?<keep>.*)(us)$", RegexOptions.Compiled)]
-    public static partial Regex UsToIRule();
+    private static partial Regex UsToIRule();
 
     /// <summary>
     /// Matches strings ending with "ex" or "ix" and captures the preceding part of the string.
     /// </summary>
     /// <returns>A <see cref="Regex"/> for matching and capturing the "ex" or "ix" ending rule.</returns>
     [GeneratedRegex(@"(?<keep>.*)(ex|ix)$", RegexOptions.Compiled)]
-    public static partial Regex ExIxToIcesRule();
+    private static partial Regex ExIxToIcesRule();
 
     /// <summary>
     /// Matches strings ending with "on" and captures the preceding part of the string.
     /// </summary>
     /// <returns>A <see cref="Regex"/> for matching and capturing the "on" ending rule.</returns>
     [GeneratedRegex(@"(?<keep>.*)(on)$", RegexOptions.Compiled)]
-    public static partial Regex OnToARule();
+    private static partial Regex OnToARule();
 
     /// <summary>
     /// Matches strings ending with "um" and captures the preceding part of the string.
     /// </summary>
     /// <returns>A <see cref="Regex"/> for matching and capturing the "um" ending rule.</returns>
     [GeneratedRegex(@"(?<keep>.*)(um)$", RegexOptions.Compiled)]
-    public static partial Regex UmToARule();
+    private static partial Regex UmToARule();
 
     /// <summary>
     /// Matches strings ending with special cases like "ch", "sh", "ss", "x", or "z" and captures the preceding part of the string.
     /// </summary>
     /// <returns>A <see cref="Regex"/> for matching and capturing special endings.</returns>
     [GeneratedRegex(@"(?<keep>.*)(ch|sh|ss|x|z)$", RegexOptions.Compiled)]
-    public static partial Regex SpecialEndingsToEsRule();
-
-    /// <summary>
-    /// Matches any string and captures the entire string.
-    /// </summary>
-    /// <returns>A <see cref="Regex"/> for matching and capturing the default rule.</returns>
-    [GeneratedRegex(@"(?<keep>.*)$", RegexOptions.Compiled)]
-    public static partial Regex DefaultRule();
+    private static partial Regex SpecialEndingsToEsRule();
 
     /// <summary>
     /// Converts a singular noun to its plural form based on predefined rules.
     /// </summary>
     /// <param name="text">The input string to pluralize.</param>
     /// <returns>The pluralized form of the input string.</returns>
+    [Pure]
     public static string Pluralize(this string text)
     {
         if (string.IsNullOrWhiteSpace(text))
@@ -144,6 +139,7 @@ public static partial class StringExtensions
     /// <returns>
     /// A PascalCase version of the input string, or the original string if it is null or empty.
     /// </returns>
+    [Pure]
     public static string ToPascalCase(this string text)
     {
         return string.IsNullOrEmpty(text)
@@ -158,6 +154,7 @@ public static partial class StringExtensions
     /// <returns>
     /// A file path representation of the namespace, or the original string if it is null or empty.
     /// </returns>
+    [Pure]
     public static string NamespaceToPath(this string text)
     {
         return string.IsNullOrEmpty(text)
@@ -173,6 +170,7 @@ public static partial class StringExtensions
     /// A string with the first character in uppercase and the remaining characters in lowercase,
     /// or the original string if it is null or empty.
     /// </returns>
+    [Pure]
     private static string Capitalize(this string text)
     {
         if (string.IsNullOrEmpty(text))

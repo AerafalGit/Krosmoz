@@ -5,8 +5,10 @@
 using System.Diagnostics.CodeAnalysis;
 using Krosmoz.Servers.GameServer.Database.Repositories.Datacenter;
 using Krosmoz.Tools.Protocol.Converters;
+using Krosmoz.Tools.Protocol.Extensions;
 using Krosmoz.Tools.Protocol.Models;
 using Krosmoz.Tools.Protocol.Parsers;
+using Krosmoz.Tools.Protocol.Renderers;
 using Krosmoz.Tools.Protocol.Storages.Expressions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -21,6 +23,7 @@ public sealed class ProtocolGenerator : IHostedService
     private readonly IDatacenterRepository _datacenterRepository;
     private readonly IParser<EnumSymbol> _enumParser;
     private readonly IConverter<EnumSymbol> _enumConverter;
+    private readonly IRenderer<EnumSymbol> _enumRenderer;
     private readonly ILogger<ProtocolGenerator> _logger;
 
     /// <summary>
@@ -29,16 +32,19 @@ public sealed class ProtocolGenerator : IHostedService
     /// <param name="datacenterRepository">The repository for accessing datacenter information.</param>
     /// <param name="enumParser">The parser for parsing enumeration symbols.</param>
     /// <param name="enumConverter">The converter for converting enumeration symbols.</param>
+    /// <param name="enumRenderer">The renderer for rendering enumeration symbols.</param>
     /// <param name="logger">The logger for logging information and warnings.</param>
     public ProtocolGenerator(
         IDatacenterRepository datacenterRepository,
         IParser<EnumSymbol> enumParser,
         IConverter<EnumSymbol> enumConverter,
+        IRenderer<EnumSymbol> enumRenderer,
         ILogger<ProtocolGenerator> logger)
     {
         _datacenterRepository = datacenterRepository;
         _enumParser = enumParser;
         _enumConverter = enumConverter;
+        _enumRenderer = enumRenderer;
         _logger = logger;
     }
 
@@ -69,6 +75,13 @@ public sealed class ProtocolGenerator : IHostedService
                     case SymbolKind.Enum:
                         var enumSymbol = _enumParser.Parse(symbolMetadata);
                         _enumConverter.Convert(enumSymbol);
+                        var enumSource = _enumRenderer.Render(enumSymbol);
+                        var enumDirectoryPath = "Krosmoz.Protocol.Enums".NamespaceToPath();
+
+                        if (!Directory.Exists(enumDirectoryPath))
+                            Directory.CreateDirectory(enumDirectoryPath);
+
+                        File.WriteAllText(Path.Combine(enumDirectoryPath, string.Concat(enumSymbol.Metadata.Name, '.', "cs")), enumSource);
                         break;
                 }
             }

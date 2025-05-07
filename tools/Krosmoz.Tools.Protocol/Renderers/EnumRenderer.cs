@@ -35,7 +35,7 @@ public sealed class EnumRenderer : IRenderer<EnumSymbol>
         using (builder.CreateScope())
         {
             foreach (var (index, property) in symbol.Properties.Index())
-                builder.AppendLine("{0} = {1}{2}", property.Name, property.Value, index == symbol.Properties.Count - 1 ? string.Empty : ",");
+                builder.AppendIndentedLine("{0} = {1}{2}", property.Name, property.Value, index == symbol.Properties.Count - 1 ? string.Empty : ",");
         }
 
         return builder.ToString();

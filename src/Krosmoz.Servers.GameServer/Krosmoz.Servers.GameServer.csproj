@@ -9,8 +9,4 @@
         <InvariantGlobalization>true</InvariantGlobalization>
     </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\..\libs\Krosmoz.Protocol\Krosmoz.Protocol.csproj" />
-    </ItemGroup>
-
 </Project>

@@ -2,6 +2,7 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
+using System.Text.RegularExpressions;
 using Krosmoz.Core.Extensions;
 
 namespace Krosmoz.Tools.Protocol.Extensions;
@@ -9,8 +10,133 @@ namespace Krosmoz.Tools.Protocol.Extensions;
 /// <summary>
 /// Provides extension methods for string manipulation.
 /// </summary>
-public static class StringExtensions
+public static partial class StringExtensions
 {
+    /// <summary>
+    /// Matches strings ending with "is" and captures the preceding part of the string.
+    /// </summary>
+    /// <returns>A <see cref="Regex"/> for matching and capturing the "is" ending rule.</returns>
+    [GeneratedRegex(@"(?<keep>.*)(is)$", RegexOptions.Compiled)]
+    public static partial Regex IsToEsRule();
+
+    /// <summary>
+    /// Matches strings ending with "f" or "fe" and captures the preceding part of the string.
+    /// </summary>
+    /// <returns>A <see cref="Regex"/> for matching and capturing the "f" or "fe" ending rule.</returns>
+    [GeneratedRegex(@"(?<keep>.*[^f])(f|fe)$", RegexOptions.Compiled)]
+    public static partial Regex FToVesRule();
+
+    /// <summary>
+    /// Matches strings ending with a consonant followed by "y" and captures the preceding part of the string.
+    /// </summary>
+    /// <returns>A <see cref="Regex"/> for matching and capturing the consonant + "y" ending rule.</returns>
+    [GeneratedRegex(@"(?<keep>.*[^aeiou])(y)$", RegexOptions.Compiled)]
+    public static partial Regex ConsonantYToIesRule();
+
+    /// <summary>
+    /// Matches strings ending with a consonant followed by "o" and captures the preceding part of the string.
+    /// </summary>
+    /// <returns>A <see cref="Regex"/> for matching and capturing the consonant + "o" ending rule.</returns>
+    [GeneratedRegex(@"(?<keep>.*[^aeiou])(o)$", RegexOptions.Compiled)]
+    public static partial Regex ConsonantOToOesRule();
+
+    /// <summary>
+    /// Matches strings ending with "us" and captures the preceding part of the string.
+    /// </summary>
+    /// <returns>A <see cref="Regex"/> for matching and capturing the "us" ending rule.</returns>
+    [GeneratedRegex(@"(?<keep>.*)(us)$", RegexOptions.Compiled)]
+    public static partial Regex UsToIRule();
+
+    /// <summary>
+    /// Matches strings ending with "ex" or "ix" and captures the preceding part of the string.
+    /// </summary>
+    /// <returns>A <see cref="Regex"/> for matching and capturing the "ex" or "ix" ending rule.</returns>
+    [GeneratedRegex(@"(?<keep>.*)(ex|ix)$", RegexOptions.Compiled)]
+    public static partial Regex ExIxToIcesRule();
+
+    /// <summary>
+    /// Matches strings ending with "on" and captures the preceding part of the string.
+    /// </summary>
+    /// <returns>A <see cref="Regex"/> for matching and capturing the "on" ending rule.</returns>
+    [GeneratedRegex(@"(?<keep>.*)(on)$", RegexOptions.Compiled)]
+    public static partial Regex OnToARule();
+
+    /// <summary>
+    /// Matches strings ending with "um" and captures the preceding part of the string.
+    /// </summary>
+    /// <returns>A <see cref="Regex"/> for matching and capturing the "um" ending rule.</returns>
+    [GeneratedRegex(@"(?<keep>.*)(um)$", RegexOptions.Compiled)]
+    public static partial Regex UmToARule();
+
+    /// <summary>
+    /// Matches strings ending with special cases like "ch", "sh", "ss", "x", or "z" and captures the preceding part of the string.
+    /// </summary>
+    /// <returns>A <see cref="Regex"/> for matching and capturing special endings.</returns>
+    [GeneratedRegex(@"(?<keep>.*)(ch|sh|ss|x|z)$", RegexOptions.Compiled)]
+    public static partial Regex SpecialEndingsToEsRule();
+
+    /// <summary>
+    /// Matches any string and captures the entire string.
+    /// </summary>
+    /// <returns>A <see cref="Regex"/> for matching and capturing the default rule.</returns>
+    [GeneratedRegex(@"(?<keep>.*)$", RegexOptions.Compiled)]
+    public static partial Regex DefaultRule();
+
+    /// <summary>
+    /// Converts a singular noun to its plural form based on predefined rules.
+    /// </summary>
+    /// <param name="text">The input string to pluralize.</param>
+    /// <returns>The pluralized form of the input string.</returns>
+    public static string Pluralize(this string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return text;
+
+        if (text.Length <= 1)
+            return text + "s";
+
+        if (text.EndsWith("s", StringComparison.OrdinalIgnoreCase) && !text.EndsWith("ss", StringComparison.OrdinalIgnoreCase) && text.Length > 2)
+            return text;
+
+        var match = IsToEsRule().Match(text);
+        if (match.Success)
+            return match.Groups["keep"].Value + "es";
+
+        match = FToVesRule().Match(text);
+        if (match.Success)
+            return match.Groups["keep"].Value + "ves";
+
+        match = ConsonantYToIesRule().Match(text);
+        if (match.Success)
+            return match.Groups["keep"].Value + "ies";
+
+        match = ConsonantOToOesRule().Match(text);
+        if (match.Success)
+            return match.Groups["keep"].Value + "oes";
+
+        match = UsToIRule().Match(text);
+        if (match.Success)
+            return match.Groups["keep"].Value + "i";
+
+        match = ExIxToIcesRule().Match(text);
+        if (match.Success)
+            return match.Groups["keep"].Value + "ices";
+
+        match = OnToARule().Match(text);
+        if (match.Success)
+            return match.Groups["keep"].Value + "a";
+
+        match = UmToARule().Match(text);
+        if (match.Success)
+            return match.Groups["keep"].Value + "a";
+
+        match = SpecialEndingsToEsRule().Match(text);
+        if (match.Success)
+            return match.Groups["keep"].Value + match.Groups[2].Value + "es";
+
+        return text + "s";
+    }
+
     /// <summary>
     /// Converts a string to PascalCase by capitalizing the first letter of each word
     /// and removing delimiters such as underscores, hyphens, and spaces.

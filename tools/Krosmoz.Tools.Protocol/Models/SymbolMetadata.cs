@@ -2,11 +2,14 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
+using System.Diagnostics;
+
 namespace Krosmoz.Tools.Protocol.Models;
 
 /// <summary>
 /// Represents metadata for an ActionScript class.
 /// </summary>
+[DebuggerDisplay("{ToString(),nq}")]
 public sealed class SymbolMetadata
 {
     /// <summary>
@@ -33,4 +36,13 @@ public sealed class SymbolMetadata
     /// Gets or sets the type of the ActionScript class.
     /// </summary>
     public required SymbolKind Kind { get; set; }
+
+    /// <summary>
+    /// Returns a string representation of the metadata, including the namespace, name, and parent class name.
+    /// </summary>
+    /// <returns>A string describing the metadata.</returns>
+    public override string ToString()
+    {
+        return $"Namespace: {Namespace}, Name: {Name}, Parent: {ParentName}";
+    }
 }

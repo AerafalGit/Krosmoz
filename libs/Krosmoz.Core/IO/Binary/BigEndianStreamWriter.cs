@@ -7,7 +7,7 @@ using System.Buffers.Binary;
 namespace Krosmoz.Core.IO.Binary;
 
 /// <inheritdoc />
-public sealed class BinaryStreamWriter : BinaryBufferStreamWriter
+public sealed class BigEndianStreamWriter : BigEndianWriter
 {
     private readonly Stream _stream;
 
@@ -45,10 +45,10 @@ public sealed class BinaryStreamWriter : BinaryBufferStreamWriter
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BinaryStreamWriter"/> class with the specified stream.
+    /// Initializes a new instance of the <see cref="BigEndianStreamWriter"/> class with the specified stream.
     /// </summary>
     /// <param name="stream">The stream to write data to.</param>
-    public BinaryStreamWriter(Stream stream)
+    public BigEndianStreamWriter(Stream stream)
     {
         _stream = stream;
     }

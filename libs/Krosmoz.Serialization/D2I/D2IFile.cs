@@ -51,7 +51,7 @@ public sealed class D2IFile
     /// </summary>
     public void Load()
     {
-        using var reader = new BinaryBufferReader(File.ReadAllBytes(FilePath));
+        using var reader = new BigEndianBufferReader(File.ReadAllBytes(FilePath));
 
         var indexPosition = reader.ReadInt();
         reader.Seek(SeekOrigin.Begin, indexPosition);
@@ -118,10 +118,10 @@ public sealed class D2IFile
     /// </summary>
     public void Save()
     {
-        using var writer = new BinaryBufferWriter();
-        using var indexWriter = new BinaryBufferWriter();
-        using var namedWriter = new BinaryBufferWriter();
-        using var sortedWriter = new BinaryBufferWriter();
+        using var writer = new BigEndianBufferWriter();
+        using var indexWriter = new BigEndianBufferWriter();
+        using var namedWriter = new BigEndianBufferWriter();
+        using var sortedWriter = new BigEndianBufferWriter();
 
         writer.Seek(SeekOrigin.Begin, sizeof(int));
 

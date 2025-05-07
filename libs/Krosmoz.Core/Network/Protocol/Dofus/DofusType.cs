@@ -25,7 +25,7 @@ public abstract class DofusType
     /// Serializes the network type data to the specified binary writer.
     /// </summary>
     /// <param name="writer">The binary writer to serialize the network type data to.</param>
-    public virtual void Serialize(BinaryBufferStreamWriter writer)
+    public virtual void Serialize(BigEndianWriter writer)
     {
     }
 
@@ -33,7 +33,7 @@ public abstract class DofusType
     /// Deserializes the network type data from the specified binary reader.
     /// </summary>
     /// <param name="reader">The binary reader to deserialize the network type data from.</param>
-    public virtual void Deserialize(BinaryBufferStreamReader reader)
+    public virtual void Deserialize(BigEndianReader reader)
     {
     }
 }

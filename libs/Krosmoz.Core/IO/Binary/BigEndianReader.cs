@@ -10,7 +10,7 @@ namespace Krosmoz.Core.IO.Binary;
 /// <summary>
 /// Represents an abstract base class for reading binary data from a buffer or stream.
 /// </summary>
-public abstract class BinaryBufferStreamReader : IDisposable
+public abstract class BigEndianReader : IDisposable
 {
     /// <summary>
     /// Gets the total length of the buffer.
@@ -486,7 +486,7 @@ public abstract class BinaryBufferStreamReader : IDisposable
     }
 
     /// <summary>
-    /// Releases all resources used by the current instance of the <see cref="BinaryBufferStreamReader"/> class.
+    /// Releases all resources used by the current instance of the <see cref="BigEndianReader"/> class.
     /// </summary>
     public virtual void Dispose()
     {

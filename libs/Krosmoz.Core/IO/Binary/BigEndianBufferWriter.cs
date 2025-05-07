@@ -8,7 +8,7 @@ using System.Buffers.Binary;
 namespace Krosmoz.Core.IO.Binary;
 
 /// <inheritdoc />
-public sealed class BinaryBufferWriter : BinaryBufferStreamWriter
+public sealed class BigEndianBufferWriter : BigEndianWriter
 {
     private byte[] _buffer;
     private int _position;
@@ -48,18 +48,18 @@ public sealed class BinaryBufferWriter : BinaryBufferStreamWriter
         _buffer.AsSpan(0, MaxPosition).ToArray();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BinaryBufferWriter"/> class with an empty buffer.
+    /// Initializes a new instance of the <see cref="BigEndianBufferWriter"/> class with an empty buffer.
     /// </summary>
-    public BinaryBufferWriter()
+    public BigEndianBufferWriter()
     {
         _buffer = [];
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BinaryBufferWriter"/> class with a buffer of the specified length.
+    /// Initializes a new instance of the <see cref="BigEndianBufferWriter"/> class with a buffer of the specified length.
     /// </summary>
     /// <param name="length">The initial length of the buffer.</param>
-    public BinaryBufferWriter(int length)
+    public BigEndianBufferWriter(int length)
     {
         _buffer = ArrayPool<byte>.Shared.Rent(length);
     }

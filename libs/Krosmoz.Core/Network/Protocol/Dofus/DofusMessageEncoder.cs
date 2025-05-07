@@ -20,7 +20,7 @@ public sealed class DofusMessageEncoder : IMessageEncoder<DofusMessage>
     /// <param name="message">The Dofus message to encode.</param>
     public void EncodeMessage(IBufferWriter<byte> writer, DofusMessage message)
     {
-        using var contentWriter = new BinaryBufferWriter();
+        using var contentWriter = new BigEndianBufferWriter();
 
         message.Serialize(contentWriter);
 
@@ -36,7 +36,7 @@ public sealed class DofusMessageEncoder : IMessageEncoder<DofusMessage>
 
         var header = (ushort)((message.ProtocolId << DofusMessage.BitRightShiftLenPacketId) | messageSize);
 
-        using var messageWriter = new BinaryBufferWriter();
+        using var messageWriter = new BigEndianBufferWriter();
 
         messageWriter.WriteUShort(header);
 

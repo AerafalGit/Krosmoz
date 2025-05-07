@@ -38,7 +38,7 @@ public sealed class DofusMessageDecoder : IMessageDecoder<DofusMessage>
     {
         message = null;
 
-        using var reader = new BinaryBufferReader(sequence);
+        using var reader = new BigEndianBufferReader(sequence);
 
         if (!reader.TryReadUShort(out var header))
             return false;

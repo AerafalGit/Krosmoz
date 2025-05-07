@@ -5,7 +5,7 @@
 namespace Krosmoz.Core.IO.Binary;
 
 /// <inheritdoc />
-public sealed class BinaryStreamReader : BinaryBufferStreamReader
+public sealed class BigEndianStreamReader : BigEndianReader
 {
     private readonly Stream _stream;
 
@@ -21,10 +21,10 @@ public sealed class BinaryStreamReader : BinaryBufferStreamReader
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BinaryStreamReader"/> class with the specified stream.
+    /// Initializes a new instance of the <see cref="BigEndianStreamReader"/> class with the specified stream.
     /// </summary>
     /// <param name="stream">The stream to read from.</param>
-    public BinaryStreamReader(Stream stream)
+    public BigEndianStreamReader(Stream stream)
     {
         _stream = stream;
     }

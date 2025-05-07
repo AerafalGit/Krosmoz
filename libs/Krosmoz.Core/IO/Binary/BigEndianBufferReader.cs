@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace Krosmoz.Core.IO.Binary;
 
 /// <inheritdoc />
-public sealed class BinaryBufferReader : BinaryBufferStreamReader
+public sealed class BigEndianBufferReader : BigEndianReader
 {
     private readonly ReadOnlyMemory<byte> _buffer;
 
@@ -20,10 +20,10 @@ public sealed class BinaryBufferReader : BinaryBufferStreamReader
     public override int Position { get; protected set; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BinaryBufferReader"/> class with a <see cref="ReadOnlySequence{T}"/>.
+    /// Initializes a new instance of the <see cref="BigEndianBufferReader"/> class with a <see cref="ReadOnlySequence{T}"/>.
     /// </summary>
     /// <param name="buffer">The buffer to read from.</param>
-    public BinaryBufferReader(ReadOnlySequence<byte> buffer)
+    public BigEndianBufferReader(ReadOnlySequence<byte> buffer)
     {
         if (buffer.IsSingleSegment)
             _buffer = buffer.First;
@@ -34,10 +34,10 @@ public sealed class BinaryBufferReader : BinaryBufferStreamReader
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BinaryBufferReader"/> class with a <see cref="ReadOnlyMemory{T}"/>.
+    /// Initializes a new instance of the <see cref="BigEndianBufferReader"/> class with a <see cref="ReadOnlyMemory{T}"/>.
     /// </summary>
     /// <param name="buffer">The buffer to read from.</param>
-    public BinaryBufferReader(ReadOnlyMemory<byte> buffer)
+    public BigEndianBufferReader(ReadOnlyMemory<byte> buffer)
     {
         _buffer = buffer;
     }

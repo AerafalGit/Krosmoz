@@ -5,6 +5,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Krosmoz.Servers.GameServer.Database.Repositories.Datacenter;
 using Krosmoz.Tools.Protocol.Models;
+using Krosmoz.Tools.Protocol.Parsers;
 using Krosmoz.Tools.Protocol.Storages.Expressions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -17,16 +18,19 @@ namespace Krosmoz.Tools.Protocol.Generators;
 public sealed class ProtocolGenerator : IHostedService
 {
     private readonly IDatacenterRepository _datacenterRepository;
+    private readonly IParser<EnumSymbol> _enumParser;
     private readonly ILogger<ProtocolGenerator> _logger;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ProtocolGenerator"/> class.
     /// </summary>
     /// <param name="datacenterRepository">The repository for accessing datacenter information.</param>
+    /// <param name="enumParser">The parser for parsing enumeration symbols.</param>
     /// <param name="logger">The logger for logging information and warnings.</param>
-    public ProtocolGenerator(IDatacenterRepository datacenterRepository, ILogger<ProtocolGenerator> logger)
+    public ProtocolGenerator(IDatacenterRepository datacenterRepository, IParser<EnumSymbol> enumParser, ILogger<ProtocolGenerator> logger)
     {
         _datacenterRepository = datacenterRepository;
+        _enumParser = enumParser;
         _logger = logger;
     }
 
@@ -39,7 +43,7 @@ public sealed class ProtocolGenerator : IHostedService
     {
         return Task.Run(() =>
         {
-            var networkDirectoryPath = Path.Combine(_datacenterRepository.DofusPath, "fla", "com", "ankamagames", "dofus", "network");
+            var networkDirectoryPath = Path.Combine(_datacenterRepository.DofusPath, "fla", "com", "ankamagames", "dofus", "network", "enums");
 
             if (!Directory.Exists(networkDirectoryPath))
                 throw new DirectoryNotFoundException($"The directory {networkDirectoryPath} does not exist.");
@@ -50,6 +54,13 @@ public sealed class ProtocolGenerator : IHostedService
                 {
                     _logger.LogWarning("Ignoring file {FileName} because it does not contain a valid class declaration", Path.GetFileNameWithoutExtension(filePath));
                     continue;
+                }
+
+                switch (symbolMetadata.Kind)
+                {
+                    case SymbolKind.Enum:
+                        var enumSymbol = _enumParser.Parse(symbolMetadata);
+                        break;
                 }
             }
         }, cancellationToken);

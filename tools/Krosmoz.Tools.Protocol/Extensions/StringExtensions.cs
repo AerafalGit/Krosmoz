@@ -3,7 +3,6 @@
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
 using System.Text.RegularExpressions;
-using Krosmoz.Core.Extensions;
 
 namespace Krosmoz.Tools.Protocol.Extensions;
 
@@ -150,5 +149,21 @@ public static partial class StringExtensions
         return string.IsNullOrEmpty(text)
             ? text
             : string.Join(string.Empty, text.Split(['_', '-', ' '], StringSplitOptions.RemoveEmptyEntries).Select(static x => x.Capitalize()));
+    }
+
+    /// <summary>
+    /// Capitalizes the first letter of the input string and converts the rest to lowercase.
+    /// </summary>
+    /// <param name="text">The input string to capitalize.</param>
+    /// <returns>
+    /// A string with the first character in uppercase and the remaining characters in lowercase,
+    /// or the original string if it is null or empty.
+    /// </returns>
+    private static string Capitalize(this string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return text;
+
+        return char.ToUpper(text[0]) + text[1..].ToLowerInvariant();
     }
 }

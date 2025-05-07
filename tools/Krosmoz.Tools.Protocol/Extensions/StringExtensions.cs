@@ -152,6 +152,20 @@ public static partial class StringExtensions
     }
 
     /// <summary>
+    /// Converts a namespace string into a file path by replacing dots with directory separators.
+    /// </summary>
+    /// <param name="text">The namespace string to convert.</param>
+    /// <returns>
+    /// A file path representation of the namespace, or the original string if it is null or empty.
+    /// </returns>
+    public static string NamespaceToPath(this string text)
+    {
+        return string.IsNullOrEmpty(text)
+            ? text
+            : string.Join(Path.DirectorySeparatorChar, text.Split(['.'], StringSplitOptions.RemoveEmptyEntries));
+    }
+
+    /// <summary>
     /// Capitalizes the first letter of the input string and converts the rest to lowercase.
     /// </summary>
     /// <param name="text">The input string to capitalize.</param>

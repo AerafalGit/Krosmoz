@@ -17,6 +17,7 @@ await Host.CreateDefaultBuilder(args)
             .AddSingleton<IParser<EnumSymbol>, EnumParser>()
             .AddSingleton<IConverter<EnumSymbol>, EnumConverter>()
             .AddSingleton<IRenderer<EnumSymbol>, EnumRenderer>()
+            .AddSingleton<IParser<ClassSymbol>, ClassParser>()
             .AddHostedService<ProtocolGenerator>();
     })
     .RunConsoleAsync();

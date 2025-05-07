@@ -32,5 +32,5 @@ public sealed class SymbolMetadata
     /// <summary>
     /// Gets or sets the type of the ActionScript class.
     /// </summary>
-    public required ClassKind Kind { get; set; }
+    public required SymbolKind Kind { get; set; }
 }

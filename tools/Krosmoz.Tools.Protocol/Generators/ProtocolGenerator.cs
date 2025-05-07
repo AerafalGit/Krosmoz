@@ -4,6 +4,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Krosmoz.Servers.GameServer.Database.Repositories.Datacenter;
+using Krosmoz.Tools.Protocol.Converters;
 using Krosmoz.Tools.Protocol.Models;
 using Krosmoz.Tools.Protocol.Parsers;
 using Krosmoz.Tools.Protocol.Storages.Expressions;
@@ -19,6 +20,7 @@ public sealed class ProtocolGenerator : IHostedService
 {
     private readonly IDatacenterRepository _datacenterRepository;
     private readonly IParser<EnumSymbol> _enumParser;
+    private readonly IConverter<EnumSymbol> _enumConverter;
     private readonly ILogger<ProtocolGenerator> _logger;
 
     /// <summary>
@@ -26,11 +28,17 @@ public sealed class ProtocolGenerator : IHostedService
     /// </summary>
     /// <param name="datacenterRepository">The repository for accessing datacenter information.</param>
     /// <param name="enumParser">The parser for parsing enumeration symbols.</param>
+    /// <param name="enumConverter">The converter for converting enumeration symbols.</param>
     /// <param name="logger">The logger for logging information and warnings.</param>
-    public ProtocolGenerator(IDatacenterRepository datacenterRepository, IParser<EnumSymbol> enumParser, ILogger<ProtocolGenerator> logger)
+    public ProtocolGenerator(
+        IDatacenterRepository datacenterRepository,
+        IParser<EnumSymbol> enumParser,
+        IConverter<EnumSymbol> enumConverter,
+        ILogger<ProtocolGenerator> logger)
     {
         _datacenterRepository = datacenterRepository;
         _enumParser = enumParser;
+        _enumConverter = enumConverter;
         _logger = logger;
     }
 
@@ -60,6 +68,7 @@ public sealed class ProtocolGenerator : IHostedService
                 {
                     case SymbolKind.Enum:
                         var enumSymbol = _enumParser.Parse(symbolMetadata);
+                        _enumConverter.Convert(enumSymbol);
                         break;
                 }
             }

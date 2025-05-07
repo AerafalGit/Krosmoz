@@ -9,4 +9,8 @@
         <InvariantGlobalization>true</InvariantGlobalization>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\Krosmoz.Servers.GameServer\Krosmoz.Servers.GameServer.csproj" />
+    </ItemGroup>
+
 </Project>

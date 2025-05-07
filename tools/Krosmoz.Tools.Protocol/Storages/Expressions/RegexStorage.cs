@@ -81,4 +81,14 @@ public static partial class RegexStorage
     /// </returns>
     [GeneratedRegex(@"public\s*var\s*(?<name>[\w]+)\s*:\s*(?<type>[\w]+) = new", RegexOptions.Multiline)]
     public static partial Regex PropertyObject();
+
+    /// <summary>
+    /// Matches vector property declarations in the source code.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="Regex"/> for matching vector property declarations,
+    /// capturing the name and type of the property.
+    /// </returns>
+    [GeneratedRegex(@"public\s+var\s+(?<name>[\w]+)\s*:\s*Vector.\s*<\s*(?<type>[\w]+)\s*>", RegexOptions.Multiline)]
+    public static partial Regex PropertyVector();
 }

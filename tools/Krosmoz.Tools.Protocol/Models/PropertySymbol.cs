@@ -2,11 +2,14 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
+using System.Diagnostics;
+
 namespace Krosmoz.Tools.Protocol.Models;
 
 /// <summary>
 /// Represents a symbol for a property.
 /// </summary>
+[DebuggerDisplay("{ToString(),nq}")]
 public sealed class PropertySymbol
 {
     /// <summary>
@@ -73,4 +76,13 @@ public sealed class PropertySymbol
     /// Gets or sets a value indicating whether the vector uses an ICollection interface.
     /// </summary>
     public bool VectorUseICollection { get; set; }
+
+    /// <summary>
+    /// Returns a string representation of the property symbol, including its name, type, and index.
+    /// </summary>
+    /// <returns>A string describing the property symbol.</returns>
+    public override string ToString()
+    {
+        return $"Name: {Name}, Type: {Type}, Index: {Index}";
+    }
 }

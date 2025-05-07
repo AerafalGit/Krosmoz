@@ -61,4 +61,14 @@ public static partial class RegexStorage
     /// </returns>
     [GeneratedRegex(@"^\s*import\s+(?<name>[\w|\.]+)\s*;$", RegexOptions.Multiline)]
     public static partial Regex Using();
+
+    /// <summary>
+    /// Matches primitive property declarations in the source code.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="Regex"/> for matching primitive property declarations,
+    /// capturing the name and type of the property.
+    /// </returns>
+    [GeneratedRegex(@"public\s+var\s+(?<name>[\w]+)\s*:\s*(?<type>String|Boolean|int|Number|uint|byte|ByteArray)", RegexOptions.Multiline)]
+    public static partial Regex PropertyPrimitive();
 }

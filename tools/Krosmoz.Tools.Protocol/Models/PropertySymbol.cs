@@ -73,11 +73,6 @@ public sealed class PropertySymbol
     public bool Nullable { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the vector uses an ICollection interface.
-    /// </summary>
-    public bool VectorUseICollection { get; set; }
-
-    /// <summary>
     /// Returns a string representation of the property symbol, including its name, type, and index.
     /// </summary>
     /// <returns>A string describing the property symbol.</returns>

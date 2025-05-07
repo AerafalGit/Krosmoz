@@ -7,12 +7,12 @@ namespace Krosmoz.Tools.Protocol.Models;
 /// <summary>
 /// Represents an ActionScript class.
 /// </summary>
-public sealed class ActionScriptClass
+public sealed class ClassSymbol
 {
     /// <summary>
     /// Gets or sets the metadata associated with the ActionScript class.
     /// </summary>
-    public required ActionScriptClassMetadata Metadata { get; set; }
+    public required SymbolMetadata Metadata { get; set; }
 
     /// <summary>
     /// Gets or sets the protocol identifier for the ActionScript class.
@@ -28,5 +28,5 @@ public sealed class ActionScriptClass
     /// Gets or sets the dictionary of properties defined in the ActionScript class.
     /// The key represents the property name, and the value represents the property details.
     /// </summary>
-    public required Dictionary<string, ActionScriptProperty> Properties { get; set; }
+    public required Dictionary<string, PropertySymbol> Properties { get; set; }
 }

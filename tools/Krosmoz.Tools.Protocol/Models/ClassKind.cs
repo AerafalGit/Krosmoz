@@ -7,7 +7,7 @@ namespace Krosmoz.Tools.Protocol.Models;
 /// <summary>
 /// Represents the types of ActionScript classes.
 /// </summary>
-public enum ActionScriptClassTypes
+public enum ClassKind
 {
     /// <summary>
     /// Represents a message class type.

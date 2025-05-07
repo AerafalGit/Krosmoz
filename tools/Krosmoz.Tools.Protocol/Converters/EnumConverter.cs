@@ -23,6 +23,14 @@ public sealed class EnumConverter : IConverter<EnumSymbol>
             .Replace("Enum", string.Empty)
             .Pluralize();
 
+        var allPropertiesHaveSameType = symbol.Properties
+            .Select(static property => property.Type)
+            .Distinct()
+            .Count() is 1;
+
+        if (allPropertiesHaveSameType)
+            symbol.Metadata.ParentName = symbol.Properties.First().Type;
+
         foreach (var propertySymbol in symbol.Properties)
         {
             propertySymbol.Name = propertySymbol.Name.ToPascalCase();

@@ -71,4 +71,14 @@ public static partial class RegexStorage
     /// </returns>
     [GeneratedRegex(@"public\s+var\s+(?<name>[\w]+)\s*:\s*(?<type>String|Boolean|int|Number|uint|byte|ByteArray)", RegexOptions.Multiline)]
     public static partial Regex PropertyPrimitive();
+
+    /// <summary>
+    /// Matches object property declarations in the source code.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="Regex"/> for matching object property declarations,
+    /// capturing the name and type of the property.
+    /// </returns>
+    [GeneratedRegex(@"public\s*var\s*(?<name>[\w]+)\s*:\s*(?<type>[\w]+) = new", RegexOptions.Multiline)]
+    public static partial Regex PropertyObject();
 }

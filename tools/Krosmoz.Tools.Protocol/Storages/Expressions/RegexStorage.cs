@@ -91,4 +91,14 @@ public static partial class RegexStorage
     /// </returns>
     [GeneratedRegex(@"public\s+var\s+(?<name>[\w]+)\s*:\s*Vector.\s*<\s*(?<type>[\w]+)\s*>", RegexOptions.Multiline)]
     public static partial Regex PropertyVector();
+
+    /// <summary>
+    /// Matches vector field write length operations in the source code.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="Regex"/> for matching vector field write length operations,
+    /// capturing the method name and the field name being accessed.
+    /// </returns>
+    [GeneratedRegex(@"^\s*param1.(?<method>[\w]+)\(this.(?<name>[\w]+).length\);\s*", RegexOptions.Multiline)]
+    public static partial Regex PropertyVectorFieldWriteLength();
 }

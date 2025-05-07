@@ -24,6 +24,7 @@ public sealed class ProtocolGenerator : IHostedService
     private readonly IParser<EnumSymbol> _enumParser;
     private readonly IConverter<EnumSymbol> _enumConverter;
     private readonly IRenderer<EnumSymbol> _enumRenderer;
+    private readonly IParser<ClassSymbol> _classParser;
     private readonly ILogger<ProtocolGenerator> _logger;
 
     /// <summary>
@@ -33,18 +34,21 @@ public sealed class ProtocolGenerator : IHostedService
     /// <param name="enumParser">The parser for parsing enumeration symbols.</param>
     /// <param name="enumConverter">The converter for converting enumeration symbols.</param>
     /// <param name="enumRenderer">The renderer for rendering enumeration symbols.</param>
+    /// <param name="classParser">The parser for parsing class symbols.</param>
     /// <param name="logger">The logger for logging information and warnings.</param>
     public ProtocolGenerator(
         IDatacenterRepository datacenterRepository,
         IParser<EnumSymbol> enumParser,
         IConverter<EnumSymbol> enumConverter,
         IRenderer<EnumSymbol> enumRenderer,
+        IParser<ClassSymbol> classParser,
         ILogger<ProtocolGenerator> logger)
     {
         _datacenterRepository = datacenterRepository;
         _enumParser = enumParser;
         _enumConverter = enumConverter;
         _enumRenderer = enumRenderer;
+        _classParser = classParser;
         _logger = logger;
     }
 
@@ -57,7 +61,7 @@ public sealed class ProtocolGenerator : IHostedService
     {
         return Task.Run(() =>
         {
-            var networkDirectoryPath = Path.Combine(_datacenterRepository.DofusPath, "fla", "com", "ankamagames", "dofus", "network", "enums");
+            var networkDirectoryPath = Path.Combine(_datacenterRepository.DofusPath, "fla", "com", "ankamagames", "dofus", "network");
 
             if (!Directory.Exists(networkDirectoryPath))
                 throw new DirectoryNotFoundException($"The directory {networkDirectoryPath} does not exist.");
@@ -82,6 +86,11 @@ public sealed class ProtocolGenerator : IHostedService
                             Directory.CreateDirectory(enumDirectoryPath);
 
                         File.WriteAllText(Path.Combine(enumDirectoryPath, string.Concat(enumSymbol.Metadata.Name, '.', "cs")), enumSource);
+                        break;
+
+                    case SymbolKind.Message:
+                    case SymbolKind.Type:
+                        var classSymbol = _classParser.Parse(symbolMetadata);
                         break;
                 }
             }

@@ -13,6 +13,18 @@ namespace Krosmoz.Core.Extensions;
 public static class StringExtensions
 {
     /// <summary>
+    /// Capitalizes the first character of the specified string.
+    /// </summary>
+    /// <param name="text">The string to capitalize.</param>
+    /// <returns>The input string with its first character converted to uppercase.</returns>
+    public static string Capitalize(this string text)
+    {
+        return string.IsNullOrEmpty(text)
+            ? text
+            : string.Concat(char.ToUpperInvariant(text[0]), text[1..]);
+    }
+
+    /// <summary>
     /// Determines whether the specified string contains any accented characters.
     /// </summary>
     /// <param name="text">The string to check for accents.</param>

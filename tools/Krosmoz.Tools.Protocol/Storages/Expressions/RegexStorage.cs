@@ -49,6 +49,16 @@ public static partial class RegexStorage
     /// A <see cref="Regex"/> for matching protocol identifier declarations,
     /// including the name, type, and value of the identifier.
     /// </returns>
-    [GeneratedRegex(@"public\s*static\s*const\s*(?<name>[\w]+)\s*:\s*(?<type>[\w]+)\s*=\s*(?<value>[\w]+)\s*;", RegexOptions.Multiline)]
+    [GeneratedRegex(@"public\s*static\s*const\s*protocolId\s*:\s*uint\s*=\s*(?<value>[\w]+)\s*;", RegexOptions.Multiline)]
     public static partial Regex ProtocolId();
+
+    /// <summary>
+    /// Matches import statements in the source code.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="Regex"/> for matching import statements,
+    /// capturing the name of the imported namespace or module.
+    /// </returns>
+    [GeneratedRegex(@"^\s*import\s+(?<name>[\w|\.]+)\s*;$", RegexOptions.Multiline)]
+    public static partial Regex Using();
 }

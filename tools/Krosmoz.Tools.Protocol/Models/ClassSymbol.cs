@@ -20,7 +20,7 @@ public sealed class ClassSymbol
     /// <summary>
     /// Gets or sets the protocol identifier for the ActionScript class.
     /// </summary>
-    public required int ProtocolId { get; set; }
+    public required uint ProtocolId { get; set; }
 
     /// <summary>
     /// Gets or sets the list of namespaces or libraries used by the ActionScript class.

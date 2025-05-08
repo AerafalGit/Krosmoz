@@ -56,7 +56,7 @@ public sealed class TypeFactoryRenderer : IRenderer<ClassSymbol[]>
                     .Indent();
 
                 foreach (var classSymbol in symbol)
-                    builder.AppendIndentedLine("{0} => (T){1}.Empty,", classSymbol.ProtocolId, string.Concat(classSymbol.Metadata.Namespace, '.', classSymbol.Metadata.Name));
+                    builder.AppendIndentedLine("{0} => (T)(object){1}.Empty,", classSymbol.ProtocolId, string.Concat(classSymbol.Metadata.Namespace, '.', classSymbol.Metadata.Name));
 
                 builder
                     .AppendIndentedLine("_ => throw new ArgumentOutOfRangeException(nameof(typeId))")

@@ -10,6 +10,7 @@ using Krosmoz.Tools.Protocol.Models;
 using Krosmoz.Tools.Protocol.Parsers;
 using Krosmoz.Tools.Protocol.Renderers;
 using Krosmoz.Tools.Protocol.Storages.Expressions;
+using Krosmoz.Tools.Protocol.Storages.Symbols;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -21,38 +22,46 @@ namespace Krosmoz.Tools.Protocol.Generators;
 public sealed class ProtocolGenerator : IHostedService
 {
     private readonly IDatacenterRepository _datacenterRepository;
+    private readonly ISymbolStorage _symbolStorage;
     private readonly IParser<EnumSymbol> _enumParser;
     private readonly IConverter<EnumSymbol> _enumConverter;
     private readonly IRenderer<EnumSymbol> _enumRenderer;
     private readonly IParser<ClassSymbol> _classParser;
     private readonly IConverter<ClassSymbol> _classConverter;
+    private readonly IRenderer<ClassSymbol> _classRenderer;
     private readonly ILogger<ProtocolGenerator> _logger;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ProtocolGenerator"/> class.
     /// </summary>
     /// <param name="datacenterRepository">The repository for accessing datacenter information.</param>
+    /// <param name="symbolStorage">The storage for managing symbols.</param>
     /// <param name="enumParser">The parser for parsing enumeration symbols.</param>
     /// <param name="enumConverter">The converter for converting enumeration symbols.</param>
     /// <param name="enumRenderer">The renderer for rendering enumeration symbols.</param>
     /// <param name="classParser">The parser for parsing class symbols.</param>
     /// <param name="classConverter">The converter for converting class symbols.</param>
+    /// <param name="classRenderer">The renderer for rendering class symbols.</param>
     /// <param name="logger">The logger for logging information and warnings.</param>
     public ProtocolGenerator(
         IDatacenterRepository datacenterRepository,
+        ISymbolStorage symbolStorage,
         IParser<EnumSymbol> enumParser,
         IConverter<EnumSymbol> enumConverter,
         IRenderer<EnumSymbol> enumRenderer,
         IParser<ClassSymbol> classParser,
         IConverter<ClassSymbol> classConverter,
+        IRenderer<ClassSymbol> classRenderer,
         ILogger<ProtocolGenerator> logger)
     {
         _datacenterRepository = datacenterRepository;
+        _symbolStorage = symbolStorage;
         _enumParser = enumParser;
         _enumConverter = enumConverter;
         _enumRenderer = enumRenderer;
         _classParser = classParser;
         _classConverter = classConverter;
+        _classRenderer = classRenderer;
         _logger = logger;
     }
 
@@ -96,8 +105,20 @@ public sealed class ProtocolGenerator : IHostedService
                     case SymbolKind.Type:
                         var classSymbol = _classParser.Parse(symbolMetadata);
                         _classConverter.Convert(classSymbol);
+                        _symbolStorage.AddSymbol(classSymbol);
                         break;
                 }
+            }
+
+            foreach (var classSymbol in _symbolStorage.GetSymbols())
+            {
+                var classSource = _classRenderer.Render(classSymbol);
+                var classDirectoryPath = classSymbol.Metadata.Namespace.NamespaceToPath();
+
+                if (!Directory.Exists(classDirectoryPath))
+                    Directory.CreateDirectory(classDirectoryPath);
+
+                File.WriteAllText(Path.Combine(classDirectoryPath, string.Concat(classSymbol.Metadata.Name, '.', "cs")), classSource);
             }
         }, cancellationToken);
     }

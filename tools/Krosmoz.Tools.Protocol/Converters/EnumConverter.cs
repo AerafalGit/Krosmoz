@@ -19,12 +19,13 @@ public sealed class EnumConverter : IConverter<EnumSymbol>
     /// <param name="symbol">The enumeration symbol to convert.</param>
     public void Convert(EnumSymbol symbol)
     {
-        symbol.Metadata.Name = symbol.Metadata.Name
-            .Replace("Enum", string.Empty)
-            .Pluralize();
-
         if (symbol.Metadata.Name is "ActionIdConverter")
             symbol.Metadata.Name = "ActionIds";
+
+        if (symbol.Metadata.Name.EndsWith("Enum"))
+            symbol.Metadata.Name = symbol.Metadata.Name
+                .Replace("Enum", string.Empty)
+                .Pluralize();
 
         var allPropertiesHaveSameType = symbol.Properties
             .Select(static property => property.Type)

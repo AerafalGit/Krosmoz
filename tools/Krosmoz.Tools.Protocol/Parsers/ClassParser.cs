@@ -526,10 +526,7 @@ public sealed class ClassParser : IParser<ClassSymbol>
         if (!match.Groups.TryGetValue("name", out var nameGroup))
             throw new Exception($"Property name not found in class {classSymbol.Metadata.Name}.");
 
-        if (!classSymbol.Properties.TryGetValue(nameGroup.Value, out property))
-            throw new Exception($"Property {nameGroup.Value} not found in class {classSymbol.Metadata.Name}.");
-
-        return true;
+        return classSymbol.Properties.TryGetValue(nameGroup.Value, out property);
     }
 
     /// <summary>

@@ -113,21 +113,33 @@ public sealed class ClassRenderer : IRenderer<ClassSymbol>
 
     private void RenderFactoryProperty(IndentedStringBuilder builder, ClassSymbol symbol)
     {
-        builder
-            .AppendIndentedLine("public static {0} Empty =>", symbol.Metadata.Name)
-            .Indent();
+        if (HaveCustomParent(symbol))
+            builder.AppendIndentedLine("public static new {0} Empty =>", symbol.Metadata.Name);
+        else
+            builder
+                .AppendIndentedLine("public static {0} Empty =>", symbol.Metadata.Name);
+
+        builder.Indent();
 
         var properties = GetRecursiveProperties(symbol).ToArray();
 
-        if (properties.Length is 0)
+        if (properties.Length is 0 && symbol.Metadata.Name is not "NetworkDataContainerMessage")
         {
             builder
-                .AppendIndentedLine("new {0}();", symbol.Metadata.Name)
+                .AppendIndentedLine("new();")
                 .Unindent();
             return;
         }
 
-        builder.AppendIndented("new {0} {{", symbol.Metadata.Name);
+        if (symbol.Metadata.Name is "NetworkDataContainerMessage")
+        {
+            builder
+                .AppendIndentedLine("new() { Content = [] };")
+                .Unindent();
+            return;
+        }
+
+        builder.AppendIndented("new() {");
 
         foreach (var (index, property) in properties.Index())
         {
@@ -140,6 +152,7 @@ public sealed class ClassRenderer : IRenderer<ClassSymbol>
                     {
                         "string" => "string.Empty",
                         "bool" => "false",
+                        "byte[]" => "[]",
                         _ => "0"
                     }, comma);
                     break;

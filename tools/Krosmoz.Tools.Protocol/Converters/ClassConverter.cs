@@ -146,10 +146,17 @@ public sealed class ClassConverter : IConverter<ClassSymbol>
     /// <param name="symbol">The class symbol to be converted.</param>
     public void Convert(ClassSymbol symbol)
     {
+        symbol.Metadata.Namespace = string.Concat("Krosmoz.Protocol", string.Join('.', symbol.Metadata.Namespace.Split('.').Select(static x => x.Capitalize())));
+
         foreach (var property in symbol.Properties.Values)
         {
-            if (property.Type is "ByteArray")
-                property.Type = "byte[]";
+            property.Type = property.Type switch
+            {
+                "Boolean" => "bool",
+                "ByteArray" => "byte[]",
+                "String" => "string",
+                _ => property.Type
+            };
 
             if (property.ObjectType is "ByteArray")
                 property.ObjectType = "byte[]";

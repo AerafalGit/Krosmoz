@@ -165,8 +165,7 @@ public sealed class ClassConverter : IConverter<ClassSymbol>
                 _ => property.Type
             };
 
-            if (property.ObjectType is "ByteArray" || property.Type is "byte[]")
-                property.ObjectType = "byte[]";
+            property.ObjectType ??= property.Type;
 
             if (property.PropertyKind is PropertyKind.Vector)
             {

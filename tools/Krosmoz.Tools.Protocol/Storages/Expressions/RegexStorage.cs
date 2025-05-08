@@ -59,7 +59,7 @@ public static partial class RegexStorage
     /// A <see cref="Regex"/> for matching import statements,
     /// capturing the name of the imported namespace or module.
     /// </returns>
-    [GeneratedRegex(@"^\s*import\s+(?<name>[\w|\.]+)\s*;$", RegexOptions.Multiline)]
+    [GeneratedRegex(@"import\s+(?<name>[\w|\.]+);", RegexOptions.Multiline)]
     public static partial Regex Using();
 
     /// <summary>

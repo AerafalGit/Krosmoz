@@ -2,6 +2,7 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
+using System.Collections.Frozen;
 using System.Diagnostics.CodeAnalysis;
 using Krosmoz.Servers.GameServer.Database.Repositories.Datacenter;
 using Krosmoz.Tools.Protocol.Converters;
@@ -22,6 +23,11 @@ namespace Krosmoz.Tools.Protocol.Generators;
 /// </summary>
 public sealed class ProtocolGenerator : IHostedService
 {
+    private static readonly FrozenSet<string> s_explicitEnums = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+    {
+        "ActionIdConverter"
+    }.ToFrozenSet();
+
     private readonly IDatacenterRepository _datacenterRepository;
     private readonly ISymbolStorage _symbolStorage;
     private readonly IParser<EnumSymbol> _enumParser;
@@ -240,7 +246,7 @@ public sealed class ProtocolGenerator : IHostedService
     {
         switch (className, interfaceName)
         {
-            case var (a, _) when a.EndsWith("Enum") || a is "ActionIdConverter":
+            case var (a, _) when a.EndsWith("Enum") || s_explicitEnums.Contains(a):
                 kind = SymbolKind.Enum;
                 return true;
 

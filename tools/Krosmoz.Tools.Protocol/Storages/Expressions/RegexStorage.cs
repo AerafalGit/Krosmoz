@@ -189,4 +189,15 @@ public static partial class RegexStorage
     /// </returns>
     [GeneratedRegex(@"while.*<\s*(?<value>[\d]+).*\n\s*.*\n.*this.(?<name>[\w]+)\[", RegexOptions.Multiline)]
     public static partial Regex ReadVectorMethodLimitLength();
+
+    /// <summary>
+    /// Matches read operations for boolean flags in the source code,
+    /// capturing the field name being assigned and the flag index being accessed.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="Regex"/> for matching read operations for boolean flags,
+    /// including the field name and the flag index.
+    /// </returns>
+    [GeneratedRegex(@"^\s*this.(?<name>[\w]+)\s*=\s*BooleanByteWrapper.getFlag\(_[\w\d]+,\s*(?<flag>[\d]+)\)", RegexOptions.Multiline)]
+    public static partial Regex ReadFlagMethod();
 }

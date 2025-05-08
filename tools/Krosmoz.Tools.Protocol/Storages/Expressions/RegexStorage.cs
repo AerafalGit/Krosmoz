@@ -156,4 +156,15 @@ public static partial class RegexStorage
     /// </returns>
     [GeneratedRegex(@"^\s*_\w+\s*=\s*new\s+(?<type>[\w]+)\(\)\s*;\s*\n\s*_\w+.deserialize\(\s*param1\s*\)\s*;\s*\n\s*this.(?<name>[\w]+).push\(_\w+\)\s*;\s*$", RegexOptions.Multiline)]
     public static partial Regex ReadVectorMethodObject();
+
+    /// <summary>
+    /// Matches vector read operations for protocol-managed object types in the source code,
+    /// capturing the type of the object being deserialized and the field name being pushed to the vector.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="Regex"/> for matching vector read operations for protocol-managed object types,
+    /// including the type of the object and the field name being accessed.
+    /// </returns>
+    [GeneratedRegex(@"while\(\s*\w+\s*<\s*\w+\)\s*\n\s*\{\s*\n\s*\w+\s*=\s*(\w+\()?param1\.\w+\(\)(\))?;\s*\n\s*\w+\s*=\s*ProtocolTypeManager\.getInstance\((?<type>[\w]+)\s*,\s*\w+\s*\)\s*;\s*\n\s*\w+\.deserialize\(param1\);\s*\n\s*this\.(?<name>[\w]+)\.push", RegexOptions.Multiline)]
+    public static partial Regex ReadVectorMethodProtocolManager();
 }

@@ -193,6 +193,8 @@ public static partial class StringExtensions
         if (string.IsNullOrEmpty(text))
             return text;
 
-        return char.ToLowerInvariant(text[0]) + text[1..];
+        return text[0] is '@'
+            ? '@' + char.ToLowerInvariant(text[1]) + text[2..]
+            : char.ToLowerInvariant(text[0]) + text[1..];
     }
 }

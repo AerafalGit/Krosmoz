@@ -30,11 +30,20 @@ public sealed class MessageFactoryRenderer : IRenderer<ClassSymbol[]>
             .AppendLine()
             .AppendLine("namespace Krosmoz.Protocol.Messages;")
             .AppendLine()
+            .AppendLine("/// <summary>")
+            .AppendLine("/// A factory class for creating network messages based on their protocol IDs.")
+            .AppendLine("/// </summary>")
             .AppendLine("public sealed class MessageFactory : IMessageFactory<DofusMessage>");
 
         using (builder.CreateScope())
         {
-            builder.AppendIndentedLine("public DofusMessage CreateMessage(uint messageId)");
+            builder
+                .AppendIndentedLine("/// <summary>")
+                .AppendIndentedLine("/// Creates a network message based on the specified message ID.")
+                .AppendIndentedLine("/// </summary>")
+                .AppendIndentedLine("/// <param name=\"messageId\">The ID of the message to create.</param>")
+                .AppendIndentedLine("/// <returns>The created network message.</returns>")
+                .AppendIndentedLine("public DofusMessage CreateMessage(uint messageId)");
 
             using (builder.CreateScope())
             {
@@ -54,6 +63,11 @@ public sealed class MessageFactoryRenderer : IRenderer<ClassSymbol[]>
 
             builder
                 .AppendLine()
+                .AppendIndentedLine("/// <summary>")
+                .AppendIndentedLine("/// Creates the name of a network message based on the specified message ID.")
+                .AppendIndentedLine("/// </summary>")
+                .AppendIndentedLine("/// <param name=\"messageId\">The ID of the message to create the name for.</param>")
+                .AppendIndentedLine("/// <returns>The name of the created network message.</returns>")
                 .AppendIndentedLine("public string CreateMessageName(uint messageId)");
 
             using (builder.CreateScope())

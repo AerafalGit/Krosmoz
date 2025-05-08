@@ -178,4 +178,15 @@ public static partial class RegexStorage
     /// </returns>
     [GeneratedRegex(@"this.(?<name>[\w]+)\s*=\s*ProtocolTypeManager.getInstance\(\s*(?<type>[\w]+),", RegexOptions.Multiline)]
     public static partial Regex ReadMethodObjectProtocolManager();
+
+    /// <summary>
+    /// Matches read operations with a limited length for vector fields in the source code,
+    /// capturing the maximum length value and the field name being accessed.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="Regex"/> for matching read operations with a limited length for vector fields,
+    /// including the maximum length value and the field name being accessed.
+    /// </returns>
+    [GeneratedRegex(@"while.*<\s*(?<value>[\d]+).*\n\s*.*\n.*this.(?<name>[\w]+)\[", RegexOptions.Multiline)]
+    public static partial Regex ReadVectorMethodLimitLength();
 }

@@ -148,6 +148,13 @@ public sealed class ClassConverter : IConverter<ClassSymbol>
     {
         symbol.Metadata.Namespace = string.Concat("Krosmoz.Protocol", string.Join('.', symbol.Metadata.Namespace.Split('.').Select(static x => x.Capitalize())));
 
+        symbol.Metadata.ParentName = symbol.Metadata.ParentName switch
+        {
+            "NetworkMessage" => "DofusMessage",
+            "NetworkType" => "DofusType",
+            _ => symbol.Metadata.ParentName
+        };
+
         foreach (var property in symbol.Properties.Values)
         {
             property.Type = property.Type switch

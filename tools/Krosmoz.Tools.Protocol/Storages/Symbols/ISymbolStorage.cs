@@ -2,38 +2,21 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
-using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using Krosmoz.Tools.Protocol.Models;
 
 namespace Krosmoz.Tools.Protocol.Storages.Symbols;
 
 /// <summary>
-/// Represents a storage for managing and retrieving class symbols.
+/// Represents a storage interface for managing class symbols.
 /// </summary>
-public sealed class SymbolStorage : ISymbolStorage
+public interface ISymbolStorage
 {
-    /// <summary>
-    /// A thread-safe dictionary to store class symbols, keyed by their names.
-    /// </summary>
-    private readonly ConcurrentDictionary<string, ClassSymbol> _symbols;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SymbolStorage"/> class.
-    /// </summary>
-    public SymbolStorage()
-    {
-        _symbols = [];
-    }
-
     /// <summary>
     /// Adds a class symbol to the storage.
     /// </summary>
     /// <param name="symbol">The class symbol to add.</param>
-    public void AddSymbol(ClassSymbol symbol)
-    {
-        _symbols[symbol.Metadata.Name] = symbol;
-    }
+    void AddSymbol(ClassSymbol symbol);
 
     /// <summary>
     /// Attempts to retrieve a class symbol by its name.
@@ -43,18 +26,14 @@ public sealed class SymbolStorage : ISymbolStorage
     /// When this method returns, contains the class symbol associated with the specified name,
     /// if the name is found; otherwise, <c>null</c>.
     /// </param>
-    /// <returns><c>true</c> if the symbol was found; otherwise, <c>false</c>.</returns>
-    public bool TryGetSymbol(string name, [NotNullWhen(true)] out ClassSymbol? symbol)
-    {
-        return _symbols.TryGetValue(name, out symbol);
-    }
+    /// <returns>
+    /// <c>true</c> if a class symbol with the specified name is found; otherwise, <c>false</c>.
+    /// </returns>
+    bool TryGetSymbol(string name, [NotNullWhen(true)] out ClassSymbol? symbol);
 
     /// <summary>
     /// Retrieves all class symbols stored in the storage.
     /// </summary>
     /// <returns>An enumerable collection of all class symbols.</returns>
-    public IEnumerable<ClassSymbol> GetSymbols()
-    {
-        return _symbols.Values;
-    }
+    IEnumerable<ClassSymbol> GetSymbols();
 }

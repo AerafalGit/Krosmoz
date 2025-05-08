@@ -29,12 +29,21 @@ public sealed class TypeFactoryRenderer : IRenderer<ClassSymbol[]>
             .AppendLine()
             .AppendLine("namespace Krosmoz.Protocol.Types;")
             .AppendLine()
+            .AppendLine("/// <summary>")
+            .AppendLine("/// A factory class for creating network types based on their protocol IDs.")
+            .AppendLine("/// </summary>")
             .AppendLine("public static class TypeFactory");
 
         using (builder.CreateScope())
         {
             builder
-                .AppendIndentedLine("public T CreateType<T>(ushort typeId)")
+                .AppendIndentedLine("/// <summary>")
+                .AppendIndentedLine("/// Creates a network type based on the specified message ID.")
+                .AppendIndentedLine("/// </summary>")
+                .AppendIndentedLine("/// <param name=\"typeId\">The ID of the type to create.</param>")
+                .AppendIndentedLine("/// <typeparam name=\"T\">The type of the type to create.</typeparam>")
+                .AppendIndentedLine("/// <returns>The created network type.</returns>")
+                .AppendIndentedLine("public static T CreateType<T>(ushort typeId)")
                 .Indent()
                 .AppendIndentedLine("where T : DofusType")
                 .Unindent();

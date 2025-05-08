@@ -178,8 +178,9 @@ public sealed class ClassConverter : IConverter<ClassSymbol>
                 property.ObjectType = GetType(property.ReadMethod, "read");
             }
 
-            if (s_cSharpReservedKeywords.Contains(property.Name))
-                property.Name = string.Concat('@', property.Name);
+            property.Name = s_cSharpReservedKeywords.Contains(property.Name)
+                ? string.Concat('@', property.Name.Capitalize())
+                : property.Name.Capitalize();
 
             property.ObjectType = property.ObjectType switch
             {

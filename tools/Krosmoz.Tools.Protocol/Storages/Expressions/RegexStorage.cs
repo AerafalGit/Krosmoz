@@ -191,6 +191,39 @@ public static partial class RegexStorage
     public static partial Regex ReadVectorMethodLimitLength();
 
     /// <summary>
+    /// Matches conditions where a property is compared to a minimum value in the source code,
+    /// capturing the property name and the minimum value being compared.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="Regex"/> for matching property conditions with a minimum value,
+    /// including the property name and the minimum value.
+    /// </returns>
+    [GeneratedRegex(@"if\s*\(\S*this\.(?<name>[\w]+)\s*<\s*(?<minValue>[\w]+)\s*\)")]
+    private static partial Regex PropertyConditionMin();
+
+    /// <summary>
+    /// Matches conditions where a property is compared to both a minimum and maximum value in the source code,
+    /// capturing the property name, minimum value, and maximum value being compared.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="Regex"/> for matching property conditions with both minimum and maximum values,
+    /// including the property name, minimum value, and maximum value.
+    /// </returns>
+    [GeneratedRegex(@"if\s*\(\S*this\.(?<name>[\w]+)\s*<\s*(?<minValue>[\w]+)\s*\S*\s*\S*\s*\S*\s(?<maxValue>[\w]+)", RegexOptions.Multiline)]
+    public static partial Regex PropertyConditionMinAndMax();
+
+    /// <summary>
+    /// Matches conditions where a vector property is compared to a minimum value in the source code,
+    /// capturing the vector property name and the minimum value being compared.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="Regex"/> for matching vector property conditions with a minimum value,
+    /// including the vector property name and the minimum value.
+    /// </returns>
+    [GeneratedRegex(@"while\s*\(_[\w]+\s*<\s*_(?<name>[\w]+)\).*\s*\n\s*.*\s*\n\s*.*\s*\n\s*if\(\w+\s*<\s*(?<minValue>[\d]+)\)", RegexOptions.Multiline)]
+    public static partial Regex PropertyVectorConditionMin();
+
+    /// <summary>
     /// Matches read operations for boolean flags in the source code,
     /// capturing the field name being assigned and the flag index being accessed.
     /// </summary>

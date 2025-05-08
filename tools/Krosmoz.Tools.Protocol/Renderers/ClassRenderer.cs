@@ -340,7 +340,7 @@ public sealed class ClassRenderer : IRenderer<ClassSymbol>
 
                             case MethodKind.ProtocolTypeManager:
                                 Debug.Assert(property.ObjectType is not null);
-                                builder.AppendIndentedLine("{0} = ProtocolTypeManager.GetInstance<{1}>(reader.ReadUShort());", property.Name, property.ObjectType);
+                                builder.AppendIndentedLine("{0} = Types.TypeFactory.CreateType<{1}>(reader.ReadUShort());", property.Name, property.ObjectType);
                                 break;
 
                             default:
@@ -441,7 +441,7 @@ public sealed class ClassRenderer : IRenderer<ClassSymbol>
             switch (property.MethodKind)
             {
                 case MethodKind.ProtocolTypeManager:
-                    builder.AppendIndentedLine("var entry = ProtocolTypeManager.GetInstance<{0}>(reader.ReadUShort());", property.ObjectType);
+                    builder.AppendIndentedLine("var entry = Types.TypeFactory.CreateType<{0}>(reader.ReadUShort());", property.ObjectType);
                     break;
 
                 case null:

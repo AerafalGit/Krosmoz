@@ -99,7 +99,7 @@ public static partial class RegexStorage
     /// A <see cref="Regex"/> for matching vector field write length operations,
     /// capturing the method name and the field name being accessed.
     /// </returns>
-    [GeneratedRegex(@"^\s*param1.(?<method>[\w]+)\(this.(?<name>[\w]+).length\);\s*", RegexOptions.Multiline)]
+    [GeneratedRegex(@"^\s*param1.(?<method>[\w]+)\((this\.)?(?<name>[\w]+).length\);\s*", RegexOptions.Multiline)]
     public static partial Regex PropertyVectorFieldWriteLength();
 
     /// <summary>
@@ -109,7 +109,7 @@ public static partial class RegexStorage
     /// A <see cref="Regex"/> for matching vector field write method operations,
     /// capturing the method name and the field name being accessed.
     /// </returns>
-    [GeneratedRegex(@"^\s*param1\.(?<method>[\w]+)\(this.(?<name>[\w]+)\[\s*", RegexOptions.Multiline)]
+    [GeneratedRegex(@"^\s*param1\.(?<method>[\w]+)\((this\.)?(?<name>[\w]+)\[\s*", RegexOptions.Multiline)]
     public static partial Regex PropertyVectorFieldWriteMethod();
 
     /// <summary>
@@ -120,7 +120,7 @@ public static partial class RegexStorage
     /// A <see cref="Regex"/> for matching vector read operations for primitive types,
     /// including the method name and the field name being pushed to the vector.
     /// </returns>
-    [GeneratedRegex(@"while\s*\(\s*\w+\s*<\s*\w+\)\s*\n\s*\{\s*\n\s*\w+\s*=\s*(\w+\()?param1\.(?<method>[\w]+)\(\)(\))?;\s*\n\s*this\.(?<name>[\w]+)\.push", RegexOptions.Multiline)]
+    [GeneratedRegex(@"while\s*\(\s*\w+\s*<\s*\w+\)\s*\n\s*\{\s*\n\s*\w+\s*=\s*(\w+\()?param1\.(?<method>[\w]+)\(\)(\))?;\s*\n\s*(this\.)?(?<name>[\w]+)\.push", RegexOptions.Multiline)]
     public static partial Regex ReadVectorMethodPrimitive();
 
     /// <summary>
@@ -131,7 +131,7 @@ public static partial class RegexStorage
     /// A <see cref="Regex"/> for matching vector read operations for primitive types,
     /// including the method name and the field name being assigned.
     /// </returns>
-    [GeneratedRegex(@"while\s*\(_[\w]+\s*<\s*[\w]+\)\s*\S*\s*this.(?<name>[\w]+)\[_\S*\s*=\s*param1\.(?<method>[\w]+)\(\)", RegexOptions.Multiline)]
+    [GeneratedRegex(@"while\s*\(_[\w]+\s*<\s*[\w]+\)\s*\S*\s*(this\.)?(?<name>[\w]+)\[_\S*\s*=\s*param1\.(?<method>[\w]+)\(\)", RegexOptions.Multiline)]
     public static partial Regex ReadVectorMethodPrimitive2();
 
     /// <summary>
@@ -142,7 +142,7 @@ public static partial class RegexStorage
     /// A <see cref="Regex"/> for matching read operations for primitive types,
     /// including the method name and the field name being assigned.
     /// </returns>
-    [GeneratedRegex(@"this\.(?<name>\w+)\s*=\s*param1\.(?<method>\w+)\(\);", RegexOptions.Multiline)]
+    [GeneratedRegex(@"(this\.)?(?<name>\w+)\s*=\s*param1\.(?<method>\w+)\(\);", RegexOptions.Multiline)]
     public static partial Regex ReadMethodPrimitive();
 
     /// <summary>
@@ -154,7 +154,7 @@ public static partial class RegexStorage
     /// A <see cref="Regex"/> for matching vector read operations for object types,
     /// including the type of the object and the field name being accessed.
     /// </returns>
-    [GeneratedRegex(@"^\s*_\w+\s*=\s*new\s+(?<type>[\w]+)\(\)\s*;\s*\n\s*_\w+.deserialize\(\s*param1\s*\)\s*;\s*\n\s*this.(?<name>[\w]+).push\(_\w+\)\s*;\s*$", RegexOptions.Multiline)]
+    [GeneratedRegex(@"^\s*_\w+\s*=\s*new\s+(?<type>[\w]+)\(\)\s*;\s*\n\s*_\w+.deserialize\(\s*param1\s*\)\s*;\s*\n\s*(this\.)?(?<name>[\w]+).push\(_\w+\)\s*;\s*$", RegexOptions.Multiline)]
     public static partial Regex ReadVectorMethodObject();
 
     /// <summary>
@@ -165,7 +165,7 @@ public static partial class RegexStorage
     /// A <see cref="Regex"/> for matching vector read operations for protocol-managed object types,
     /// including the type of the object and the field name being accessed.
     /// </returns>
-    [GeneratedRegex(@"while\(\s*\w+\s*<\s*\w+\)\s*\n\s*\{\s*\n\s*\w+\s*=\s*(\w+\()?param1\.\w+\(\)(\))?;\s*\n\s*\w+\s*=\s*ProtocolTypeManager\.getInstance\((?<type>[\w]+)\s*,\s*\w+\s*\)\s*;\s*\n\s*\w+\.deserialize\(param1\);\s*\n\s*this\.(?<name>[\w]+)\.push", RegexOptions.Multiline)]
+    [GeneratedRegex(@"while\(\s*\w+\s*<\s*\w+\)\s*\n\s*\{\s*\n\s*\w+\s*=\s*(\w+\()?param1\.\w+\(\)(\))?;\s*\n\s*\w+\s*=\s*ProtocolTypeManager\.getInstance\((?<type>[\w]+)\s*,\s*\w+\s*\)\s*;\s*\n\s*\w+\.deserialize\(param1\);\s*\n\s*(this\.)?(?<name>[\w]+)\.push", RegexOptions.Multiline)]
     public static partial Regex ReadVectorMethodProtocolManager();
 
     /// <summary>
@@ -176,7 +176,7 @@ public static partial class RegexStorage
     /// A <see cref="Regex"/> for matching read operations for protocol-managed object types,
     /// including the field name and the type of the object being accessed.
     /// </returns>
-    [GeneratedRegex(@"this.(?<name>[\w]+)\s*=\s*ProtocolTypeManager.getInstance\(\s*(?<type>[\w]+),", RegexOptions.Multiline)]
+    [GeneratedRegex(@"(this\.)?(?<name>[\w]+)\s*=\s*ProtocolTypeManager.getInstance\(\s*(?<type>[\w]+),", RegexOptions.Multiline)]
     public static partial Regex ReadMethodObjectProtocolManager();
 
     /// <summary>
@@ -187,7 +187,7 @@ public static partial class RegexStorage
     /// A <see cref="Regex"/> for matching read operations with a limited length for vector fields,
     /// including the maximum length value and the field name being accessed.
     /// </returns>
-    [GeneratedRegex(@"while.*<\s*(?<value>[\d]+).*\n\s*.*\n.*this.(?<name>[\w]+)\[", RegexOptions.Multiline)]
+    [GeneratedRegex(@"while.*<\s*(?<value>[\d]+).*\n\s*.*\n.*(this\.)?(?<name>[\w]+)\[", RegexOptions.Multiline)]
     public static partial Regex ReadVectorMethodLimitLength();
 
     /// <summary>
@@ -198,7 +198,7 @@ public static partial class RegexStorage
     /// A <see cref="Regex"/> for matching property conditions with a minimum value,
     /// including the property name and the minimum value.
     /// </returns>
-    [GeneratedRegex(@"if\s*\(\S*this\.(?<name>[\w]+)\s*<\s*(?<minValue>[\w]+)\s*\)")]
+    [GeneratedRegex(@"if\s*\(\S*(this\.)?(?<name>[\w]+)\s*<\s*(?<minValue>[\w]+)\s*\)")]
     public static partial Regex PropertyConditionMin();
 
     /// <summary>
@@ -209,7 +209,7 @@ public static partial class RegexStorage
     /// A <see cref="Regex"/> for matching property conditions with both minimum and maximum values,
     /// including the property name, minimum value, and maximum value.
     /// </returns>
-    [GeneratedRegex(@"if\s*\(\S*this\.(?<name>[\w]+)\s*<\s*(?<minValue>[\w]+)\s*\S*\s*\S*\s*\S*\s(?<maxValue>[\w]+)", RegexOptions.Multiline)]
+    [GeneratedRegex(@"if\s*\(\S*(this\.)?(?<name>[\w]+)\s*<\s*(?<minValue>[\w]+)\s*\S*\s*\S*\s*\S*\s(?<maxValue>[\w]+)", RegexOptions.Multiline)]
     public static partial Regex PropertyConditionMinAndMax();
 
     /// <summary>
@@ -231,6 +231,6 @@ public static partial class RegexStorage
     /// A <see cref="Regex"/> for matching read operations for boolean flags,
     /// including the field name and the flag index.
     /// </returns>
-    [GeneratedRegex(@"^\s*this.(?<name>[\w]+)\s*=\s*BooleanByteWrapper.getFlag\(_[\w\d]+,\s*(?<flag>[\d]+)\)", RegexOptions.Multiline)]
+    [GeneratedRegex(@"^\s*(this\.)?(?<name>[\w]+)\s*=\s*BooleanByteWrapper.getFlag\(_[\w\d]+,\s*(?<flag>[\d]+)\)", RegexOptions.Multiline)]
     public static partial Regex ReadFlagMethod();
 }

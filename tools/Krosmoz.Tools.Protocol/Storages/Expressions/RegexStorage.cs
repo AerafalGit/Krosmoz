@@ -111,4 +111,37 @@ public static partial class RegexStorage
     /// </returns>
     [GeneratedRegex(@"^\s*param1\.(?<method>[\w]+)\(this.(?<name>[\w]+)\[\s*", RegexOptions.Multiline)]
     public static partial Regex PropertyVectorFieldWriteMethod();
+
+    /// <summary>
+    /// Matches vector read operations for primitive types in the source code,
+    /// capturing the method name and the field name being accessed.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="Regex"/> for matching vector read operations for primitive types,
+    /// including the method name and the field name being pushed to the vector.
+    /// </returns>
+    [GeneratedRegex(@"while\s*\(\s*\w+\s*<\s*\w+\)\s*\n\s*\{\s*\n\s*\w+\s*=\s*(\w+\()?param1\.(?<method>[\w]+)\(\)(\))?;\s*\n\s*this\.(?<name>[\w]+)\.push", RegexOptions.Multiline)]
+    public static partial Regex ReadVectorMethodPrimitive();
+
+    /// <summary>
+    /// Matches vector read operations for primitive types in the source code,
+    /// capturing the method name and the field name being assigned within the vector.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="Regex"/> for matching vector read operations for primitive types,
+    /// including the method name and the field name being assigned.
+    /// </returns>
+    [GeneratedRegex(@"while\s*\(_[\w]+\s*<\s*[\w]+\)\s*\S*\s*this.(?<name>[\w]+)\[_\S*\s*=\s*param1\.(?<method>[\w]+)\(\)", RegexOptions.Multiline)]
+    public static partial Regex ReadVectorMethodPrimitive2();
+
+    /// <summary>
+    /// Matches read operations for primitive types in the source code,
+    /// capturing the method name and the field name being assigned.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="Regex"/> for matching read operations for primitive types,
+    /// including the method name and the field name being assigned.
+    /// </returns>
+    [GeneratedRegex(@"this\.(?<name>\w+)\s*=\s*param1\.(?<method>\w+)\(\);", RegexOptions.Multiline)]
+    public static partial Regex ReadMethodPrimitive();
 }

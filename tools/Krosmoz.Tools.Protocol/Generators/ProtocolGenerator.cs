@@ -11,6 +11,7 @@ using Krosmoz.Tools.Protocol.Parsers;
 using Krosmoz.Tools.Protocol.Renderers;
 using Krosmoz.Tools.Protocol.Storages.Expressions;
 using Krosmoz.Tools.Protocol.Storages.Symbols;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -29,6 +30,8 @@ public sealed class ProtocolGenerator : IHostedService
     private readonly IParser<ClassSymbol> _classParser;
     private readonly IConverter<ClassSymbol> _classConverter;
     private readonly IRenderer<ClassSymbol> _classRenderer;
+    private readonly IRenderer<ClassSymbol[]> _messageFactoryRenderer;
+    private readonly IRenderer<ClassSymbol[]> _typeFactoryRenderer;
     private readonly ILogger<ProtocolGenerator> _logger;
 
     /// <summary>
@@ -42,6 +45,8 @@ public sealed class ProtocolGenerator : IHostedService
     /// <param name="classParser">The parser for parsing class symbols.</param>
     /// <param name="classConverter">The converter for converting class symbols.</param>
     /// <param name="classRenderer">The renderer for rendering class symbols.</param>
+    /// <param name="messageFactoryRenderer">The renderer for rendering message factory symbols.</param>
+    /// <param name="typeFactoryRenderer">The renderer for rendering type factory symbols.</param>
     /// <param name="logger">The logger for logging information and warnings.</param>
     public ProtocolGenerator(
         IDatacenterRepository datacenterRepository,
@@ -52,6 +57,8 @@ public sealed class ProtocolGenerator : IHostedService
         IParser<ClassSymbol> classParser,
         IConverter<ClassSymbol> classConverter,
         IRenderer<ClassSymbol> classRenderer,
+        [FromKeyedServices(nameof(MessageFactoryRenderer))] IRenderer<ClassSymbol[]> messageFactoryRenderer,
+        [FromKeyedServices(nameof(TypeFactoryRenderer))] IRenderer<ClassSymbol[]> typeFactoryRenderer,
         ILogger<ProtocolGenerator> logger)
     {
         _datacenterRepository = datacenterRepository;
@@ -62,6 +69,8 @@ public sealed class ProtocolGenerator : IHostedService
         _classParser = classParser;
         _classConverter = classConverter;
         _classRenderer = classRenderer;
+        _messageFactoryRenderer = messageFactoryRenderer;
+        _typeFactoryRenderer = typeFactoryRenderer;
         _logger = logger;
     }
 
@@ -120,6 +129,31 @@ public sealed class ProtocolGenerator : IHostedService
 
                 File.WriteAllText(Path.Combine(classDirectoryPath, string.Concat(classSymbol.Metadata.Name, '.', "cs")), classSource);
             }
+
+            var messageSymbols = _symbolStorage
+                .GetSymbols()
+                .Where(static symbol => symbol.Metadata.Kind is SymbolKind.Message)
+                .ToArray();
+
+            var typeSymbols = _symbolStorage
+                .GetSymbols()
+                .Where(static symbol => symbol.Metadata.Kind is SymbolKind.Type)
+                .ToArray();
+
+            var messageFactorySource = _messageFactoryRenderer.Render(messageSymbols);
+            var typeFactorySource = _typeFactoryRenderer.Render(typeSymbols);
+
+            var messageFactoryDirectoryPath = "Krosmoz.Protocol.Messages".NamespaceToPath();
+            var typeFactoryDirectoryPath = "Krosmoz.Protocol.Types".NamespaceToPath();
+
+            if (!Directory.Exists(messageFactoryDirectoryPath))
+                Directory.CreateDirectory(messageFactoryDirectoryPath);
+
+            if (!Directory.Exists(typeFactoryDirectoryPath))
+                Directory.CreateDirectory(typeFactoryDirectoryPath);
+
+            File.WriteAllText(Path.Combine(messageFactoryDirectoryPath, "MessageFactory.cs"), messageFactorySource);
+            File.WriteAllText(Path.Combine(typeFactoryDirectoryPath, "TypeFactory.cs"), typeFactorySource);
         }, cancellationToken);
     }
 

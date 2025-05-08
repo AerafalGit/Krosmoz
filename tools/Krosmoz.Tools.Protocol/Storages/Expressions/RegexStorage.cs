@@ -199,7 +199,7 @@ public static partial class RegexStorage
     /// including the property name and the minimum value.
     /// </returns>
     [GeneratedRegex(@"if\s*\(\S*this\.(?<name>[\w]+)\s*<\s*(?<minValue>[\w]+)\s*\)")]
-    private static partial Regex PropertyConditionMin();
+    public static partial Regex PropertyConditionMin();
 
     /// <summary>
     /// Matches conditions where a property is compared to both a minimum and maximum value in the source code,

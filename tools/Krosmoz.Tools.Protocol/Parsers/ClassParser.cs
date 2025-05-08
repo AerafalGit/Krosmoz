@@ -223,8 +223,8 @@ public sealed class ClassParser : IParser<ClassSymbol>
 
             var methodName = methodGroup.Value;
 
-            property.VectorFieldRead = methodName;
-            property.VectorFieldWrite = methodName;
+            property.ReadMethod = methodName;
+            property.WriteMethod = methodName;
         }
     }
 

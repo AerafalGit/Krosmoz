@@ -171,8 +171,9 @@ public sealed class ClassConverter : IConverter<ClassSymbol>
             {
                 if (!string.IsNullOrEmpty(property.VectorFieldRead) && !string.IsNullOrEmpty(property.VectorFieldWrite))
                 {
-                    property.VectorFieldRead = GetMethod(property.VectorFieldRead, "write", "write");
-                    property.VectorFieldWrite = GetMethod(property.VectorFieldWrite, "write", "read");
+                    property.VectorFieldRead = GetMethod(property.VectorFieldWrite, "write", "read");
+                    property.VectorFieldWrite = GetMethod(property.VectorFieldWrite, "write", "write");
+                    property.Type = GetType(property.VectorFieldRead, "read");
                 }
             }
 

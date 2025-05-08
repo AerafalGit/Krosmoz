@@ -144,4 +144,16 @@ public static partial class RegexStorage
     /// </returns>
     [GeneratedRegex(@"this\.(?<name>\w+)\s*=\s*param1\.(?<method>\w+)\(\);", RegexOptions.Multiline)]
     public static partial Regex ReadMethodPrimitive();
+
+    /// <summary>
+    /// Matches vector read operations for object types in the source code,
+    /// capturing the type of the object being deserialized and the field name
+    /// being pushed to the vector.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="Regex"/> for matching vector read operations for object types,
+    /// including the type of the object and the field name being accessed.
+    /// </returns>
+    [GeneratedRegex(@"^\s*_\w+\s*=\s*new\s+(?<type>[\w]+)\(\)\s*;\s*\n\s*_\w+.deserialize\(\s*param1\s*\)\s*;\s*\n\s*this.(?<name>[\w]+).push\(_\w+\)\s*;\s*$", RegexOptions.Multiline)]
+    public static partial Regex ReadVectorMethodObject();
 }

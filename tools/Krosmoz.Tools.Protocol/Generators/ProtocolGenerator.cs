@@ -119,6 +119,21 @@ public sealed class ProtocolGenerator : IHostedService
                 }
             }
 
+            var actionIdConverterPath = Path.Combine(_datacenterRepository.DofusPath, "fla", "com", "ankamagames", "dofus", "logic", "game", "fight", "miscs", "ActionIdConverter.as");
+
+            if (TryParseSymbolMetadata(CleanSource(File.ReadAllText(actionIdConverterPath)), out var actionIdConverterMetadata))
+            {
+                var actionIdConverterSymbol = _enumParser.Parse(actionIdConverterMetadata);
+                _enumConverter.Convert(actionIdConverterSymbol);
+                var actionIdConverterSource = _enumRenderer.Render(actionIdConverterSymbol);
+                var actionIdConverterDirectoryPath = "Krosmoz.Protocol.Enums".NamespaceToPath();
+
+                if (!Directory.Exists(actionIdConverterDirectoryPath))
+                    Directory.CreateDirectory(actionIdConverterDirectoryPath);
+
+                File.WriteAllText(Path.Combine(actionIdConverterDirectoryPath, string.Concat(actionIdConverterSymbol.Metadata.Name, '.', "cs")), actionIdConverterSource);
+            }
+
             foreach (var classSymbol in _symbolStorage.GetSymbols())
             {
                 var classSource = _classRenderer.Render(classSymbol);

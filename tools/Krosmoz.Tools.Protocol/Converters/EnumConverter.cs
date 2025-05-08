@@ -23,6 +23,9 @@ public sealed class EnumConverter : IConverter<EnumSymbol>
             .Replace("Enum", string.Empty)
             .Pluralize();
 
+        if (symbol.Metadata.Name is "ActionIdConverter")
+            symbol.Metadata.Name = "ActionIds";
+
         var allPropertiesHaveSameType = symbol.Properties
             .Select(static property => property.Type)
             .Distinct()

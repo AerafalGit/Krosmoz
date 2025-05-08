@@ -65,7 +65,17 @@ public sealed class PropertySymbol
     /// <summary>
     /// Gets or sets the length of the vector, if the property represents a vector.
     /// </summary>
-    public int VectorLength { get; set; }
+    public int? VectorLength { get; set; }
+
+    /// <summary>
+    /// Gets or sets the minimum condition value for the property, if applicable.
+    /// </summary>
+    public int? ConditionMin { get; set; }
+
+    /// <summary>
+    /// Gets or sets the maximum condition value for the property, if applicable.
+    /// </summary>
+    public int? ConditionMax { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the property is nullable.
@@ -78,6 +88,8 @@ public sealed class PropertySymbol
     /// <returns>A string describing the property symbol.</returns>
     public override string ToString()
     {
-        return $"Name: {Name}, Type: {Type}, Index: {Index}";
+        return PropertyKind is not null && MethodKind is not null
+            ? $"Name: {Name}, Type: {Type}, Index: {Index}, PropertyKind: {PropertyKind}, MethodKind: {MethodKind}"
+            : $"Name: {Name}, Type: {Type}, Index: {Index}";
     }
 }

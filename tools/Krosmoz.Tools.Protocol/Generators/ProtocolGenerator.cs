@@ -25,6 +25,7 @@ public sealed class ProtocolGenerator : IHostedService
     private readonly IConverter<EnumSymbol> _enumConverter;
     private readonly IRenderer<EnumSymbol> _enumRenderer;
     private readonly IParser<ClassSymbol> _classParser;
+    private readonly IConverter<ClassSymbol> _classConverter;
     private readonly ILogger<ProtocolGenerator> _logger;
 
     /// <summary>
@@ -35,6 +36,7 @@ public sealed class ProtocolGenerator : IHostedService
     /// <param name="enumConverter">The converter for converting enumeration symbols.</param>
     /// <param name="enumRenderer">The renderer for rendering enumeration symbols.</param>
     /// <param name="classParser">The parser for parsing class symbols.</param>
+    /// <param name="classConverter">The converter for converting class symbols.</param>
     /// <param name="logger">The logger for logging information and warnings.</param>
     public ProtocolGenerator(
         IDatacenterRepository datacenterRepository,
@@ -42,6 +44,7 @@ public sealed class ProtocolGenerator : IHostedService
         IConverter<EnumSymbol> enumConverter,
         IRenderer<EnumSymbol> enumRenderer,
         IParser<ClassSymbol> classParser,
+        IConverter<ClassSymbol> classConverter,
         ILogger<ProtocolGenerator> logger)
     {
         _datacenterRepository = datacenterRepository;
@@ -49,6 +52,7 @@ public sealed class ProtocolGenerator : IHostedService
         _enumConverter = enumConverter;
         _enumRenderer = enumRenderer;
         _classParser = classParser;
+        _classConverter = classConverter;
         _logger = logger;
     }
 
@@ -91,6 +95,7 @@ public sealed class ProtocolGenerator : IHostedService
                     case SymbolKind.Message:
                     case SymbolKind.Type:
                         var classSymbol = _classParser.Parse(symbolMetadata);
+                        _classConverter.Convert(classSymbol);
                         break;
                 }
             }

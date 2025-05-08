@@ -240,7 +240,7 @@ public sealed class ProtocolGenerator : IHostedService
     {
         switch (className, interfaceName)
         {
-            case var (a, _) when a.EndsWith("Enum"):
+            case var (a, _) when a.EndsWith("Enum") || a is "ActionIdConverter":
                 kind = SymbolKind.Enum;
                 return true;
 

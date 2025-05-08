@@ -23,6 +23,7 @@ await Host.CreateDefaultBuilder(args)
             .AddSingleton<IConverter<ClassSymbol>, ClassConverter>()
             .AddSingleton<IRenderer<ClassSymbol>, ClassRenderer>()
             .AddKeyedSingleton<IRenderer<ClassSymbol[]>, MessageFactoryRenderer>(nameof(MessageFactoryRenderer))
+            .AddKeyedSingleton<IRenderer<ClassSymbol[]>, TypeFactoryRenderer>(nameof(TypeFactoryRenderer))
             .AddHostedService<ProtocolGenerator>();
     })
     .RunConsoleAsync();

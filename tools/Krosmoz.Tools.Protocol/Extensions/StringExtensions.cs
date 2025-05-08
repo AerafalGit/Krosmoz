@@ -176,6 +176,23 @@ public static partial class StringExtensions
         if (string.IsNullOrEmpty(text))
             return text;
 
-        return char.ToUpper(text[0]) + text[1..].ToLowerInvariant();
+        return char.ToUpperInvariant(text[0]) + text[1..].ToLowerInvariant();
+    }
+
+    /// <summary>
+    /// Converts the first character of the input string to lowercase while keeping the rest unchanged.
+    /// </summary>
+    /// <param name="text">The input string to uncapitalize.</param>
+    /// <returns>
+    /// A string with the first character in lowercase and the remaining characters unchanged,
+    /// or the original string if it is null or empty.
+    /// </returns>
+    [Pure]
+    public static string Uncapitalize(this string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return text;
+
+        return char.ToLowerInvariant(text[0]) + text[1..];
     }
 }

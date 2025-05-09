@@ -45,7 +45,7 @@ public sealed class DatacenterRenderer : IRenderer<DatacenterSymbol>
             .AppendLine()
             .AppendLine("namespace {0};", @namespace)
             .AppendLine()
-            .AppendLine("public sealed class {0} : IDatacenterObject<{0}>", symbol.D2OClass.Name);
+            .AppendLine("public sealed class {0} : IDatacenterObject", symbol.D2OClass.Name);
 
         using (builder.CreateScope())
         {
@@ -66,15 +66,10 @@ public sealed class DatacenterRenderer : IRenderer<DatacenterSymbol>
                     .AppendLine();
             }
 
-            builder.AppendIndentedLine("public static {0} Deserialize(D2OClass d2OClass, BigEndianReader reader)", symbol.D2OClass.Name);
+            builder.AppendIndentedLine("public void Deserialize(D2OClass d2OClass, BigEndianReader reader)");
 
             using (builder.CreateScope())
             {
-                builder
-                    .AppendIndentedLine("return new {0}", symbol.D2OClass.Name)
-                    .AppendIndentedLine('{')
-                    .Indent();
-
                 var i = 0;
 
                 foreach (var d2OField in symbol.D2OClass.Fields)
@@ -82,27 +77,27 @@ public sealed class DatacenterRenderer : IRenderer<DatacenterSymbol>
                     switch ((D2OFieldTypes)d2OField.Type)
                     {
                         case D2OFieldTypes.Int:
-                            builder.AppendIndentedLine("{0} = d2OClass.Fields[{1}].AsInt(reader),", d2OField.Name, i);
+                            builder.AppendIndentedLine("{0} = d2OClass.Fields[{1}].AsInt(reader);", d2OField.Name, i);
                             break;
 
                         case D2OFieldTypes.UInt:
-                            builder.AppendIndentedLine("{0} = d2OClass.Fields[{1}].AsUInt(reader),", d2OField.Name, i);
+                            builder.AppendIndentedLine("{0} = d2OClass.Fields[{1}].AsUInt(reader);", d2OField.Name, i);
                             break;
 
                         case D2OFieldTypes.Boolean:
-                            builder.AppendIndentedLine("{0} = d2OClass.Fields[{1}].AsBoolean(reader),", d2OField.Name, i);
+                            builder.AppendIndentedLine("{0} = d2OClass.Fields[{1}].AsBoolean(reader);", d2OField.Name, i);
                             break;
 
                         case D2OFieldTypes.Number:
-                            builder.AppendIndentedLine("{0} = d2OClass.Fields[{1}].AsDouble(reader),", d2OField.Name, i);
+                            builder.AppendIndentedLine("{0} = d2OClass.Fields[{1}].AsDouble(reader);", d2OField.Name, i);
                             break;
 
                         case D2OFieldTypes.String:
-                            builder.AppendIndentedLine("{0} = d2OClass.Fields[{1}].AsString(reader),", d2OField.Name, i);
+                            builder.AppendIndentedLine("{0} = d2OClass.Fields[{1}].AsString(reader);", d2OField.Name, i);
                             break;
 
                         case D2OFieldTypes.I18N:
-                            builder.AppendIndentedLine("{0} = d2OClass.Fields[{1}].AsI18N(reader),", d2OField.Name, i);
+                            builder.AppendIndentedLine("{0} = d2OClass.Fields[{1}].AsI18N(reader);", d2OField.Name, i);
                             break;
 
                         case D2OFieldTypes.Vector:
@@ -119,7 +114,7 @@ public sealed class DatacenterRenderer : IRenderer<DatacenterSymbol>
                                     _ => $"AsListOfList<{symbol.D2OClasses[symbol.ModuleName][d2OField.InnerTypeIds[1]].Name}>(reader, static (field, r) => field.AsObject<{symbol.D2OClasses[symbol.ModuleName][d2OField.InnerTypeIds[1]].Name}>(r))"
                                 };
 
-                                builder.AppendIndentedLine("{0} = d2OClass.Fields[{1}].{2},", d2OField.Name, i, subSubMethod);
+                                builder.AppendIndentedLine("{0} = d2OClass.Fields[{1}].{2};", d2OField.Name, i, subSubMethod);
                             }
                             else
                             {
@@ -134,21 +129,17 @@ public sealed class DatacenterRenderer : IRenderer<DatacenterSymbol>
                                     _ => $"AsList<{symbol.D2OClasses[symbol.ModuleName][d2OField.InnerTypeIds[0]].Name}>(reader, static (field, r) => field.AsObject<{symbol.D2OClasses[symbol.ModuleName][d2OField.InnerTypeIds[0]].Name}>(r))"
                                 };
 
-                                builder.AppendIndentedLine("{0} = d2OClass.Fields[{1}].{2},", d2OField.Name, i, subMethod);
+                                builder.AppendIndentedLine("{0} = d2OClass.Fields[{1}].{2};", d2OField.Name, i, subMethod);
                             }
                             break;
 
                         default:
-                            builder.AppendIndentedLine("{0} = d2OClass.Fields[{1}].AsObject<{2}>(reader),", d2OField.Name, i, symbol.D2OClasses[symbol.ModuleName][d2OField.Type].Name);
+                            builder.AppendIndentedLine("{0} = d2OClass.Fields[{1}].AsObject<{2}>(reader);", d2OField.Name, i, symbol.D2OClasses[symbol.ModuleName][d2OField.Type].Name);
                             break;
                     }
 
                     i++;
                 }
-
-                builder
-                    .Unindent()
-                    .AppendIndentedLine("};");
             }
         }
 

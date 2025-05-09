@@ -18,12 +18,14 @@ public sealed class D2OFile
     private readonly Dictionary<string, Dictionary<int, int>> _indexes;
     private readonly Dictionary<string, BigEndianReader> _readers;
     private readonly Dictionary<string, int> _readersStartIndexes;
+    private readonly IDatacenterObjectFactory _datacenterObjectFactory;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="D2OFile"/> class.
     /// </summary>
-    public D2OFile()
+    public D2OFile(IDatacenterObjectFactory datacenterObjectFactory)
     {
+        _datacenterObjectFactory = datacenterObjectFactory;
         _classes = [];
         _counters = [];
         _indexes = [];
@@ -116,7 +118,7 @@ public sealed class D2OFile
     /// <summary>
     /// Retrieves all objects of type <typeparamref name="T"/> from the D2O file.
     /// </summary>
-    /// <typeparam name="T">The type of objects to retrieve, which must implement <see cref="IDatacenterObject{T}"/>.</typeparam>
+    /// <typeparam name="T">The type of objects to retrieve, which must implement <see cref="IDatacenterObject"/>.</typeparam>
     /// <param name="clearReader">
     /// A boolean value indicating whether to clear the reader after retrieving the objects.
     /// If <c>true</c>, the reader will be reset for the specified module.
@@ -126,7 +128,7 @@ public sealed class D2OFile
     /// If the module is not found, an empty collection is returned.
     /// </returns>
     public IEnumerable<T> GetObjects<T>(bool clearReader = false)
-        where T : class, IDatacenterObject<T>
+        where T : class, IDatacenterObject
     {
         var moduleName = T.ModuleName;
 
@@ -190,7 +192,7 @@ public sealed class D2OFile
         var name = reader.ReadUtfLengthPrefixed16();
         var @namespace = reader.ReadUtfLengthPrefixed16();
 
-        var classDefinition = new D2OClass(this, @namespace, name);
+        var classDefinition = new D2OClass(this, _datacenterObjectFactory, @namespace, name);
 
         var fieldsCount = reader.ReadInt();
 

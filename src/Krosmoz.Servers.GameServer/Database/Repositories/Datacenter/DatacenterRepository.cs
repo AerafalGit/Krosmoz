@@ -2,11 +2,20 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
+using Krosmoz.Protocol.Datacenter;
+using Krosmoz.Serialization.D2I;
+using Krosmoz.Serialization.D2O;
+using Krosmoz.Serialization.D2O.Abstractions;
+using Krosmoz.Serialization.I18N;
+
 namespace Krosmoz.Servers.GameServer.Database.Repositories.Datacenter;
 
 /// <inheritdoc />
 public sealed class DatacenterRepository : IDatacenterRepository
 {
+    private I18NFile? _i18NFile;
+    private D2OFile? _d2OFile;
+
     /// <inheritdoc />
     public string DofusPath { get; }
 
@@ -33,5 +42,32 @@ public sealed class DatacenterRepository : IDatacenterRepository
         DofusTilesPath = Path.Combine(DofusPath, "content", "gfx", "world");
         DofusCommonPath = Path.Combine(DofusPath, "data", "common");
         DofusI18NPath = Path.Combine(DofusPath, "data", "i18n");
+    }
+
+    /// <inheritdoc />
+    public I18NFile GetI18N()
+    {
+        if (_i18NFile is null)
+        {
+            _i18NFile = new I18NFile(DofusI18NPath);
+            _i18NFile.Load();
+        }
+
+        return _i18NFile;
+    }
+
+    /// <inheritdoc />
+    public IList<T> GetObjects<T>(bool clearCache = false)
+        where T : class, IDatacenterObject
+    {
+        if (_d2OFile is null)
+        {
+            _d2OFile = new D2OFile(new DatacenterObjectFactory());
+
+            foreach (var filePath in Directory.EnumerateFiles(DofusCommonPath, "*.d2o"))
+                _d2OFile.RegisterDefinition(filePath);
+        }
+
+        return _d2OFile.GetObjects<T>(clearCache);
     }
 }

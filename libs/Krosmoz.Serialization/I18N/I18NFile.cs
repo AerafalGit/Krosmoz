@@ -10,16 +10,16 @@ namespace Krosmoz.Serialization.I18N;
 /// <summary>
 /// Provides functionality to manage internationalization (I18N) by wrapping multiple D2I files.
 /// </summary>
-public sealed class I18NWrapper
+public sealed class I18NFile
 {
     private readonly ConcurrentDictionary<Languages, D2IFile> _files;
     private readonly string _directoryPath;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="I18NWrapper"/> class with the specified directory path.
+    /// Initializes a new instance of the <see cref="I18NFile"/> class with the specified directory path.
     /// </summary>
     /// <param name="directoryPath">The directory path containing the D2I files.</param>
-    public I18NWrapper(string directoryPath)
+    public I18NFile(string directoryPath)
     {
         _directoryPath = directoryPath;
         _files = [];

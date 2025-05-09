@@ -3,7 +3,6 @@
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
 using Krosmoz.Protocol.Datacenter;
-using Krosmoz.Serialization.D2I;
 using Krosmoz.Serialization.D2O;
 using Krosmoz.Serialization.D2O.Abstractions;
 using Krosmoz.Serialization.I18N;
@@ -14,7 +13,6 @@ namespace Krosmoz.Servers.GameServer.Database.Repositories.Datacenter;
 public sealed class DatacenterRepository : IDatacenterRepository
 {
     private I18NFile? _i18NFile;
-    private D2OFile? _d2OFile;
 
     /// <inheritdoc />
     public string DofusPath { get; }
@@ -60,14 +58,8 @@ public sealed class DatacenterRepository : IDatacenterRepository
     public IList<T> GetObjects<T>(bool clearCache = false)
         where T : class, IDatacenterObject
     {
-        if (_d2OFile is null)
-        {
-            _d2OFile = new D2OFile(new DatacenterObjectFactory());
-
-            foreach (var filePath in Directory.EnumerateFiles(DofusCommonPath, "*.d2o"))
-                _d2OFile.RegisterDefinition(filePath);
-        }
-
-        return _d2OFile.GetObjects<T>(clearCache);
+        var d2OFile = new D2OFile(new DatacenterObjectFactory());
+        d2OFile.RegisterDefinition(Path.Combine(DofusCommonPath, string.Concat(T.ModuleName, ".d2o")));
+        return d2OFile.GetObjects<T>(clearCache);
     }
 }

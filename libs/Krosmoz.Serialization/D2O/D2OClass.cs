@@ -19,7 +19,15 @@ public sealed class D2OClass
     /// </summary>
     private D2OFile D2OFile { get; }
 
+    /// <summary>
+    /// Gets the factory used to create datacenter objects.
+    /// </summary>
     private IDatacenterObjectFactory D2OFactory { get; }
+
+    /// <summary>
+    /// Gets the name of the module associated with this field.
+    /// </summary>
+    private string ModuleName { get; }
 
     /// <summary>
     /// Gets or sets the namespace of the D2O class.
@@ -41,12 +49,14 @@ public sealed class D2OClass
     /// </summary>
     /// <param name="d2OFile">The D2O file associated with this class.</param>
     /// <param name="d2OFactory">The factory used to create datacenter objects.</param>
+    /// <param name="moduleName">The name of the module.</param>
     /// <param name="namespace">The namespace of the D2O class.</param>
     /// <param name="name">The name of the D2O class.</param>
-    public D2OClass(D2OFile d2OFile, IDatacenterObjectFactory d2OFactory, string @namespace, string name)
+    public D2OClass(D2OFile d2OFile, IDatacenterObjectFactory d2OFactory, string moduleName, string @namespace, string name)
     {
         D2OFile = d2OFile;
         D2OFactory = d2OFactory;
+        ModuleName = moduleName;
         Name = name;
         Namespace = @namespace;
         Fields = [];
@@ -73,7 +83,7 @@ public sealed class D2OClass
     /// <param name="fieldName">The name of the field to add.</param>
     public void AddField(BigEndianReader reader, string fieldName)
     {
-        var field = new D2OField(D2OFile, fieldName);
+        var field = new D2OField(D2OFile, ModuleName, fieldName);
         field.Deserialize(reader);
         Fields.Add(field);
     }

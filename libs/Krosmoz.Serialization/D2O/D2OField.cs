@@ -176,12 +176,12 @@ public sealed class D2OField
     /// <summary>
     /// Reads the field value as an object of the specified type.
     /// </summary>
-    /// <typeparam name="T">The type of the object, which must implement <see cref="IDatacenterObject{T}"/>.</typeparam>
+    /// <typeparam name="T">The type of the object, which must implement <see cref="IDatacenterObject"/>.</typeparam>
     /// <param name="reader">The binary reader used to read the object.</param>
     /// <returns>An object of type <typeparamref name="T"/>.</returns>
     /// <exception cref="Exception">Thrown if the class identifier is null.</exception>
     public T AsObject<T>(BigEndianReader reader)
-        where T : class, IDatacenterObject<T>
+        where T : class, IDatacenterObject
     {
         var classIdentifier = reader.ReadInt();
 

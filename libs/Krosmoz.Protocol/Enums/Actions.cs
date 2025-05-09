@@ -4,7 +4,7 @@
 
 namespace Krosmoz.Protocol.Enums.Custom;
 
-public enum ActionIds : int
+public enum Actions : int
 {
 	ActionEncapsulateBinaryCommand = 993,
 	ActionEndsTurn = -2,

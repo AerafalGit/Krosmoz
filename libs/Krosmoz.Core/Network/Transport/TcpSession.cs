@@ -98,6 +98,8 @@ public abstract class TcpSession<TMessage> : IAsyncDisposable
     {
         _logger.LogInformation("Session {SessionName} connected", this);
 
+        await OnConnectedAsync().ConfigureAwait(false);
+
         try
         {
             while (IsConnected)
@@ -140,6 +142,8 @@ public abstract class TcpSession<TMessage> : IAsyncDisposable
         {
             await DisposeAsync().ConfigureAwait(false);
         }
+
+        await OnDisconnectedAsync().ConfigureAwait(false);
 
         _logger.LogInformation("Session {SessionName} disconnected", this);
     }
@@ -217,4 +221,22 @@ public abstract class TcpSession<TMessage> : IAsyncDisposable
     /// <param name="message">The message to get the name for.</param>
     /// <returns>The name of the message.</returns>
     protected abstract string GetMessageName(TMessage message);
+
+    /// <summary>
+    /// Called when the session is connected. Can be overridden to provide custom behavior upon connection.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    protected virtual Task OnConnectedAsync()
+    {
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Called when the session is disconnected. Can be overridden to provide custom behavior upon disconnection.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    protected virtual Task OnDisconnectedAsync()
+    {
+        return Task.CompletedTask;
+    }
 }

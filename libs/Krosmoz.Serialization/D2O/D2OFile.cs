@@ -122,7 +122,7 @@ public sealed class D2OFile
     /// An enumerable collection of objects of type <typeparamref name="T"/>.
     /// If the module is not found, an empty collection is returned.
     /// </returns>
-    public IEnumerable<T> GetObjects<T>(bool clearReader = false)
+    public IList<T> GetObjects<T>(bool clearReader = false)
         where T : class, IDatacenterObject
     {
         var moduleName = T.ModuleName;

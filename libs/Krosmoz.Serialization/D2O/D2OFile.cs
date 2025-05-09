@@ -4,6 +4,7 @@
 
 using System.Text;
 using Krosmoz.Core.IO.Binary;
+using Krosmoz.Serialization.D2O.Abstractions;
 
 namespace Krosmoz.Serialization.D2O;
 
@@ -110,6 +111,53 @@ public sealed class D2OFile
         {
             // TODO: Handle remaining data
         }
+    }
+
+    /// <summary>
+    /// Retrieves all objects of type <typeparamref name="T"/> from the D2O file.
+    /// </summary>
+    /// <typeparam name="T">The type of objects to retrieve, which must implement <see cref="IDatacenterObject{T}"/>.</typeparam>
+    /// <param name="clearReader">
+    /// A boolean value indicating whether to clear the reader after retrieving the objects.
+    /// If <c>true</c>, the reader will be reset for the specified module.
+    /// </param>
+    /// <returns>
+    /// An enumerable collection of objects of type <typeparamref name="T"/>.
+    /// If the module is not found, an empty collection is returned.
+    /// </returns>
+    public IEnumerable<T> GetObjects<T>(bool clearReader = false)
+        where T : class, IDatacenterObject<T>
+    {
+        var moduleName = T.ModuleName;
+
+        if (!_counters.TryGetValue(moduleName, out var length) ||
+            !_readers.TryGetValue(moduleName, out var reader) ||
+            !_classes.TryGetValue(moduleName, out var classes) ||
+            !_readersStartIndexes.TryGetValue(moduleName, out var startIndex))
+            return [];
+
+        reader.Seek(SeekOrigin.Begin, startIndex);
+
+        var objects = new T[length];
+
+        for (var i = 0; i < length; i++)
+            objects[i] = classes[reader.ReadInt()].Deserialize<T>(reader);
+
+        if (clearReader)
+            ResetReader(moduleName);
+
+        return objects;
+    }
+
+    /// <summary>
+    /// Resets the reader and removes all associated data for the specified module.
+    /// </summary>
+    /// <param name="moduleName">The name of the module to reset.</param>
+    public void ResetReader(string moduleName)
+    {
+        _classes.Remove(moduleName);
+        _counters.Remove(moduleName);
+        _readers.Remove(moduleName);
     }
 
     /// <summary>

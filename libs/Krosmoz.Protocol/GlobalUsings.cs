@@ -5,3 +5,5 @@
 global using Krosmoz.Core.IO.Binary;
 global using Krosmoz.Core.IO.Bits;
 global using Krosmoz.Core.Network.Protocol.Dofus;
+global using Krosmoz.Serialization.D2O;
+global using Krosmoz.Serialization.D2O.Abstractions;

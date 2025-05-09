@@ -32,12 +32,11 @@ public sealed class DatacenterRenderer : IRenderer<DatacenterSymbol>
                 d2OField.Name = string.Concat(d2OField.Name, '_');
         }
 
-        var @namespace = string.Concat("Krosmoz.Protocol", '.', string.Join('.', symbol.D2OClass.Namespace.Replace("com.ankamagames.dofus.", string.Empty).Split('.').Select(static x => x.Capitalize())));
+        var @namespace = symbol.D2OClass.Namespace.Contains("datacenter")
+            ? string.Concat("Krosmoz.Protocol", '.', string.Join('.', symbol.D2OClass.Namespace.Replace("com.ankamagames.dofus.", string.Empty).Split('.').Select(static x => x.Capitalize())))
+            : string.Concat("Krosmoz.Protocol.Datacenter", '.', string.Join('.', symbol.D2OClass.Namespace.Replace("com.ankamagames.dofus.", string.Empty).Split('.').Select(static x => x.Capitalize())));
 
         symbol.D2OClass.Namespace = @namespace;
-
-        var className = GetClassName(symbol.D2OClass.Name);
-        var isSealed = CanBeSealed(className);
 
         var builder = new IndentedStringBuilder()
             .AppendLine("// Copyright (c) Krosmoz 2025.")
@@ -46,7 +45,7 @@ public sealed class DatacenterRenderer : IRenderer<DatacenterSymbol>
             .AppendLine()
             .AppendLine("namespace {0};", @namespace)
             .AppendLine()
-            .AppendLine("public{0}class {1}", isSealed ? " sealed " : ' ', className);
+            .AppendLine("public sealed class {0} : IDatacenterObject<{0}>", symbol.D2OClass.Name);
 
         using (builder.CreateScope())
         {
@@ -63,7 +62,7 @@ public sealed class DatacenterRenderer : IRenderer<DatacenterSymbol>
                 var fieldName = field.Name;
 
                 builder
-                    .AppendIndentedLine("public {0} {1} {{ get; set; }}", fieldType, fieldName)
+                    .AppendIndentedLine("public required {0} {1} {{ get; set; }}", fieldType, fieldName)
                     .AppendLine();
             }
 
@@ -72,7 +71,7 @@ public sealed class DatacenterRenderer : IRenderer<DatacenterSymbol>
             using (builder.CreateScope())
             {
                 builder
-                    .AppendIndentedLine("return new()")
+                    .AppendIndentedLine("return new {0}", symbol.D2OClass.Name)
                     .AppendIndentedLine('{')
                     .Indent();
 
@@ -154,46 +153,6 @@ public sealed class DatacenterRenderer : IRenderer<DatacenterSymbol>
         }
 
         return builder.ToString();
-    }
-
-    /// <summary>
-    /// Gets the class name and its inheritance or interface implementation based on the original name.
-    /// </summary>
-    /// <param name="originalName">The original name of the class.</param>
-    /// <returns>A string representing the class name with its inheritance or interface implementation.</returns>
-    private static string GetClassName(string originalName) =>
-        originalName switch
-        {
-            "EffectInstanceInteger" => "EffectInstanceInteger : EffectInstance, IDofusObject<EffectInstanceInteger>",
-            "EffectInstanceDice" => "EffectInstanceDice : EffectInstanceInteger, IDofusObject<EffectInstanceDice>",
-            "Weapon" => "Weapon : Item, IDofusObject<Weapon>",
-            "QuestObjectiveBringItemToNpc" => "QuestObjectiveBringItemToNpc : QuestObjective, IDofusObject<QuestObjectiveBringItemToNpc>",
-            "QuestObjectiveBringSoulToNpc" => "QuestObjectiveBringSoulToNpc : QuestObjective, IDofusObject<QuestObjectiveBringSoulToNpc>",
-            "QuestObjectiveCraftItem" => "QuestObjectiveCraftItem : QuestObjective, IDofusObject<QuestObjectiveCraftItem>",
-            "QuestObjectiveDiscoverMap" => "QuestObjectiveDiscoverMap : QuestObjective, IDofusObject<QuestObjectiveDiscoverMap>",
-            "QuestObjectiveDiscoverSubArea" => "QuestObjectiveDiscoverSubArea : QuestObjective, IDofusObject<QuestObjectiveDiscoverSubArea>",
-            "QuestObjectiveDuelSpecificPlayer" => "QuestObjectiveDuelSpecificPlayer : QuestObjective, IDofusObject<QuestObjectiveDuelSpecificPlayer>",
-            "QuestObjectiveFightMonster" => "QuestObjectiveFightMonster : QuestObjective, IDofusObject<QuestObjectiveFightMonster>",
-            "QuestObjectiveFightMonstersOnMap" => "QuestObjectiveFightMonstersOnMap : QuestObjective, IDofusObject<QuestObjectiveFightMonstersOnMap>",
-            "QuestObjectiveFreeForm" => "QuestObjectiveFreeForm : QuestObjective, IDofusObject<QuestObjectiveFreeForm>",
-            "QuestObjectiveGoToNpc" => "QuestObjectiveGoToNpc : QuestObjective, IDofusObject<QuestObjectiveGoToNpc>",
-            "QuestObjectiveMultiFightMonster" => "QuestObjectiveMultiFightMonster : QuestObjective, IDofusObject<QuestObjectiveMultiFightMonster>",
-            _ => string.Concat(originalName, $" : IDofusObject<{originalName}>")
-        };
-
-    /// <summary>
-    /// Determines whether a class can be sealed based on its name.
-    /// </summary>
-    /// <param name="className">The name of the class.</param>
-    /// <returns><c>true</c> if the class can be sealed; otherwise, <c>false</c>.</returns>
-    private static bool CanBeSealed(string className)
-    {
-        return !(className.Contains(": EffectInstanceInteger") ||
-                 className.Contains(": EffectInstance") ||
-                 className.Contains(": SocialRight") ||
-                 className.Contains(": SocialRightGroup") ||
-                 className.Contains(": Item") ||
-                 className.Contains(": QuestObjective"));
     }
 
     /// <summary>

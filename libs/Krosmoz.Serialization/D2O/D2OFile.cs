@@ -104,7 +104,7 @@ public sealed class D2OFile
         for (var i = 0; i < classesCount; i++)
         {
             var classId = reader.ReadInt();
-            var classDefinition = ReadClassDefinition(reader);
+            var classDefinition = ReadClassDefinition(reader, moduleName);
 
             _classes[moduleName][classId] = classDefinition;
         }
@@ -181,13 +181,14 @@ public sealed class D2OFile
     /// Reads a class definition from the binary reader.
     /// </summary>
     /// <param name="reader">The binary reader used to read the class definition.</param>
+    /// <param name="moduleName">The name of the module containing the class.</param>
     /// <returns>A <see cref="D2OClass"/> representing the class definition.</returns>
-    private D2OClass ReadClassDefinition(BigEndianReader reader)
+    private D2OClass ReadClassDefinition(BigEndianReader reader, string moduleName)
     {
         var name = reader.ReadUtfLengthPrefixed16();
         var @namespace = reader.ReadUtfLengthPrefixed16();
 
-        var classDefinition = new D2OClass(this, _datacenterObjectFactory, @namespace, name);
+        var classDefinition = new D2OClass(this, _datacenterObjectFactory, moduleName, @namespace, name);
 
         var fieldsCount = reader.ReadInt();
 

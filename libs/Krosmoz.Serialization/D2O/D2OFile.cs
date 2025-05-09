@@ -108,11 +108,6 @@ public sealed class D2OFile
 
             _classes[moduleName][classId] = classDefinition;
         }
-
-        if (reader.Remaining > 0)
-        {
-            // TODO: Handle remaining data
-        }
     }
 
     /// <summary>

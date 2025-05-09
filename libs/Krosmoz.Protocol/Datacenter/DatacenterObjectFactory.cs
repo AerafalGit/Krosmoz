@@ -4,9 +4,20 @@
 
 namespace Krosmoz.Protocol.Datacenter;
 
+/// <summary>
+/// A factory class responsible for creating datacenter objects based on their names.
+/// </summary>
 public sealed class DatacenterObjectFactory : IDatacenterObjectFactory
 {
-	public IDatacenterObject Create(string name)
+    /// <summary>
+    /// Creates a datacenter object based on the specified name.
+    /// </summary>
+    /// <param name="name">The name of the datacenter object to create.</param>
+    /// <returns>
+    /// An instance of <see cref="IDatacenterObject"/> representing the created object.
+    /// Throws an exception if the specified name does not match any known datacenter object type.
+    /// </returns>
+    public IDatacenterObject Create(string name)
 	{
 		return name switch
 		{

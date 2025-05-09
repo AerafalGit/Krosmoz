@@ -142,14 +142,21 @@ public sealed class D2OField
     /// <param name="reader">The binary reader used to read the list.</param>
     /// <param name="converter">A function to convert each element in the list.</param>
     /// <returns>A list of elements of type <typeparamref name="T"/>.</returns>
-    public List<T> AsList<T>(BigEndianReader reader, Func<D2OField, BigEndianReader, T> converter)
+    public List<T> AsList<T>(BigEndianReader reader, Func<D2OField, BigEndianReader, T?> converter)
     {
         var length = reader.ReadInt();
 
         var content = new List<T>(length);
 
         for (var i = 0; i < length; i++)
-            content.Add(converter(this, reader));
+        {
+            var value = converter(this, reader);
+
+            if (value is null)
+                continue;
+
+            content.Add(value);
+        }
 
         return content;
     }
@@ -186,7 +193,7 @@ public sealed class D2OField
         var classIdentifier = reader.ReadInt();
 
         return classIdentifier is NullIdentifier
-            ? throw new Exception("Null identifier.")
+            ? null!
             : D2OFile.GetClass(T.ModuleName, classIdentifier).Deserialize<T>(reader);
     }
 

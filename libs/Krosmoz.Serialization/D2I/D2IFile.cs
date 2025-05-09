@@ -167,6 +167,7 @@ public sealed class D2IFile
         writer.Seek(SeekOrigin.Begin, 0);
         writer.WriteInt(position);
 
+        File.Copy(FilePath, FilePath.Replace(".d2i", ".bak"), true);
         File.WriteAllBytes(FilePath, writer.BufferAsSpan[..length]);
     }
 

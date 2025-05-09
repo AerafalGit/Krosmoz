@@ -24,6 +24,8 @@ await Host.CreateDefaultBuilder(args)
             .AddSingleton<IRenderer<ClassSymbol>, ClassRenderer>()
             .AddKeyedSingleton<IRenderer<ClassSymbol[]>, MessageFactoryRenderer>(nameof(MessageFactoryRenderer))
             .AddKeyedSingleton<IRenderer<ClassSymbol[]>, TypeFactoryRenderer>(nameof(TypeFactoryRenderer))
+            .AddSingleton<IRenderer<DatacenterSymbol>, DatacenterRenderer>()
+            .AddHostedService<DatacenterGenerator>()
             .AddHostedService<ProtocolGenerator>();
     })
     .RunConsoleAsync();

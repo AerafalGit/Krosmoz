@@ -25,6 +25,11 @@ public sealed class D2OField
     private D2OFile D2OFile { get; }
 
     /// <summary>
+    /// Gets the name of the module associated with this field.
+    /// </summary>
+    private string ModuleName { get; }
+
+    /// <summary>
     /// Gets or sets the name of the field.
     /// </summary>
     public string Name { get; set; }
@@ -48,10 +53,12 @@ public sealed class D2OField
     /// Initializes a new instance of the <see cref="D2OField"/> class.
     /// </summary>
     /// <param name="d2OFile">The D2O file associated with this field.</param>
+    /// <param name="moduleName">The name of the module.</param>
     /// <param name="name">The name of the field.</param>
-    public D2OField(D2OFile d2OFile, string name)
+    public D2OField(D2OFile d2OFile, string moduleName, string name)
     {
         D2OFile = d2OFile;
+        ModuleName = moduleName;
         Name = name;
     }
 
@@ -194,7 +201,7 @@ public sealed class D2OField
 
         return classIdentifier is NullIdentifier
             ? null!
-            : D2OFile.GetClass(T.ModuleName, classIdentifier).Deserialize<T>(reader);
+            : D2OFile.GetClass(ModuleName, classIdentifier).Deserialize<T>(reader);
     }
 
     /// <summary>

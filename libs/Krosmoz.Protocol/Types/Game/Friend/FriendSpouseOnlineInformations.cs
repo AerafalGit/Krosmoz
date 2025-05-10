@@ -29,8 +29,8 @@ public sealed class FriendSpouseOnlineInformations : FriendSpouseInformations
 	{
 		base.Serialize(writer);
 		var flag = new byte();
-		BooleanByteWrapper.SetFlag(flag, 0, InFight);
-		BooleanByteWrapper.SetFlag(flag, 1, FollowSpouse);
+		flag = BooleanByteWrapper.SetFlag(flag, 0, InFight);
+		flag = BooleanByteWrapper.SetFlag(flag, 1, FollowSpouse);
 		writer.WriteByte(flag);
 		writer.WriteInt(MapId);
 		writer.WriteShort(SubAreaId);

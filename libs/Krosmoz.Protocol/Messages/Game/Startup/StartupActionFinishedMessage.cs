@@ -23,8 +23,8 @@ public sealed class StartupActionFinishedMessage : DofusMessage
 	public override void Serialize(BigEndianWriter writer)
 	{
 		var flag = new byte();
-		BooleanByteWrapper.SetFlag(flag, 0, Success);
-		BooleanByteWrapper.SetFlag(flag, 1, AutomaticAction);
+		flag = BooleanByteWrapper.SetFlag(flag, 0, Success);
+		flag = BooleanByteWrapper.SetFlag(flag, 1, AutomaticAction);
 		writer.WriteByte(flag);
 		writer.WriteInt(ActionId);
 	}

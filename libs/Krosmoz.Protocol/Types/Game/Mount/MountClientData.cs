@@ -83,10 +83,10 @@ public sealed class MountClientData : DofusType
 	public override void Serialize(BigEndianWriter writer)
 	{
 		var flag = new byte();
-		BooleanByteWrapper.SetFlag(flag, 0, Sex);
-		BooleanByteWrapper.SetFlag(flag, 1, IsRideable);
-		BooleanByteWrapper.SetFlag(flag, 2, IsWild);
-		BooleanByteWrapper.SetFlag(flag, 3, IsFecondationReady);
+		flag = BooleanByteWrapper.SetFlag(flag, 0, Sex);
+		flag = BooleanByteWrapper.SetFlag(flag, 1, IsRideable);
+		flag = BooleanByteWrapper.SetFlag(flag, 2, IsWild);
+		flag = BooleanByteWrapper.SetFlag(flag, 3, IsFecondationReady);
 		writer.WriteByte(flag);
 		writer.WriteDouble(Id);
 		writer.WriteInt(Model);

@@ -25,10 +25,10 @@ public sealed class FightOptionsInformations : DofusType
 	public override void Serialize(BigEndianWriter writer)
 	{
 		var flag = new byte();
-		BooleanByteWrapper.SetFlag(flag, 0, IsSecret);
-		BooleanByteWrapper.SetFlag(flag, 1, IsRestrictedToPartyOnly);
-		BooleanByteWrapper.SetFlag(flag, 2, IsClosed);
-		BooleanByteWrapper.SetFlag(flag, 3, IsAskingForHelp);
+		flag = BooleanByteWrapper.SetFlag(flag, 0, IsSecret);
+		flag = BooleanByteWrapper.SetFlag(flag, 1, IsRestrictedToPartyOnly);
+		flag = BooleanByteWrapper.SetFlag(flag, 2, IsClosed);
+		flag = BooleanByteWrapper.SetFlag(flag, 3, IsAskingForHelp);
 		writer.WriteByte(flag);
 	}
 

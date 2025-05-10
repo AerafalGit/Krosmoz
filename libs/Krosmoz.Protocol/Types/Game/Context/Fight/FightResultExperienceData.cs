@@ -46,13 +46,13 @@ public sealed class FightResultExperienceData : FightResultAdditionalData
 	{
 		base.Serialize(writer);
 		var flag = new byte();
-		BooleanByteWrapper.SetFlag(flag, 0, ShowExperience);
-		BooleanByteWrapper.SetFlag(flag, 1, ShowExperienceLevelFloor);
-		BooleanByteWrapper.SetFlag(flag, 2, ShowExperienceNextLevelFloor);
-		BooleanByteWrapper.SetFlag(flag, 3, ShowExperienceFightDelta);
-		BooleanByteWrapper.SetFlag(flag, 4, ShowExperienceForGuild);
-		BooleanByteWrapper.SetFlag(flag, 5, ShowExperienceForMount);
-		BooleanByteWrapper.SetFlag(flag, 6, IsIncarnationExperience);
+		flag = BooleanByteWrapper.SetFlag(flag, 0, ShowExperience);
+		flag = BooleanByteWrapper.SetFlag(flag, 1, ShowExperienceLevelFloor);
+		flag = BooleanByteWrapper.SetFlag(flag, 2, ShowExperienceNextLevelFloor);
+		flag = BooleanByteWrapper.SetFlag(flag, 3, ShowExperienceFightDelta);
+		flag = BooleanByteWrapper.SetFlag(flag, 4, ShowExperienceForGuild);
+		flag = BooleanByteWrapper.SetFlag(flag, 5, ShowExperienceForMount);
+		flag = BooleanByteWrapper.SetFlag(flag, 6, IsIncarnationExperience);
 		writer.WriteByte(flag);
 		writer.WriteDouble(Experience);
 		writer.WriteDouble(ExperienceLevelFloor);

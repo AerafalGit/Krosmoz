@@ -21,8 +21,8 @@ public sealed class GuildModificationStartedMessage : DofusMessage
 	public override void Serialize(BigEndianWriter writer)
 	{
 		var flag = new byte();
-		BooleanByteWrapper.SetFlag(flag, 0, CanChangeName);
-		BooleanByteWrapper.SetFlag(flag, 1, CanChangeEmblem);
+		flag = BooleanByteWrapper.SetFlag(flag, 0, CanChangeName);
+		flag = BooleanByteWrapper.SetFlag(flag, 1, CanChangeEmblem);
 		writer.WriteByte(flag);
 	}
 

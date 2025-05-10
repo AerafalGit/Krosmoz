@@ -30,10 +30,10 @@ public sealed class FightTeamLightInformations : AbstractFightTeamInformations
 	{
 		base.Serialize(writer);
 		var flag = new byte();
-		BooleanByteWrapper.SetFlag(flag, 0, HasFriend);
-		BooleanByteWrapper.SetFlag(flag, 1, HasGuildMember);
-		BooleanByteWrapper.SetFlag(flag, 2, HasGroupMember);
-		BooleanByteWrapper.SetFlag(flag, 3, HasMyTaxCollector);
+		flag = BooleanByteWrapper.SetFlag(flag, 0, HasFriend);
+		flag = BooleanByteWrapper.SetFlag(flag, 1, HasGuildMember);
+		flag = BooleanByteWrapper.SetFlag(flag, 2, HasGroupMember);
+		flag = BooleanByteWrapper.SetFlag(flag, 3, HasMyTaxCollector);
 		writer.WriteByte(flag);
 		writer.WriteSByte(TeamMembersCount);
 		writer.WriteInt(MeanLevel);

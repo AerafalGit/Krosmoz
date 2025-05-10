@@ -31,8 +31,8 @@ public sealed class GuildInformationsGeneralMessage : DofusMessage
 	public override void Serialize(BigEndianWriter writer)
 	{
 		var flag = new byte();
-		BooleanByteWrapper.SetFlag(flag, 0, Enabled);
-		BooleanByteWrapper.SetFlag(flag, 1, AbandonnedPaddock);
+		flag = BooleanByteWrapper.SetFlag(flag, 0, Enabled);
+		flag = BooleanByteWrapper.SetFlag(flag, 1, AbandonnedPaddock);
 		writer.WriteByte(flag);
 		writer.WriteByte(Level);
 		writer.WriteDouble(ExpLevelFloor);

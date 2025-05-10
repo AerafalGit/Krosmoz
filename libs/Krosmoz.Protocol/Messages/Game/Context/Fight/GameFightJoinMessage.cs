@@ -29,10 +29,10 @@ public sealed class GameFightJoinMessage : DofusMessage
 	public override void Serialize(BigEndianWriter writer)
 	{
 		var flag = new byte();
-		BooleanByteWrapper.SetFlag(flag, 0, CanBeCancelled);
-		BooleanByteWrapper.SetFlag(flag, 1, CanSayReady);
-		BooleanByteWrapper.SetFlag(flag, 2, IsSpectator);
-		BooleanByteWrapper.SetFlag(flag, 3, IsFightStarted);
+		flag = BooleanByteWrapper.SetFlag(flag, 0, CanBeCancelled);
+		flag = BooleanByteWrapper.SetFlag(flag, 1, CanSayReady);
+		flag = BooleanByteWrapper.SetFlag(flag, 2, IsSpectator);
+		flag = BooleanByteWrapper.SetFlag(flag, 3, IsFightStarted);
 		writer.WriteByte(flag);
 		writer.WriteInt(TimeMaxBeforeFightStart);
 		writer.WriteSByte(FightType);

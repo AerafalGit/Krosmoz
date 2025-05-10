@@ -29,8 +29,8 @@ public class HouseInformations : DofusType
 	public override void Serialize(BigEndianWriter writer)
 	{
 		var flag = new byte();
-		BooleanByteWrapper.SetFlag(flag, 0, IsOnSale);
-		BooleanByteWrapper.SetFlag(flag, 1, IsSaleLocked);
+		flag = BooleanByteWrapper.SetFlag(flag, 0, IsOnSale);
+		flag = BooleanByteWrapper.SetFlag(flag, 1, IsSaleLocked);
 		writer.WriteByte(flag);
 		writer.WriteInt(HouseId);
 		var doorsOnMapBefore = writer.Position;

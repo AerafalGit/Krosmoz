@@ -23,8 +23,8 @@ public sealed class IgnoredDeleteResultMessage : DofusMessage
 	public override void Serialize(BigEndianWriter writer)
 	{
 		var flag = new byte();
-		BooleanByteWrapper.SetFlag(flag, 0, Success);
-		BooleanByteWrapper.SetFlag(flag, 1, Session);
+		flag = BooleanByteWrapper.SetFlag(flag, 0, Success);
+		flag = BooleanByteWrapper.SetFlag(flag, 1, Session);
 		writer.WriteByte(flag);
 		writer.WriteUtfLengthPrefixed16(Name);
 	}

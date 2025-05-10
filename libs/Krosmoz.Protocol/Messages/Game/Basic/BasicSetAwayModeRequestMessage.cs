@@ -21,8 +21,8 @@ public sealed class BasicSetAwayModeRequestMessage : DofusMessage
 	public override void Serialize(BigEndianWriter writer)
 	{
 		var flag = new byte();
-		BooleanByteWrapper.SetFlag(flag, 0, Enable);
-		BooleanByteWrapper.SetFlag(flag, 1, Invisible);
+		flag = BooleanByteWrapper.SetFlag(flag, 0, Enable);
+		flag = BooleanByteWrapper.SetFlag(flag, 1, Invisible);
 		writer.WriteByte(flag);
 	}
 

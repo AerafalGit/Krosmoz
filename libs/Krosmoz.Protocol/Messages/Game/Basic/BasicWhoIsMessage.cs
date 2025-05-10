@@ -39,8 +39,8 @@ public sealed class BasicWhoIsMessage : DofusMessage
 	public override void Serialize(BigEndianWriter writer)
 	{
 		var flag = new byte();
-		BooleanByteWrapper.SetFlag(flag, 0, Self);
-		BooleanByteWrapper.SetFlag(flag, 1, Verbose);
+		flag = BooleanByteWrapper.SetFlag(flag, 0, Self);
+		flag = BooleanByteWrapper.SetFlag(flag, 1, Verbose);
 		writer.WriteByte(flag);
 		writer.WriteSByte(Position);
 		writer.WriteUtfLengthPrefixed16(AccountNickname);

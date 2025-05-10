@@ -35,8 +35,8 @@ public class IdentificationSuccessMessage : DofusMessage
 	public override void Serialize(BigEndianWriter writer)
 	{
 		var flag = new byte();
-		BooleanByteWrapper.SetFlag(flag, 0, HasRights);
-		BooleanByteWrapper.SetFlag(flag, 1, WasAlreadyConnected);
+		flag = BooleanByteWrapper.SetFlag(flag, 0, HasRights);
+		flag = BooleanByteWrapper.SetFlag(flag, 1, WasAlreadyConnected);
 		writer.WriteByte(flag);
 		writer.WriteUtfLengthPrefixed16(Login);
 		writer.WriteUtfLengthPrefixed16(Nickname);

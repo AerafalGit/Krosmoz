@@ -23,9 +23,9 @@ public sealed class AllianceModificationStartedMessage : DofusMessage
 	public override void Serialize(BigEndianWriter writer)
 	{
 		var flag = new byte();
-		BooleanByteWrapper.SetFlag(flag, 0, CanChangeName);
-		BooleanByteWrapper.SetFlag(flag, 1, CanChangeTag);
-		BooleanByteWrapper.SetFlag(flag, 2, CanChangeEmblem);
+		flag = BooleanByteWrapper.SetFlag(flag, 0, CanChangeName);
+		flag = BooleanByteWrapper.SetFlag(flag, 1, CanChangeTag);
+		flag = BooleanByteWrapper.SetFlag(flag, 2, CanChangeEmblem);
 		writer.WriteByte(flag);
 	}
 

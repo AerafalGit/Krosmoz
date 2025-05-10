@@ -246,7 +246,7 @@ public sealed class ClassRenderer : IRenderer<ClassSymbol>
                                 if (flagsIndex is not 0 && flagsIndex % 8 is 0)
                                     builder.AppendIndentedLine("flag = new byte();");
 
-                                builder.AppendIndentedLine("BooleanByteWrapper.SetFlag(flag, {0}, {1});", Convert.ToUInt32(property.WriteMethod), property.Name);
+                                builder.AppendIndentedLine("flag = BooleanByteWrapper.SetFlag(flag, {0}, {1});", Convert.ToUInt32(property.WriteMethod), property.Name);
 
                                 flags--;
                                 flagsIndex++;

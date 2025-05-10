@@ -29,8 +29,8 @@ public sealed class GameFightFighterLightInformations : DofusType
 	public override void Serialize(BigEndianWriter writer)
 	{
 		var flag = new byte();
-		BooleanByteWrapper.SetFlag(flag, 0, Sex);
-		BooleanByteWrapper.SetFlag(flag, 1, Alive);
+		flag = BooleanByteWrapper.SetFlag(flag, 0, Sex);
+		flag = BooleanByteWrapper.SetFlag(flag, 1, Alive);
 		writer.WriteByte(flag);
 		writer.WriteInt(Id);
 		writer.WriteUtfLengthPrefixed16(Name);

@@ -59,31 +59,31 @@ public sealed class ActorRestrictionsInformations : DofusType
 	public override void Serialize(BigEndianWriter writer)
 	{
 		var flag = new byte();
-		BooleanByteWrapper.SetFlag(flag, 0, CantBeAggressed);
-		BooleanByteWrapper.SetFlag(flag, 1, CantBeChallenged);
-		BooleanByteWrapper.SetFlag(flag, 2, CantTrade);
-		BooleanByteWrapper.SetFlag(flag, 3, CantBeAttackedByMutant);
-		BooleanByteWrapper.SetFlag(flag, 4, CantRun);
-		BooleanByteWrapper.SetFlag(flag, 5, ForceSlowWalk);
-		BooleanByteWrapper.SetFlag(flag, 6, CantMinimize);
-		BooleanByteWrapper.SetFlag(flag, 7, CantMove);
+		flag = BooleanByteWrapper.SetFlag(flag, 0, CantBeAggressed);
+		flag = BooleanByteWrapper.SetFlag(flag, 1, CantBeChallenged);
+		flag = BooleanByteWrapper.SetFlag(flag, 2, CantTrade);
+		flag = BooleanByteWrapper.SetFlag(flag, 3, CantBeAttackedByMutant);
+		flag = BooleanByteWrapper.SetFlag(flag, 4, CantRun);
+		flag = BooleanByteWrapper.SetFlag(flag, 5, ForceSlowWalk);
+		flag = BooleanByteWrapper.SetFlag(flag, 6, CantMinimize);
+		flag = BooleanByteWrapper.SetFlag(flag, 7, CantMove);
 		writer.WriteByte(flag);
 		flag = new byte();
-		BooleanByteWrapper.SetFlag(flag, 0, CantAggress);
-		BooleanByteWrapper.SetFlag(flag, 1, CantChallenge);
-		BooleanByteWrapper.SetFlag(flag, 2, CantExchange);
-		BooleanByteWrapper.SetFlag(flag, 3, CantAttack);
-		BooleanByteWrapper.SetFlag(flag, 4, CantChat);
-		BooleanByteWrapper.SetFlag(flag, 5, CantBeMerchant);
-		BooleanByteWrapper.SetFlag(flag, 6, CantUseObject);
-		BooleanByteWrapper.SetFlag(flag, 7, CantUseTaxCollector);
+		flag = BooleanByteWrapper.SetFlag(flag, 0, CantAggress);
+		flag = BooleanByteWrapper.SetFlag(flag, 1, CantChallenge);
+		flag = BooleanByteWrapper.SetFlag(flag, 2, CantExchange);
+		flag = BooleanByteWrapper.SetFlag(flag, 3, CantAttack);
+		flag = BooleanByteWrapper.SetFlag(flag, 4, CantChat);
+		flag = BooleanByteWrapper.SetFlag(flag, 5, CantBeMerchant);
+		flag = BooleanByteWrapper.SetFlag(flag, 6, CantUseObject);
+		flag = BooleanByteWrapper.SetFlag(flag, 7, CantUseTaxCollector);
 		writer.WriteByte(flag);
 		flag = new byte();
-		BooleanByteWrapper.SetFlag(flag, 0, CantUseInteractive);
-		BooleanByteWrapper.SetFlag(flag, 1, CantSpeakToNPC);
-		BooleanByteWrapper.SetFlag(flag, 2, CantChangeZone);
-		BooleanByteWrapper.SetFlag(flag, 3, CantAttackMonster);
-		BooleanByteWrapper.SetFlag(flag, 4, CantWalk8Directions);
+		flag = BooleanByteWrapper.SetFlag(flag, 0, CantUseInteractive);
+		flag = BooleanByteWrapper.SetFlag(flag, 1, CantSpeakToNPC);
+		flag = BooleanByteWrapper.SetFlag(flag, 2, CantChangeZone);
+		flag = BooleanByteWrapper.SetFlag(flag, 3, CantAttackMonster);
+		flag = BooleanByteWrapper.SetFlag(flag, 4, CantWalk8Directions);
 		writer.WriteByte(flag);
 	}
 

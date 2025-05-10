@@ -32,8 +32,8 @@ public sealed class GameRolePlayGroupMonsterInformations : GameRolePlayActorInfo
 	{
 		base.Serialize(writer);
 		var flag = new byte();
-		BooleanByteWrapper.SetFlag(flag, 0, KeyRingBonus);
-		BooleanByteWrapper.SetFlag(flag, 1, HasHardcoreDrop);
+		flag = BooleanByteWrapper.SetFlag(flag, 0, KeyRingBonus);
+		flag = BooleanByteWrapper.SetFlag(flag, 1, HasHardcoreDrop);
 		writer.WriteByte(flag);
 		writer.WriteUShort(StaticInfos.ProtocolId);
 		StaticInfos.Serialize(writer);

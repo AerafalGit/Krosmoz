@@ -56,14 +56,11 @@ public sealed class AccountConfiguration : IEntityTypeConfiguration<AccountRecor
             .IsRequired();
 
         builder
-            .Property(static x => x.Characters)
-            .IsRequired();
-
-        builder
             .HasMany(static x => x.Characters)
             .WithOne()
             .HasForeignKey(static x => x.AccountId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired();
 
         builder
             .HasIndex(static x => new { x.Username, x.Nickname })

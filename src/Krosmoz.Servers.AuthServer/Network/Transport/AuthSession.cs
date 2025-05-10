@@ -22,6 +22,8 @@ public sealed class AuthSession : TcpSession<DofusMessage>
 {
     private readonly IMessageFactory<DofusMessage> _messageFactory;
 
+    public string Salt { get; }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="AuthSession"/> class.
     /// </summary>
@@ -41,6 +43,8 @@ public sealed class AuthSession : TcpSession<DofusMessage>
         : base(socket, messageDecoder, messageEncoder, dispatcher, logger)
     {
         _messageFactory = messageFactory;
+
+        Salt = Guid.NewGuid().ToString().Replace("-", string.Empty);
     }
 
     /// <summary>
@@ -61,6 +65,6 @@ public sealed class AuthSession : TcpSession<DofusMessage>
     protected override async Task OnConnectedAsync()
     {
         await SendAsync(new ProtocolRequired { RequiredVersion = (int)Metadata.ProtocolRequiredBuild, CurrentVersion = (int)Metadata.ProtocolBuild });
-        await SendAsync(new HelloConnectMessage { Key = [], Salt = Guid.NewGuid().ToString().Replace("-", string.Empty) });
+        await SendAsync(new HelloConnectMessage { Key = [], Salt = Salt });
     }
 }

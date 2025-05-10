@@ -11,6 +11,7 @@ using Krosmoz.Core.Network.Transport;
 using Krosmoz.Protocol.Enums.Custom;
 using Krosmoz.Protocol.Messages.Connection;
 using Krosmoz.Protocol.Messages.Handshake;
+using Krosmoz.Servers.AuthServer.Database.Models.Accounts;
 using Microsoft.Extensions.Logging;
 
 namespace Krosmoz.Servers.AuthServer.Network.Transport;
@@ -22,7 +23,20 @@ public sealed class AuthSession : TcpSession<DofusMessage>
 {
     private readonly IMessageFactory<DofusMessage> _messageFactory;
 
+    /// <summary>
+    /// Gets the unique salt value generated for the session.
+    /// </summary>
     public string Salt { get; }
+
+    /// <summary>
+    /// Gets or sets the ID of the game server to auto-select for the session.
+    /// </summary>
+    public int GameServerIdAutoSelect { get; set; }
+
+    /// <summary>
+    /// Gets or sets the account record associated with the session.
+    /// </summary>
+    public AccountRecord Account { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AuthSession"/> class.
@@ -45,6 +59,7 @@ public sealed class AuthSession : TcpSession<DofusMessage>
         _messageFactory = messageFactory;
 
         Salt = Guid.NewGuid().ToString().Replace("-", string.Empty);
+        Account = null!;
     }
 
     /// <summary>

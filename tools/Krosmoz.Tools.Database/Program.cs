@@ -2,6 +2,7 @@
 using Krosmoz.Servers.AuthServer.Database;
 using Krosmoz.Servers.GameServer.Database.Repositories.Datacenter;
 using Krosmoz.Tools.Database.Base;
+using Krosmoz.Tools.Database.Hosting;
 using Krosmoz.Tools.Database.Servers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +15,7 @@ await Host.CreateDefaultBuilder(args)
         services
             .AddDbContext<AuthDbContext>(context.Configuration.GetConnectionString("Auth"))
             .AddSingleton<IDatacenterRepository, DatacenterRepository>()
-            .AddSingleton<Synchronizer, ServerSynchronizer>();
+            .AddSingleton<Synchronizer, ServerSynchronizer>()
+            .AddHostedService<SynchronizerHostedService>();
     })
     .RunConsoleAsync();

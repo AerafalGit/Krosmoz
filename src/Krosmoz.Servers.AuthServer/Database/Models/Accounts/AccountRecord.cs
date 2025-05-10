@@ -10,7 +10,7 @@ namespace Krosmoz.Servers.AuthServer.Database.Models.Accounts;
 
 public sealed class AccountRecord
 {
-    public required int Id { get; init; }
+    public int Id { get; init; }
 
     public required string Username { get; set; }
 

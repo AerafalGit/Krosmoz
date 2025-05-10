@@ -5,15 +5,17 @@ using Krosmoz.Core.Network.Framing;
 using Krosmoz.Core.Network.Protocol.Dofus;
 using Krosmoz.Core.Network.Transport;
 using Krosmoz.Protocol.Messages;
+using Krosmoz.Servers.AuthServer.Database;
 using Krosmoz.Servers.AuthServer.Extensions;
 using Krosmoz.Servers.AuthServer.Network.Dispatcher;
 using Krosmoz.Servers.AuthServer.Network.Transport;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 await Host.CreateDefaultBuilder(args)
     .UseSerilogLogging()
-    .ConfigureServices(static services =>
+    .ConfigureServices(static (context, services) =>
     {
         services
             .Configure<TcpServerOptions>(static options =>
@@ -23,6 +25,7 @@ await Host.CreateDefaultBuilder(args)
                 options.MaxConnections = 100;
                 options.MaxConnectionsPerIp = 8;
             })
+            .AddDbContext<AuthDbContext>(context.Configuration.GetConnectionString("Auth"))
             .AddTransient<IMessageDecoder<DofusMessage>, DofusMessageDecoder>()
             .AddTransient<IMessageEncoder<DofusMessage>, DofusMessageEncoder>()
             .AddSingleton<IMessageFactory<DofusMessage>, MessageFactory>()

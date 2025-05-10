@@ -14,7 +14,7 @@ public class IdentificationMessage : DofusMessage
 		StaticProtocolId;
 
 	public static IdentificationMessage Empty =>
-		new() { Autoconnect = false, UseCertificate = false, UseLoginToken = false, Version = VersionExtended.Empty, Lang = string.Empty, Credentials = [], ServerId = 0, SessionOptionalSalt = 0 };
+		new() { Autoconnect = false, UseCertificate = false, UseLoginToken = false, Version = VersionExtended.Empty, Lang = string.Empty, Username = string.Empty, Password = string.Empty, ServerId = 0, SessionOptionalSalt = 0 };
 
 	public required bool Autoconnect { get; set; }
 
@@ -26,7 +26,9 @@ public class IdentificationMessage : DofusMessage
 
 	public required string Lang { get; set; }
 
-	public required IEnumerable<sbyte> Credentials { get; set; }
+	public required string Username { get; set; }
+
+    public required string Password { get; set; }
 
 	public required short ServerId { get; set; }
 
@@ -35,24 +37,14 @@ public class IdentificationMessage : DofusMessage
 	public override void Serialize(BigEndianWriter writer)
 	{
 		var flag = new byte();
-		BooleanByteWrapper.SetFlag(flag, 0, Autoconnect);
-		BooleanByteWrapper.SetFlag(flag, 1, UseCertificate);
-		BooleanByteWrapper.SetFlag(flag, 2, UseLoginToken);
+		flag = BooleanByteWrapper.SetFlag(flag, 0, Autoconnect);
+		flag = BooleanByteWrapper.SetFlag(flag, 1, UseCertificate);
+		flag = BooleanByteWrapper.SetFlag(flag, 2, UseLoginToken);
 		writer.WriteByte(flag);
 		Version.Serialize(writer);
 		writer.WriteUtfLengthPrefixed16(Lang);
-		var credentialsBefore = writer.Position;
-		var credentialsCount = 0;
-		writer.WriteShort(0);
-		foreach (var item in Credentials)
-		{
-			writer.WriteSByte(item);
-			credentialsCount++;
-		}
-		var credentialsAfter = writer.Position;
-		writer.Seek(SeekOrigin.Begin, credentialsBefore);
-		writer.WriteShort((short)credentialsCount);
-		writer.Seek(SeekOrigin.Begin, credentialsAfter);
+		writer.WriteUtfLengthPrefixed16(Username);
+        writer.WriteUtfLengthPrefixed16(Password);
 		writer.WriteShort(ServerId);
 		writer.WriteDouble(SessionOptionalSalt);
 	}
@@ -66,13 +58,8 @@ public class IdentificationMessage : DofusMessage
 		Version = VersionExtended.Empty;
 		Version.Deserialize(reader);
 		Lang = reader.ReadUtfLengthPrefixed16();
-		var credentialsCount = reader.ReadShort();
-		var credentials = new sbyte[credentialsCount];
-		for (var i = 0; i < credentialsCount; i++)
-		{
-			credentials[i] = reader.ReadSByte();
-		}
-		Credentials = credentials;
+		Username = reader.ReadUtfLengthPrefixed16();
+        Password = reader.ReadUtfLengthPrefixed16();
 		ServerId = reader.ReadShort();
 		SessionOptionalSalt = reader.ReadDouble();
 	}

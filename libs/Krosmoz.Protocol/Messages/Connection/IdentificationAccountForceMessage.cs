@@ -14,7 +14,7 @@ public sealed class IdentificationAccountForceMessage : IdentificationMessage
 		StaticProtocolId;
 
 	public static new IdentificationAccountForceMessage Empty =>
-		new() { SessionOptionalSalt = 0, ServerId = 0, Credentials = [], Lang = string.Empty, Version = VersionExtended.Empty, UseLoginToken = false, UseCertificate = false, Autoconnect = false, ForcedAccountLogin = string.Empty };
+		new() { SessionOptionalSalt = 0, ServerId = 0, Username = string.Empty, Password = string.Empty, Lang = string.Empty, Version = VersionExtended.Empty, UseLoginToken = false, UseCertificate = false, Autoconnect = false, ForcedAccountLogin = string.Empty };
 
 	public required string ForcedAccountLogin { get; set; }
 

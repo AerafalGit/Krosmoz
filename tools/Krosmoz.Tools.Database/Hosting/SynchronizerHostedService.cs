@@ -5,7 +5,7 @@
 using Krosmoz.Servers.AuthServer.Database;
 using Krosmoz.Servers.GameServer.Database.Repositories.Datacenter;
 using Krosmoz.Tools.Database.Base;
-using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -16,7 +16,7 @@ namespace Krosmoz.Tools.Database.Hosting;
 /// </summary>
 public sealed class SynchronizerHostedService : IHostedService
 {
-    private readonly PooledDbContextFactory<AuthDbContext> _authDbContextFactory;
+    private readonly IDbContextFactory<AuthDbContext> _authDbContextFactory;
     private readonly IDatacenterRepository _datacenterRepository;
     private readonly ILoggerFactory _loggerFactory;
     private readonly IHostApplicationLifetime _lifetime;
@@ -31,7 +31,7 @@ public sealed class SynchronizerHostedService : IHostedService
     /// <param name="lifetime">The application lifetime manager.</param>
     /// <param name="synchronizers">The collection of synchronizers to execute.</param>
     public SynchronizerHostedService(
-        PooledDbContextFactory<AuthDbContext> authDbContextFactory,
+        IDbContextFactory<AuthDbContext> authDbContextFactory,
         IDatacenterRepository datacenterRepository,
         ILoggerFactory loggerFactory,
         IHostApplicationLifetime lifetime,
@@ -75,6 +75,7 @@ public sealed class SynchronizerHostedService : IHostedService
             finally
             {
                 await synchronizer.AuthDbContext.DisposeAsync();
+                _lifetime.StopApplication();
             }
         }
     }

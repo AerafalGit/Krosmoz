@@ -28,6 +28,8 @@ public sealed class AccountRecord
 
     public required List<ServerCharacterRecord> Characters { get; set; }
 
+    public DateTime? SubscriptionExpireAt { get; set; }
+
     public string? Nickname { get; set; }
 
     public IPAddress? IpAddress { get; set; }

@@ -1,5 +1,4 @@
 ﻿using Krosmoz.Core.Extensions;
-using Krosmoz.Core.Network.Dispatcher;
 using Krosmoz.Core.Network.Factory;
 using Krosmoz.Core.Network.Framing;
 using Krosmoz.Core.Network.Protocol.Dofus;
@@ -7,7 +6,6 @@ using Krosmoz.Core.Network.Transport;
 using Krosmoz.Protocol.Messages;
 using Krosmoz.Servers.AuthServer.Database;
 using Krosmoz.Servers.AuthServer.Extensions;
-using Krosmoz.Servers.AuthServer.Network.Dispatcher;
 using Krosmoz.Servers.AuthServer.Network.Transport;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

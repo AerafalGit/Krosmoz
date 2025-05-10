@@ -43,22 +43,10 @@ public sealed class DofusMessageDecoder : IMessageDecoder<DofusMessage>
         if (!reader.TryReadUShort(out var header))
             return false;
 
-        if (reader.Remaining < sizeof(int))
-            return false;
-
-        reader.Seek(SeekOrigin.Current, sizeof(int));
-
         var messageId = (uint)(header >> DofusMessage.BitRightShiftLenPacketId);
         var messageSize = (byte)(header & DofusMessage.BitMask);
 
         message = _messageFactory.CreateMessage(messageId);
-
-        if (messageSize is 0)
-        {
-            consumed = sequence.GetPosition(reader.Position);
-            examined = consumed;
-            return true;
-        }
 
         if (reader.Remaining < messageSize)
             return false;

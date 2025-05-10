@@ -2,6 +2,7 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
+using Krosmoz.Servers.AuthServer.Database.Models.Servers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Krosmoz.Servers.AuthServer.Database;
@@ -12,6 +13,12 @@ namespace Krosmoz.Servers.AuthServer.Database;
 /// </summary>
 public sealed class AuthDbContext : DbContext
 {
+    /// <summary>
+    /// Gets or sets the DbSet representing the collection of <see cref="ServerRecord"/> entities
+    /// in the database. This property is required and provides access to the "Servers" table.
+    /// </summary>
+    public required DbSet<ServerRecord> Servers { get; set; }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="AuthDbContext"/> class with the specified options.
     /// </summary>

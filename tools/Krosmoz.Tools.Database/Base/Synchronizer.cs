@@ -15,12 +15,6 @@ namespace Krosmoz.Tools.Database.Base;
 public abstract class Synchronizer
 {
     /// <summary>
-    /// Gets or sets the logger instance for the <see cref="Synchronizer"/> class.
-    /// This property is required and must be initialized before use.
-    /// </summary>
-    public ILogger<Synchronizer> Logger { get; set; } = null!;
-
-    /// <summary>
     /// Gets or sets the repository for accessing datacenter data.
     /// This property is required and must be initialized before use.
     /// </summary>

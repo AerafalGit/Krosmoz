@@ -11,9 +11,11 @@ namespace Krosmoz.Core.Network.Dispatcher.Handlers;
 /// </summary>
 /// <typeparam name="TSession">The type of the TCP session associated with the message.</typeparam>
 /// <typeparam name="TMessage">The type of the network message to handle.</typeparam>
-public abstract class MessageHandler<TSession, TMessage>
-    where TSession : TcpSession<TMessage>
+/// <typeparam name="TBaseMessage">The base type of the network message.</typeparam>
+public abstract class MessageHandler<TSession, TMessage, TBaseMessage>
+    where TSession : TcpSession<TBaseMessage>
     where TMessage : class
+    where TBaseMessage : class
 {
     /// <summary>
     /// Asynchronously handles a network message for a given session.

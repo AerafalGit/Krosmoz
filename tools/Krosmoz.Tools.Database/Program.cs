@@ -1,3 +1,19 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using Krosmoz.Core.Extensions;
+using Krosmoz.Servers.AuthServer.Database;
+using Krosmoz.Servers.GameServer.Database.Repositories.Datacenter;
+using Krosmoz.Tools.Database.Base;
+using Krosmoz.Tools.Database.Servers;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-Console.WriteLine("Hello, World!");
+await Host.CreateDefaultBuilder(args)
+    .UseSerilogLogging()
+    .ConfigureServices(static (context, services) =>
+    {
+        services
+            .AddDbContext<AuthDbContext>(context.Configuration.GetConnectionString("Auth"))
+            .AddSingleton<IDatacenterRepository, DatacenterRepository>()
+            .AddSingleton<Synchronizer, ServerSynchronizer>();
+    })
+    .RunConsoleAsync();

@@ -4,6 +4,7 @@
 
 using System.Net;
 using Krosmoz.Protocol.Enums;
+using Krosmoz.Serialization.I18N;
 using Krosmoz.Servers.AuthServer.Database.Models.Servers;
 
 namespace Krosmoz.Servers.AuthServer.Database.Models.Accounts;
@@ -17,6 +18,8 @@ public sealed class AccountRecord
     public required string Password { get; set; }
 
     public required GameHierarchies Hierarchy { get; set; }
+
+    public required Languages Language { get; set; }
 
     public required string SecretQuestion { get; set; }
 

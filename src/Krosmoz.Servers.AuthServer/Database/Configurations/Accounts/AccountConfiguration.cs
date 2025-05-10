@@ -35,6 +35,11 @@ public sealed class AccountConfiguration : IEntityTypeConfiguration<AccountRecor
             .IsRequired();
 
         builder
+            .Property(static x => x.Language)
+            .HasEnumToStringConversion()
+            .IsRequired();
+
+        builder
             .Property(static x => x.Hierarchy)
             .HasEnumToStringConversion()
             .IsRequired();

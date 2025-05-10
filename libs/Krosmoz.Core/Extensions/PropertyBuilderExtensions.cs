@@ -35,6 +35,25 @@ public static class PropertyBuilderExtensions
     }
 
     /// <summary>
+    /// Configures a property to use string conversion for enum values.
+    /// </summary>
+    /// <typeparam name="TProperty">The type of the property, which must be an enum.</typeparam>
+    /// <param name="builder">The property builder to configure.</param>
+    /// <returns>The configured property builder.</returns>
+    public static PropertyBuilder<TProperty> HasEnumToStringConversion<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TProperty>(this PropertyBuilder<TProperty> builder)
+        where TProperty : struct, Enum
+    {
+        return builder.HasConversion(
+            static property => property.ToString(),
+            static property => Enum.Parse<TProperty>(property),
+            new ValueComparer<TProperty>(
+                static (x, y) => x.Equals(y),
+                static property => property.GetHashCode(),
+                static property => property)
+        );
+    }
+
+    /// <summary>
     /// Serializes a property to a byte array using MemoryPack.
     /// </summary>
     /// <typeparam name="TProperty">The type of the property, which must implement <see cref="IMemoryPackable{T}"/>.</typeparam>

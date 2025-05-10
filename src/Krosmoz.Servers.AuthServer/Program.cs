@@ -5,6 +5,7 @@ using Krosmoz.Core.Network.Protocol.Dofus;
 using Krosmoz.Core.Network.Transport;
 using Krosmoz.Protocol.Messages;
 using Krosmoz.Servers.AuthServer.Database;
+using Krosmoz.Servers.AuthServer.Database.Repositories.Accounts;
 using Krosmoz.Servers.AuthServer.Extensions;
 using Krosmoz.Servers.AuthServer.Network.Transport;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +28,7 @@ await Host.CreateDefaultBuilder(args)
             .AddTransient<IMessageDecoder<DofusMessage>, DofusMessageDecoder>()
             .AddTransient<IMessageEncoder<DofusMessage>, DofusMessageEncoder>()
             .AddSingleton<IMessageFactory<DofusMessage>, MessageFactory>()
+            .AddSingleton<IAccountRepository, AccountRepository>()
             .AddHostedServiceAsSingleton<AuthServer>()
             .AddMessageHandlers();
     })

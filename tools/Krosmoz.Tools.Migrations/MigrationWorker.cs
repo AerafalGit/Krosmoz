@@ -46,15 +46,10 @@ public sealed class MigrationWorker : BackgroundService
             var authDbContext = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
             var gameDbContext = scope.ServiceProvider.GetRequiredService<GameDbContext>();
 
-            var authDbExists = !await EnsureDatabaseExistsAsync(authDbContext, cancellationToken);
-
-            if (!authDbExists)
-                _logger.LogWarning("Auth database does not exist. It will be created.");
-
-            var gameDbExists = !await EnsureDatabaseExistsAsync(gameDbContext, cancellationToken);
-
-            if (!gameDbExists)
-                _logger.LogWarning("Game database does not exist. It will be created.");
+            _logger.LogInformation("Ensuring databases exist");
+            await EnsureDatabaseExistsAsync(authDbContext, cancellationToken);
+            await EnsureDatabaseExistsAsync(gameDbContext, cancellationToken);
+            _logger.LogInformation("Databases ensured successfully");
 
             _logger.LogInformation("Starting migrations for Auth database");
             await MigrateDatabaseAsync(authDbContext, cancellationToken);
@@ -63,8 +58,6 @@ public sealed class MigrationWorker : BackgroundService
             _logger.LogInformation("Starting migrations for Game database");
             await MigrateDatabaseAsync(gameDbContext, cancellationToken);
             _logger.LogInformation("Game database migrations completed successfully");
-
-            Environment.SetEnvironmentVariable("KROSMOZ_DB_NEED_SEED", !authDbExists && !gameDbExists ? "true" : "false", EnvironmentVariableTarget.User);
         }
         catch (Exception e)
         {

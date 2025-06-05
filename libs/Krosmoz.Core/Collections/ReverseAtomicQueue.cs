@@ -10,7 +10,7 @@ namespace Krosmoz.Core.Collections;
 /// Represents a reverse atomic queue that supports atomic operations for unmanaged numeric types.
 /// </summary>
 /// <typeparam name="T">The type of elements in the queue, which must be unmanaged and implement <see cref="INumber{TSelf}"/>.</typeparam>
-public class ReverseAtomicQueue<T> : AtomicQueue<T>
+public sealed class ReverseAtomicQueue<T> : AtomicQueue<T>
     where T : unmanaged, INumber<T>
 {
     /// <summary>

@@ -87,16 +87,15 @@ public sealed class CompositeServerBuilder
     /// <summary>
     /// Configures the server to listen on a port specified by an environment variable.
     /// </summary>
-    /// <param name="environmentVariable">The name of the environment variable containing the port number.</param>
     /// <param name="configure">A delegate to configure the connection builder.</param>
     /// <returns>The current instance of <see cref="CompositeServerBuilder"/>.</returns>
     /// <exception cref="ArgumentException">
     /// Thrown if the environment variable is not set or does not contain a valid port number.
     /// </exception>
-    public CompositeServerBuilder ListenFromEnvironment(string environmentVariable, Action<IConnectionBuilder> configure)
+    public CompositeServerBuilder ListenFromEnvironment(Action<IConnectionBuilder> configure)
     {
-        if (!int.TryParse(Environment.GetEnvironmentVariable(environmentVariable), out var port))
-            throw new ArgumentException($"Environment variable '{environmentVariable}' is not set or is not a valid port number.", nameof(environmentVariable));
+        if (!int.TryParse(Environment.GetEnvironmentVariable("SERVER_PORT"), out var port))
+            throw new ArgumentException("Environment variable 'SERVER_PORT' is not set or is not a valid port number.");
 
         return ListenLocalhost(port, configure);
     }

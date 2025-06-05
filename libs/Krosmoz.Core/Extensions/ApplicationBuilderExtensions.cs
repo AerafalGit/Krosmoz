@@ -2,11 +2,13 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NATS.Client.Core;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
@@ -50,6 +52,23 @@ public static class ApplicationBuilderExtensions
                     .MigrationsHistoryTable("migrations");
             });
         });
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Configures the application builder to use a NATS client with the specified connection name and JSON serializer contexts.
+    /// </summary>
+    /// <param name="builder">The application builder to configure.</param>
+    /// <param name="connectionName">The name of the connection string to use.</param>
+    /// <param name="contexts">An array of JSON serializer contexts to register with the NATS client.</param>
+    /// <exception cref="ArgumentException">Thrown if the connection name is null or empty.</exception>
+    /// <returns>The configured <see cref="IHostApplicationBuilder"/> instance.</returns>
+    public static IHostApplicationBuilder UseNats(this IHostApplicationBuilder builder, string connectionName, params JsonSerializerContext[] contexts)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(connectionName);
+
+        builder.AddNatsClient(connectionName, configureOptions: options => options with { SerializerRegistry = new NatsJsonContextSerializerRegistry(contexts) });
 
         return builder;
     }

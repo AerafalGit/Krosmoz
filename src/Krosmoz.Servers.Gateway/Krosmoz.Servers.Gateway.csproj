@@ -18,4 +18,11 @@
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\tools\Krosmoz.Tools.Migrations\Krosmoz.Tools.Migrations.csproj" />
+    <ProjectReference Include="..\..\tools\Krosmoz.Tools.Seeds\Krosmoz.Tools.Seeds.csproj" />
+    <ProjectReference Include="..\Krosmoz.Servers.AuthServer\Krosmoz.Servers.AuthServer.csproj" />
+    <ProjectReference Include="..\Krosmoz.Servers.GameServer\Krosmoz.Servers.GameServer.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Krosmoz.Servers.AuthServer.Network;
+namespace Krosmoz.Servers.AuthServer.Network.Transport;
 
 /// <summary>
 /// Handles Dofus client connections, managing message reading, writing, and dispatching.

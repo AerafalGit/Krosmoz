@@ -8,7 +8,7 @@ using Krosmoz.Core.Network.Metadata;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Logging;
 
-namespace Krosmoz.Servers.AuthServer.Network;
+namespace Krosmoz.Servers.AuthServer.Network.Transport;
 
 /// <summary>
 /// Represents a connection to a Dofus client, managing message sending, connection state.

@@ -10,7 +10,7 @@ namespace Krosmoz.Core.Network.Dispatcher;
 /// </summary>
 /// <typeparam name="TConnection">The type of the connection.</typeparam>
 /// <typeparam name="TMessage">The type of the message.</typeparam>
-public interface IMessageDispatcher<in TConnection, in TMessage> : IDisposable
+public interface IMessageDispatcher<in TConnection, in TMessage> : IAsyncDisposable
     where TConnection : class
     where TMessage : class
 {

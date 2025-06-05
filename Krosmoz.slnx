@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/libs/">
     <Project Path="libs\Krosmoz.Core\Krosmoz.Core.csproj" Type="Classic C#" />
+    <Project Path="libs\Krosmoz.Protocol\Krosmoz.Protocol.csproj" Type="Classic C#" />
     <Project Path="libs\Krosmoz.Serialization\Krosmoz.Serialization.csproj" Type="Classic C#" />
   </Folder>
 </Solution>

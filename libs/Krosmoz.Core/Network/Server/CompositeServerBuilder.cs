@@ -67,8 +67,14 @@ public sealed class CompositeServerBuilder
     /// <param name="port">The port number to listen on.</param>
     /// <param name="configure">A delegate to configure the connection builder.</param>
     /// <returns>The current instance of <see cref="CompositeServerBuilder"/>.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if the port number is less than or equal to zero, or greater than 65535.
+    /// </exception>
     public CompositeServerBuilder ListenLocalhost(int port, Action<IConnectionBuilder> configure)
     {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(port);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(port, ushort.MaxValue);
+
         var connectionBuilder = new ConnectionBuilder(ApplicationServices);
 
         configure(connectionBuilder);
@@ -76,6 +82,23 @@ public sealed class CompositeServerBuilder
         Bindings.Add(new ServerBinding(port, connectionBuilder.Build(), new SocketTransportFactory(Options.Create(TransportOptions), ApplicationServices.GetLoggerFactory())));
 
         return this;
+    }
+
+    /// <summary>
+    /// Configures the server to listen on a port specified by an environment variable.
+    /// </summary>
+    /// <param name="environmentVariable">The name of the environment variable containing the port number.</param>
+    /// <param name="configure">A delegate to configure the connection builder.</param>
+    /// <returns>The current instance of <see cref="CompositeServerBuilder"/>.</returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown if the environment variable is not set or does not contain a valid port number.
+    /// </exception>
+    public CompositeServerBuilder ListenFromEnvironment(string environmentVariable, Action<IConnectionBuilder> configure)
+    {
+        if (!int.TryParse(Environment.GetEnvironmentVariable(environmentVariable), out var port))
+            throw new ArgumentException($"Environment variable '{environmentVariable}' is not set or is not a valid port number.", nameof(environmentVariable));
+
+        return ListenLocalhost(port, configure);
     }
 
     /// <summary>

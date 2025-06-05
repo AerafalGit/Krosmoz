@@ -8,4 +8,9 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Krosmoz.Servers.AuthServer\Krosmoz.Servers.AuthServer.csproj" />
+    <ProjectReference Include="..\..\src\Krosmoz.Servers.GameServer\Krosmoz.Servers.GameServer.csproj" />
+  </ItemGroup>
+
 </Project>

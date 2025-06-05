@@ -4,5 +4,7 @@
     <Project Path="libs\Krosmoz.Protocol\Krosmoz.Protocol.csproj" Type="Classic C#" />
     <Project Path="libs\Krosmoz.Serialization\Krosmoz.Serialization.csproj" Type="Classic C#" />
   </Folder>
-  <Folder Name="/src/" />
+  <Folder Name="/src/">
+    <Project Path="src\Krosmoz.Servers.AuthServer\Krosmoz.Servers.AuthServer.csproj" Type="Classic C#" />
+  </Folder>
 </Solution>

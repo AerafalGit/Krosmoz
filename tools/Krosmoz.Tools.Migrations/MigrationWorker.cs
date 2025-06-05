@@ -46,12 +46,12 @@ public sealed class MigrationWorker : BackgroundService
             var authDbContext = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
             var gameDbContext = scope.ServiceProvider.GetRequiredService<GameDbContext>();
 
-            var authDbExists = await EnsureDatabaseExistsAsync(authDbContext, cancellationToken);
+            var authDbExists = !await EnsureDatabaseExistsAsync(authDbContext, cancellationToken);
 
             if (!authDbExists)
                 _logger.LogWarning("Auth database does not exist. It will be created.");
 
-            var gameDbExists = await EnsureDatabaseExistsAsync(gameDbContext, cancellationToken);
+            var gameDbExists = !await EnsureDatabaseExistsAsync(gameDbContext, cancellationToken);
 
             if (!gameDbExists)
                 _logger.LogWarning("Game database does not exist. It will be created.");

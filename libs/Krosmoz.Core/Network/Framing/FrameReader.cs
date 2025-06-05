@@ -1,0 +1,257 @@
+﻿// Copyright (c) Krosmoz 2025.
+// Krosmoz licenses this file to you under the MIT license.
+// See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
+
+using System.Buffers;
+using System.IO.Pipelines;
+using System.Runtime.CompilerServices;
+using Krosmoz.Core.Network.Framing.Serialization;
+
+namespace Krosmoz.Core.Network.Framing;
+
+/// <summary>
+/// Represents a reader for processing frames from a stream or pipe.
+/// Provides methods for reading and decoding messages asynchronously.
+/// </summary>
+/// <typeparam name="TMessage">The type of the message to decode.</typeparam>
+public sealed class FrameReader<TMessage> : IAsyncDisposable
+    where TMessage : class
+{
+    private readonly PipeReader _reader;
+    private readonly IMessageDecoder<TMessage> _decoder;
+
+    private ReadOnlySequence<byte> _buffer;
+    private SequencePosition _consumed;
+    private bool _disposed;
+    private SequencePosition _examined;
+    private bool _hasMessage;
+    private bool _isCanceled;
+    private bool _isCompleted;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FrameReader{TMessage}"/> class using a stream.
+    /// </summary>
+    /// <param name="stream">The stream to read frames from.</param>
+    /// <param name="decoder">The decoder to use for decoding messages.</param>
+    public FrameReader(Stream stream, IMessageDecoder<TMessage> decoder) : this(PipeReader.Create(stream), decoder)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FrameReader{TMessage}"/> class using a pipe reader.
+    /// </summary>
+    /// <param name="reader">The pipe reader to read frames from.</param>
+    /// <param name="decoder">The decoder to use for decoding messages.</param>
+    public FrameReader(PipeReader reader, IMessageDecoder<TMessage> decoder)
+    {
+        _reader = reader;
+        _decoder = decoder;
+    }
+
+    /// <summary>
+    /// Reads all messages asynchronously using the specified decoder.
+    /// </summary>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>An asynchronous enumerable of decoded messages.</returns>
+    public async IAsyncEnumerable<TMessage> ReadAllAsync([EnumeratorCancellation] CancellationToken cancellationToken)
+    {
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            try
+            {
+                var (message, isCanceled, isCompleted) = await ReadAsync(cancellationToken).ConfigureAwait(false);
+
+                if (isCanceled)
+                    throw new OperationCanceledException("The read operation was canceled.", cancellationToken);
+
+                if (isCompleted)
+                    yield break;
+
+                if (message is null)
+                    throw new InvalidDataException("The read operation returned a null message.");
+
+                yield return message;
+            }
+            finally
+            {
+                Advance();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Reads a single frame asynchronously using the decoder.
+    /// </summary>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A task representing the result of the read operation.</returns>
+    public ValueTask<FrameReadResult<TMessage>> ReadAsync(CancellationToken cancellationToken)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, GetType());
+
+        if (_hasMessage)
+            throw new InvalidOperationException($"{nameof(Advance)} must be called before calling {nameof(ReadAsync)}.");
+
+        if (_consumed.GetObject() is null)
+            return DoAsyncRead(cancellationToken);
+
+        if (_decoder.TryDecodeMessage(_buffer, ref _consumed, ref _examined, out var message))
+        {
+            _hasMessage = true;
+            return new ValueTask<FrameReadResult<TMessage>>(new FrameReadResult<TMessage>(message, _isCanceled, false));
+        }
+
+        _reader.AdvanceTo(_consumed, _examined);
+
+        _buffer = default;
+        _consumed = default;
+        _examined = default;
+
+        if (_isCompleted)
+        {
+            _consumed = default;
+            _examined = default;
+
+            if (!_buffer.IsEmpty)
+                throw new InvalidDataException("Connection terminated while reading a message.");
+
+            return new ValueTask<FrameReadResult<TMessage>>(new FrameReadResult<TMessage>(_isCanceled, _isCompleted));
+        }
+
+        return DoAsyncRead(cancellationToken);
+    }
+
+    /// <summary>
+    /// Performs an asynchronous read operation to decode a message.
+    /// </summary>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A task representing the result of the read operation.</returns>
+    private ValueTask<FrameReadResult<TMessage>> DoAsyncRead(CancellationToken cancellationToken)
+    {
+        while (true)
+        {
+            var readTask = _reader.ReadAsync(cancellationToken);
+
+            ReadResult result;
+
+            if (readTask.IsCompletedSuccessfully)
+                result = readTask.Result;
+            else
+                return ContinueDoAsyncRead(readTask, cancellationToken);
+
+            var (shouldContinue, hasMessage) = TrySetMessage(result, out var protocolReadResult);
+
+            if (hasMessage)
+                return new ValueTask<FrameReadResult<TMessage>>(protocolReadResult);
+
+            if (!shouldContinue)
+                break;
+        }
+
+        return new ValueTask<FrameReadResult<TMessage>>(new FrameReadResult<TMessage>(_isCanceled, _isCompleted));
+    }
+
+    /// <summary>
+    /// Continues an asynchronous read operation to decode a message.
+    /// </summary>
+    /// <param name="readTask">The task representing the read operation.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A task representing the result of the read operation.</returns>
+    private async ValueTask<FrameReadResult<TMessage>> ContinueDoAsyncRead(ValueTask<ReadResult> readTask, CancellationToken cancellationToken)
+    {
+        while (true)
+        {
+            var result = await readTask.ConfigureAwait(false);
+
+            var (shouldContinue, hasMessage) = TrySetMessage(result, out var readResult);
+
+            if (hasMessage)
+                return readResult;
+
+            if (!shouldContinue)
+            {
+                break;
+            }
+
+            readTask = _reader.ReadAsync(cancellationToken);
+        }
+
+        return new FrameReadResult<TMessage>(_isCanceled, _isCompleted);
+    }
+
+    /// <summary>
+    /// Attempts to set the decoded message from the read result.
+    /// </summary>
+    /// <param name="result">The result of the read operation.</param>
+    /// <param name="readResult">The result of the frame read operation.</param>
+    /// <returns>A tuple indicating whether to continue and whether a message was decoded.</returns>
+    private (bool ShouldContinue, bool HasMessage) TrySetMessage(ReadResult result, out FrameReadResult<TMessage> readResult)
+    {
+        _buffer = result.Buffer;
+        _isCanceled = result.IsCanceled;
+        _isCompleted = result.IsCompleted;
+        _consumed = _buffer.Start;
+        _examined = _buffer.End;
+
+        if (_isCanceled)
+        {
+            readResult = FrameReadResult<TMessage>.Empty;
+            return (false, false);
+        }
+
+        if (_decoder.TryDecodeMessage(_buffer, ref _consumed, ref _examined, out var message))
+        {
+            _hasMessage = true;
+            readResult = new FrameReadResult<TMessage>(message, _isCanceled, false);
+            return (false, true);
+        }
+
+        _reader.AdvanceTo(_consumed, _examined);
+
+        _buffer = default;
+        _consumed = default;
+        _examined = default;
+
+        if (_isCompleted)
+        {
+            _consumed = default;
+            _examined = default;
+
+            if (!_buffer.IsEmpty)
+                throw new InvalidDataException("Connection terminated while reading a message.");
+
+            readResult = FrameReadResult<TMessage>.Empty;
+            return (false, false);
+        }
+
+        readResult = FrameReadResult<TMessage>.Empty;
+        return (true, false);
+    }
+
+    /// <summary>
+    /// Advances the reader to the next frame.
+    /// </summary>
+    public void Advance()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, GetType());
+
+        _isCanceled = false;
+
+        if (!_hasMessage)
+            return;
+
+        _buffer = _buffer.Slice(_consumed);
+
+        _hasMessage = false;
+    }
+
+    /// <summary>
+    /// Disposes the reader asynchronously.
+    /// </summary>
+    /// <returns>A task representing the asynchronous dispose operation.</returns>
+    public ValueTask DisposeAsync()
+    {
+        _disposed = true;
+
+        return ValueTask.CompletedTask;
+    }
+}

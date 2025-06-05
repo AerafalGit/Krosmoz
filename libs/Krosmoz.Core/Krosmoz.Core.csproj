@@ -9,4 +9,9 @@
     <IsAspireSharedProject>true</IsAspireSharedProject>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Aspire.NATS.Net" Version="9.3.0" />
+    <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.3.0" />
+  </ItemGroup>
+
 </Project>

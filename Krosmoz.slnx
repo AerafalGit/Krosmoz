@@ -1,3 +1,5 @@
 <Solution>
-  <Folder Name="/libs/" />
+  <Folder Name="/libs/">
+    <Project Path="libs\Krosmoz.Core\Krosmoz.Core.csproj" Type="Classic C#" />
+  </Folder>
 </Solution>

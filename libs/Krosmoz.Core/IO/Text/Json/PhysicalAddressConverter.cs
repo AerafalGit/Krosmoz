@@ -6,7 +6,7 @@ using System.Net.NetworkInformation;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Krosmoz.Core.IO.Json;
+namespace Krosmoz.Core.IO.Text.Json;
 
 /// <summary>
 /// A custom JSON converter for <see cref="PhysicalAddress"/> objects.

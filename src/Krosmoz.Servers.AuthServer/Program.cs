@@ -2,6 +2,7 @@
 using Krosmoz.Core.Network.Hosting;
 using Krosmoz.Core.Network.Protocol.Dofus;
 using Krosmoz.Core.Scheduling;
+using Krosmoz.Core.Services;
 using Krosmoz.Servers.AuthServer.Database;
 using Krosmoz.Servers.AuthServer.Network.Transport;
 using Microsoft.AspNetCore.Connections;
@@ -18,7 +19,8 @@ builder
 
 builder.Services
     .AddDofusProtocol()
-    .AddTransient<IScheduler, Scheduler>();
+    .AddTransient<IScheduler, Scheduler>()
+    .AddInitializableServices();
 
 builder
     .Build()

@@ -10,6 +10,7 @@
   </Folder>
   <Folder Name="/tools/">
     <Project Path="tools\Krosmoz.Tools.Migrations\Krosmoz.Tools.Migrations.csproj" Type="Classic C#" />
+    <Project Path="tools\Krosmoz.Tools.Protocol\Krosmoz.Tools.Protocol.csproj" Type="Classic C#" />
     <Project Path="tools\Krosmoz.Tools.Seeds\Krosmoz.Tools.Seeds.csproj" Type="Classic C#" />
   </Folder>
 </Solution>

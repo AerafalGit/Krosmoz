@@ -3,7 +3,6 @@
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
 using Krosmoz.Tools.Seeds.Base;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -17,7 +16,6 @@ public sealed class SeedWorker : BackgroundService
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly IHostApplicationLifetime _applicationLifetime;
-    private readonly IConfiguration _configuration;
     private readonly ILogger<SeedWorker> _logger;
 
     /// <summary>
@@ -25,13 +23,11 @@ public sealed class SeedWorker : BackgroundService
     /// </summary>
     /// <param name="serviceScopeFactory">The factory to create service scopes.</param>
     /// <param name="applicationLifetime">The application lifetime manager.</param>
-    /// <param name="configuration">The application configuration.</param>
     /// <param name="logger">The logger instance for logging messages.</param>
-    public SeedWorker(IServiceScopeFactory serviceScopeFactory, IHostApplicationLifetime applicationLifetime, IConfiguration configuration, ILogger<SeedWorker> logger)
+    public SeedWorker(IServiceScopeFactory serviceScopeFactory, IHostApplicationLifetime applicationLifetime, ILogger<SeedWorker> logger)
     {
         _serviceScopeFactory = serviceScopeFactory;
         _applicationLifetime = applicationLifetime;
-        _configuration = configuration;
         _logger = logger;
     }
 
@@ -41,13 +37,6 @@ public sealed class SeedWorker : BackgroundService
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        if (!_configuration.GetValue<bool>("KROSMOZ_DB_NEED_SEED"))
-        {
-            _logger.LogInformation("Database seeding is not required. Exiting the worker.");
-            _applicationLifetime.StopApplication();
-            return;
-        }
-
         try
         {
             await using var scope = _serviceScopeFactory.CreateAsyncScope();

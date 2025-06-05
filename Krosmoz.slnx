@@ -8,6 +8,7 @@
   <Folder Name="/src/">
     <Project Path="src\Krosmoz.Servers.AuthServer\Krosmoz.Servers.AuthServer.csproj" Type="Classic C#" />
     <Project Path="src\Krosmoz.Servers.GameServer\Krosmoz.Servers.GameServer.csproj" Type="Classic C#" />
+    <Project Path="src\Krosmoz.Servers.Gateway\Krosmoz.Servers.Gateway.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/tools/">
     <Project Path="tools\Krosmoz.Tools.Migrations\Krosmoz.Tools.Migrations.csproj" Type="Classic C#" />

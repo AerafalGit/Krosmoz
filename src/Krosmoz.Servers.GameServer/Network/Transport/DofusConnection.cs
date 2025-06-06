@@ -5,6 +5,7 @@
 using System.Net;
 using Krosmoz.Core.Network.Framing;
 using Krosmoz.Core.Network.Metadata;
+using Krosmoz.Servers.GameServer.Models.Heroes;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Logging;
 
@@ -21,6 +22,11 @@ public sealed class DofusConnection : IAsyncDisposable
     private readonly ILogger<DofusConnection> _logger;
 
     private bool _disposed;
+
+    /// <summary>
+    /// Gets the collection of heroes associated with the connection.
+    /// </summary>
+    public Heroes Heroes { get; }
 
     /// <summary>
     /// Gets the unique identifier for the connection.
@@ -63,6 +69,8 @@ public sealed class DofusConnection : IAsyncDisposable
         _writer = writer;
         _messageFactory = messageFactory;
         _logger = logger;
+
+        Heroes = new Heroes();
     }
 
     /// <summary>

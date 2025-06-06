@@ -2,13 +2,14 @@
 using Krosmoz.Core.Network.Hosting;
 using Krosmoz.Core.Network.Protocol.Dofus;
 using Krosmoz.Core.Scheduling;
+using Krosmoz.Core.Services;
+using Krosmoz.Servers.GameServer.Commands;
 using Krosmoz.Servers.GameServer.Database;
 using Krosmoz.Servers.GameServer.Models.Options.Breeds;
 using Krosmoz.Servers.GameServer.Models.Options.OptionalFeatures;
 using Krosmoz.Servers.GameServer.Models.Options.Servers;
 using Krosmoz.Servers.GameServer.Network.Transport;
 using Krosmoz.Servers.GameServer.Services.Chat;
-using Krosmoz.Servers.GameServer.Services.Commands;
 using Krosmoz.Servers.GameServer.Services.Datacenter;
 using Krosmoz.Servers.GameServer.Services.OptionalFeatures;
 using Krosmoz.Servers.GameServer.Services.Servers;
@@ -26,6 +27,8 @@ builder
 
 builder.Services
     .AddDofusProtocol()
+    .AddCommands()
+    .AddInitializableServices()
     .Configure<ServerOptions>(builder.Configuration)
     .Configure<OptionalFeaturesOptions>(builder.Configuration)
     .Configure<BreedOptions>(builder.Configuration)
@@ -33,7 +36,6 @@ builder.Services
     .AddSingleton<IDatacenterService, DatacenterService>()
     .AddSingleton<IOptionalFeatureService, OptionalFeatureService>()
     .AddSingleton<IServerService, ServerService>()
-    .AddSingleton<ICommandService, CommandService>()
     .AddScoped<IChatService, ChatService>();
 
 builder

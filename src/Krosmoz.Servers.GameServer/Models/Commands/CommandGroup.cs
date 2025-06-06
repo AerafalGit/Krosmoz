@@ -15,11 +15,6 @@ public sealed class CommandGroup
     public required string Name { get; init; }
 
     /// <summary>
-    /// Gets or sets the description of the command group.
-    /// </summary>
-    public required string Description { get; init; }
-
-    /// <summary>
     /// Gets or sets the array of commands in the group.
     /// </summary>
     public required Command[] Commands { get; init; }

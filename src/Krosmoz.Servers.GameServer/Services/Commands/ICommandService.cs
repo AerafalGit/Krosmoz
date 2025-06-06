@@ -18,10 +18,17 @@ public interface ICommandService
     IEnumerable<CommandGroup> CommandGroups { get; }
 
     /// <summary>
+    /// Sends the list of available console commands to the specified connection asynchronously.
+    /// </summary>
+    /// <param name="connection">The connection to which the command list will be sent.</param>
+    /// <returns>A <see cref="ValueTask"/> representing the asynchronous operation.</returns>
+    ValueTask SendConsoleCommandsListAsync(DofusConnection connection);
+
+    /// <summary>
     /// Executes a command asynchronously based on the provided command text and connection.
     /// </summary>
     /// <param name="connection">The connection to the Dofus client.</param>
     /// <param name="commandText">The text of the command to execute.</param>
-    /// <returns>A task that represents the asynchronous operation.</returns>
+    /// <returns>A <see cref="Task"/> that represents the asynchronous operation.</returns>
     Task ExecuteCommandAsync(DofusConnection connection, string commandText);
 }

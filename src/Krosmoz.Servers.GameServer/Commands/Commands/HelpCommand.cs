@@ -10,6 +10,7 @@ namespace Krosmoz.Servers.GameServer.Commands.Commands;
 /// <summary>
 /// Represents the help command that provides a list of available commands.
 /// </summary>
+[CommandGroup("commands")]
 public sealed class HelpCommand
 {
     /// <summary>

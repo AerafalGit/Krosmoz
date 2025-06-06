@@ -6,7 +6,9 @@ using Krosmoz.Servers.GameServer.Models.Options.Breeds;
 using Krosmoz.Servers.GameServer.Models.Options.OptionalFeatures;
 using Krosmoz.Servers.GameServer.Models.Options.Servers;
 using Krosmoz.Servers.GameServer.Network.Transport;
+using Krosmoz.Servers.GameServer.Services.Datacenter;
 using Krosmoz.Servers.GameServer.Services.OptionalFeatures;
+using Krosmoz.Servers.GameServer.Services.Servers;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,7 +26,9 @@ builder.Services
     .Configure<OptionalFeaturesOptions>(builder.Configuration)
     .Configure<BreedOptions>(builder.Configuration)
     .AddTransient<IScheduler, Scheduler>()
-    .AddScoped<IOptionalFeatureService, OptionalFeatureService>();
+    .AddSingleton<IDatacenterService, DatacenterService>()
+    .AddSingleton<IOptionalFeatureService, OptionalFeatureService>()
+    .AddSingleton<IServerService, ServerService>();
 
 builder
     .Build()

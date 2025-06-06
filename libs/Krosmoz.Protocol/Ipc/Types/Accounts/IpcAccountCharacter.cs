@@ -6,8 +6,6 @@ namespace Krosmoz.Protocol.Ipc.Types.Accounts;
 
 public sealed class IpcAccountCharacter
 {
-    public required int Id { get; init; }
-
     public required ushort ServerId { get; init; }
 
     public required int CharacterId { get; init; }

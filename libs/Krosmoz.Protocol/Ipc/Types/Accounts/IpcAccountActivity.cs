@@ -8,8 +8,6 @@ namespace Krosmoz.Protocol.Ipc.Types.Accounts;
 
 public sealed class IpcAccountActivity
 {
-    public int Id { get; init; }
-
     public required int AccountId { get; init; }
 
     public required IPAddress IpAddress { get; set; }

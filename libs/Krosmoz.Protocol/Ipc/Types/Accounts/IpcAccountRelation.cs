@@ -8,8 +8,6 @@ namespace Krosmoz.Protocol.Ipc.Types.Accounts;
 
 public sealed class IpcAccountRelation
 {
-    public required int Id { get; init; }
-
     public required int ToAccountId { get; init; }
 
     public required SocialRelationTypeIds RelationType { get; set; }

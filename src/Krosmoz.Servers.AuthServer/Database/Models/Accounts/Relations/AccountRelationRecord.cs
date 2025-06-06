@@ -3,6 +3,7 @@
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
 using Krosmoz.Protocol.Enums.Custom;
+using Krosmoz.Protocol.Ipc.Types.Accounts;
 
 namespace Krosmoz.Servers.AuthServer.Database.Models.Accounts.Relations;
 
@@ -17,4 +18,13 @@ public sealed class AccountRelationRecord
     public required SocialRelationTypeIds RelationType { get; set; }
 
     public required DateTime CreatedAt { get; init; }
+
+    public IpcAccountRelation ToIpcAccountRelation()
+    {
+        return new IpcAccountRelation
+        {
+            ToAccountId = ToAccountId,
+            RelationType = RelationType
+        };
+    }
 }

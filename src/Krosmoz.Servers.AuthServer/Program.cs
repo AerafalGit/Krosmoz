@@ -5,6 +5,7 @@ using Krosmoz.Core.Scheduling;
 using Krosmoz.Core.Services;
 using Krosmoz.Servers.AuthServer.Database;
 using Krosmoz.Servers.AuthServer.Network.Transport;
+using Krosmoz.Servers.AuthServer.Services.Acquaintance;
 using Krosmoz.Servers.AuthServer.Services.Authentication;
 using Krosmoz.Servers.AuthServer.Services.Banishments;
 using Krosmoz.Servers.AuthServer.Services.Nicknames;
@@ -28,6 +29,7 @@ builder.Services
     .AddSingleton<IServerService, ServerService>()
     .AddScoped<INicknameService, NicknameService>()
     .AddScoped<IAuthenticationService, AuthenticationService>()
+    .AddScoped<IAcquaintanceService, AcquaintanceService>()
     .AddInitializableServices();
 
 builder

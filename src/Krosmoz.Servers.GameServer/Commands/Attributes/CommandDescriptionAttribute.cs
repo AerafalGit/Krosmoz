@@ -5,9 +5,9 @@
 namespace Krosmoz.Servers.GameServer.Commands.Attributes;
 
 /// <summary>
-/// Specifies a description for a command class or method.
+/// Specifies a description for a command method.
 /// </summary>
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+[AttributeUsage(AttributeTargets.Method)]
 public sealed class CommandDescriptionAttribute : Attribute
 {
     /// <summary>

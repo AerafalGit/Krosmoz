@@ -2,6 +2,9 @@
 using Krosmoz.Core.Network.Hosting;
 using Krosmoz.Core.Scheduling;
 using Krosmoz.Servers.GameServer.Database;
+using Krosmoz.Servers.GameServer.Models.Options.Breeds;
+using Krosmoz.Servers.GameServer.Models.Options.OptionalFeatures;
+using Krosmoz.Servers.GameServer.Models.Options.Servers;
 using Krosmoz.Servers.GameServer.Network.Transport;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +19,9 @@ builder
     .UseCompositeServer(static server => server.ListenFromEnvironment(static connection => connection.UseConnectionHandler<DofusConnectionHandler>()));
 
 builder.Services
+    .Configure<ServerOptions>(builder.Configuration)
+    .Configure<OptionalFeaturesOptions>(builder.Configuration)
+    .Configure<BreedOptions>(builder.Configuration)
     .AddTransient<IScheduler, Scheduler>();
 
 builder

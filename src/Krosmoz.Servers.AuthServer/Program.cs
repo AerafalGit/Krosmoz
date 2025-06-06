@@ -9,6 +9,9 @@ using Krosmoz.Servers.AuthServer.Network.Transport;
 using Krosmoz.Servers.AuthServer.Services.Acquaintance;
 using Krosmoz.Servers.AuthServer.Services.Authentication;
 using Krosmoz.Servers.AuthServer.Services.Banishments;
+using Krosmoz.Servers.AuthServer.Services.Ipc.Accounts;
+using Krosmoz.Servers.AuthServer.Services.Ipc.Heartbeat;
+using Krosmoz.Servers.AuthServer.Services.Ipc.Servers;
 using Krosmoz.Servers.AuthServer.Services.Nicknames;
 using Krosmoz.Servers.AuthServer.Services.Servers;
 using Microsoft.AspNetCore.Connections;
@@ -31,6 +34,9 @@ builder.Services
     .AddScoped<INicknameService, NicknameService>()
     .AddScoped<IAuthenticationService, AuthenticationService>()
     .AddScoped<IAcquaintanceService, AcquaintanceService>()
+    .AddScopedHostedService<IpcAccountService>()
+    .AddScopedHostedService<IpcHeartbeatService>()
+    .AddScopedHostedService<IpcServerService>()
     .AddInitializableServices();
 
 builder

@@ -3,6 +3,7 @@ using Krosmoz.Core.Network.Hosting;
 using Krosmoz.Core.Network.Protocol.Dofus;
 using Krosmoz.Core.Scheduling;
 using Krosmoz.Core.Services;
+using Krosmoz.Protocol.Ipc;
 using Krosmoz.Servers.GameServer.Commands;
 using Krosmoz.Servers.GameServer.Database;
 using Krosmoz.Servers.GameServer.Models.Options.Breeds;
@@ -22,7 +23,7 @@ var builder = Host.CreateApplicationBuilder(args);
 builder
     .AddServiceDefaults()
     .UseNpgsqlDbContext<GameDbContext>("krosmoz-game-db")
-    .UseNats("krosmoz-nats")
+    .UseNats("krosmoz-nats", IpcJsonSerializerContext.WithCustomConverters)
     .UseCompositeServer(static server => server.ListenFromEnvironment(static connection => connection.UseConnectionHandler<DofusConnectionHandler>()));
 
 builder.Services

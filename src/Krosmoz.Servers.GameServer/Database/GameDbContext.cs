@@ -4,9 +4,11 @@
 
 using Krosmoz.Servers.GameServer.Database.Configurations.Experiences;
 using Krosmoz.Servers.GameServer.Database.Configurations.Interactives;
+using Krosmoz.Servers.GameServer.Database.Configurations.Items;
 using Krosmoz.Servers.GameServer.Database.Configurations.Maps;
 using Krosmoz.Servers.GameServer.Database.Models.Experiences;
 using Krosmoz.Servers.GameServer.Database.Models.Interactives;
+using Krosmoz.Servers.GameServer.Database.Models.Items;
 using Krosmoz.Servers.GameServer.Database.Models.Maps;
 using Microsoft.EntityFrameworkCore;
 
@@ -48,6 +50,12 @@ public sealed class GameDbContext : DbContext
     public required DbSet<MapRecord> Maps { get; set; }
 
     /// <summary>
+    /// Gets or sets the DbSet representing the collection of <see cref="ItemAppearanceRecord"/> entities
+    /// in the database. This property is required and provides access to the "ItemAppearances" table.
+    /// </summary>
+    public required DbSet<ItemAppearanceRecord> ItemAppearances { get; set; }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="GameDbContext"/> class with the specified options.
     /// </summary>
     /// <param name="options">The options to configure the database context.</param>
@@ -68,6 +76,7 @@ public sealed class GameDbContext : DbContext
             .ApplyConfiguration(new ExperienceConfiguration())
             .ApplyConfiguration(new InteractiveConfiguration())
             .ApplyConfiguration(new InteractiveActionConfiguration())
-            .ApplyConfiguration(new MapConfiguration());
+            .ApplyConfiguration(new MapConfiguration())
+            .ApplyConfiguration(new ItemAppearanceConfiguration());
     }
 }

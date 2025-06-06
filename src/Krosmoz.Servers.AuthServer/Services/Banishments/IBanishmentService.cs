@@ -17,10 +17,9 @@ public interface IBanishmentService
     /// </summary>
     /// <param name="connection">The authentication connection associated with the account.</param>
     /// <param name="account">The account record to check for banishment.</param>
-    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>
     /// A task that represents the asynchronous operation. The task result contains
     /// <c>true</c> if the account is banned; otherwise, <c>false</c>.
     /// </returns>
-    Task<bool> IsAccountBannedAsync(DofusConnection connection, AccountRecord account, CancellationToken cancellationToken);
+    Task<bool> IsAccountBannedAsync(DofusConnection connection, AccountRecord account);
 }

@@ -33,17 +33,16 @@ public sealed class BanishmentService : IBanishmentService
     /// </summary>
     /// <param name="connection">The authentication connection associated with the account.</param>
     /// <param name="account">The account record to check for banishment.</param>
-    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>
     /// A task that represents the asynchronous operation. The task result contains
     /// <c>true</c> if the account is banned; otherwise, <c>false</c>.
     /// </returns>
-    public async Task<bool> IsAccountBannedAsync(DofusConnection connection, AccountRecord account, CancellationToken cancellationToken)
+    public async Task<bool> IsAccountBannedAsync(DofusConnection connection, AccountRecord account)
     {
         var banishment = await _dbContext.Banishments.FirstOrDefaultAsync(x =>
             x.AccountId == account.Id ||
             x.IpAddress == account.IpAddress ||
-            x.MacAddress == account.MacAddress, cancellationToken);
+            x.MacAddress == account.MacAddress, connection.ConnectionClosed);
 
         switch (banishment)
         {
@@ -51,7 +50,7 @@ public sealed class BanishmentService : IBanishmentService
                 return false;
             case { AccountId: not null, ExpiredAt: not null } when banishment.ExpiredAt.Value < DateTime.UtcNow:
                 _dbContext.Banishments.Remove(banishment);
-                await _dbContext.SaveChangesAsync(cancellationToken);
+                await _dbContext.SaveChangesAsync(connection.ConnectionClosed);
                 return false;
             case { ExpiredAt: not null, AccountId: not null }:
                 await SendIdentificationFailedBannedAsync(connection, banishment.ExpiredAt.Value.GetUnixTimestampMilliseconds());

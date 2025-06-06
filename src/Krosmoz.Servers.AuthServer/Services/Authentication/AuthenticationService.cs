@@ -84,7 +84,7 @@ public sealed class AuthenticationService : IAuthenticationService
         account.IpAddress = connection.RemoteEndPoint!.Address;
         account.Ticket = Guid.NewGuid().ToString("N");
 
-        if (await _banishmentService.IsAccountBannedAsync(connection, account, connection.ConnectionClosed))
+        if (await _banishmentService.IsAccountBannedAsync(connection, account))
         {
             await connection.AbortAsync("Account is banned.", TimeSpan.FromMilliseconds(500));
             return;

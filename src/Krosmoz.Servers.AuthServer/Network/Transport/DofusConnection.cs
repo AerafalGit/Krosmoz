@@ -5,6 +5,7 @@
 using System.Net;
 using Krosmoz.Core.Network.Framing;
 using Krosmoz.Core.Network.Metadata;
+using Krosmoz.Servers.AuthServer.Database.Models.Accounts;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Logging;
 
@@ -21,6 +22,16 @@ public sealed class DofusConnection : IAsyncDisposable
     private readonly ILogger<DofusConnection> _logger;
 
     private bool _disposed;
+
+    /// <summary>
+    /// Gets or sets the account record associated with the connection.
+    /// </summary>
+    public AccountRecord Account { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the server ID to auto-select for the connection.
+    /// </summary>
+    public ushort ServerIdAutoSelect { get; set; }
 
     /// <summary>
     /// Gets the unique identifier for the connection.

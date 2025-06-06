@@ -2,10 +2,12 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
+using Krosmoz.Servers.GameServer.Database.Configurations.Characters;
 using Krosmoz.Servers.GameServer.Database.Configurations.Experiences;
 using Krosmoz.Servers.GameServer.Database.Configurations.Interactives;
 using Krosmoz.Servers.GameServer.Database.Configurations.Items;
 using Krosmoz.Servers.GameServer.Database.Configurations.Maps;
+using Krosmoz.Servers.GameServer.Database.Models.Characters;
 using Krosmoz.Servers.GameServer.Database.Models.Experiences;
 using Krosmoz.Servers.GameServer.Database.Models.Interactives;
 using Krosmoz.Servers.GameServer.Database.Models.Items;
@@ -23,7 +25,7 @@ public sealed class GameDbContext : DbContext
     /// <summary>
     /// The collation used for case-insensitive string comparisons in the database.
     /// </summary>
-    private const string CaseInsensitiveCollation = "case_insensitive";
+    public const string CaseInsensitiveCollation = "case_insensitive";
 
     /// <summary>
     /// Gets or sets the DbSet representing the collection of <see cref="ExperienceRecord"/> entities
@@ -56,6 +58,12 @@ public sealed class GameDbContext : DbContext
     public required DbSet<ItemAppearanceRecord> ItemAppearances { get; set; }
 
     /// <summary>
+    /// Gets or sets the DbSet representing the collection of <see cref="CharacterRecord"/> entities
+    /// in the database. This property is required and provides access to the "Characters" table.
+    /// </summary>
+    public required DbSet<CharacterRecord> Characters { get; set; }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="GameDbContext"/> class with the specified options.
     /// </summary>
     /// <param name="options">The options to configure the database context.</param>
@@ -77,6 +85,7 @@ public sealed class GameDbContext : DbContext
             .ApplyConfiguration(new InteractiveConfiguration())
             .ApplyConfiguration(new InteractiveActionConfiguration())
             .ApplyConfiguration(new MapConfiguration())
-            .ApplyConfiguration(new ItemAppearanceConfiguration());
+            .ApplyConfiguration(new ItemAppearanceConfiguration())
+            .ApplyConfiguration(new CharacterConfiguration());
     }
 }

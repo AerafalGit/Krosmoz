@@ -5,7 +5,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace Krosmoz.Core.Commands.Arguments;
+namespace Krosmoz.Servers.GameServer.Commands.Arguments;
 
 /// <summary>
 /// Converts a string argument into a <see cref="TimeSpan"/>.

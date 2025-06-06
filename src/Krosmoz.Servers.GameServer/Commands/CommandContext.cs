@@ -2,9 +2,9 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
-using Krosmoz.Core.Commands.Arguments;
+using Krosmoz.Servers.GameServer.Commands.Arguments;
 
-namespace Krosmoz.Core.Commands;
+namespace Krosmoz.Servers.GameServer.Commands;
 
 /// <summary>
 /// Represents the context in which a command is executed.

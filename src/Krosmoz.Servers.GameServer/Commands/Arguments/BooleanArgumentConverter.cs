@@ -2,7 +2,7 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
-namespace Krosmoz.Core.Commands.Arguments;
+namespace Krosmoz.Servers.GameServer.Commands.Arguments;
 
 /// <summary>
 /// Converts a string argument into a boolean value.

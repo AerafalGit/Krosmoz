@@ -4,7 +4,7 @@
 
 using System.Globalization;
 
-namespace Krosmoz.Core.Commands.Arguments;
+namespace Krosmoz.Servers.GameServer.Commands.Arguments;
 
 /// <summary>
 /// Converts a string argument into an 8-bit unsigned integer (byte).

@@ -5,6 +5,7 @@ using Krosmoz.Core.Scheduling;
 using Krosmoz.Core.Services;
 using Krosmoz.Servers.AuthServer.Database;
 using Krosmoz.Servers.AuthServer.Network.Transport;
+using Krosmoz.Servers.AuthServer.Services.Banishments;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,6 +21,7 @@ builder
 builder.Services
     .AddDofusProtocol()
     .AddTransient<IScheduler, Scheduler>()
+    .AddScoped<IBanishmentService, BanishmentService>()
     .AddInitializableServices();
 
 builder

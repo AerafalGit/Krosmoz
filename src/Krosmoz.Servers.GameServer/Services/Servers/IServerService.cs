@@ -18,6 +18,11 @@ public interface IServerService
     ushort ServerId { get; }
 
     /// <summary>
+    /// Gets the name of the server.
+    /// </summary>
+    string ServerName { get; }
+
+    /// <summary>
     /// Gets the game type of the server.
     /// </summary>
     ServerGameTypeIds ServerGameType { get; }

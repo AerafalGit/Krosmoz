@@ -34,6 +34,11 @@ public sealed class ServerService : IServerService
     public ushort ServerId { get; }
 
     /// <summary>
+    /// Gets the name of the server.
+    /// </summary>
+    public string ServerName { get; }
+
+    /// <summary>
     /// Gets the game type of the server.
     /// </summary>
     public ServerGameTypeIds ServerGameType { get; }
@@ -60,6 +65,7 @@ public sealed class ServerService : IServerService
         _serverLanguage = server.Language;
 
         ServerId = (ushort)server.Id;
+        ServerName = server.Name;
         ServerGameType = (ServerGameTypeIds)server.GameTypeId;
     }
 

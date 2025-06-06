@@ -2,9 +2,9 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
-namespace Krosmoz.Protocol.Ipc.Messages;
+namespace Krosmoz.Protocol.Ipc.Messages.Accounts;
 
-public sealed class IpcAccountByTicketRequest
+public sealed class IpcAccountAddCharacterResponse
 {
-    public required string Ticket { get; init; }
+    public required bool Success { get; init; }
 }

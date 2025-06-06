@@ -8,6 +8,7 @@ using Krosmoz.Core.IO.Text.Json;
 using Krosmoz.Protocol.Enums;
 using Krosmoz.Protocol.Enums.Custom;
 using Krosmoz.Protocol.Ipc.Messages;
+using Krosmoz.Protocol.Ipc.Messages.Accounts;
 
 namespace Krosmoz.Protocol.Ipc;
 

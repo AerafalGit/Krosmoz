@@ -7,11 +7,13 @@ using Krosmoz.Servers.AuthServer.Database.Configurations.Accounts.Activities;
 using Krosmoz.Servers.AuthServer.Database.Configurations.Accounts.Characters;
 using Krosmoz.Servers.AuthServer.Database.Configurations.Accounts.Relations;
 using Krosmoz.Servers.AuthServer.Database.Configurations.Banishments;
+using Krosmoz.Servers.AuthServer.Database.Configurations.Servers;
 using Krosmoz.Servers.AuthServer.Database.Models.Accounts;
 using Krosmoz.Servers.AuthServer.Database.Models.Accounts.Activities;
 using Krosmoz.Servers.AuthServer.Database.Models.Accounts.Characters;
 using Krosmoz.Servers.AuthServer.Database.Models.Accounts.Relations;
 using Krosmoz.Servers.AuthServer.Database.Models.Banishments;
+using Krosmoz.Servers.AuthServer.Database.Models.Servers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Krosmoz.Servers.AuthServer.Database;
@@ -58,6 +60,12 @@ public sealed class AuthDbContext : DbContext
     public required DbSet<BanishmentRecord> Banishments { get; set; }
 
     /// <summary>
+    /// Gets or sets the DbSet representing the collection of <see cref="ServerRecord"/> entities
+    /// in the database. This property is required and provides access to the "Servers" table.
+    /// </summary>
+    public required DbSet<ServerRecord> Servers { get; set; }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="AuthDbContext"/> class with the specified options.
     /// </summary>
     /// <param name="options">The options to configure the database context.</param>
@@ -79,6 +87,7 @@ public sealed class AuthDbContext : DbContext
             .ApplyConfiguration(new AccountCharacterConfiguration())
             .ApplyConfiguration(new AccountRelationConfiguration())
             .ApplyConfiguration(new AccountActivityConfiguration())
-            .ApplyConfiguration(new BanishmentConfiguration());
+            .ApplyConfiguration(new BanishmentConfiguration())
+            .ApplyConfiguration(new ServerConfiguration());
     }
 }

@@ -3,6 +3,7 @@
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
 using System.Diagnostics.Contracts;
+using System.Text;
 
 namespace Krosmoz.Core.Extensions;
 
@@ -58,5 +59,33 @@ public static class TimeExtensions
     public static DateTime FromUnixTimestampMilliseconds(this long unixTimestamp)
     {
         return s_unixEpoch.AddMilliseconds(unixTimestamp).ToLocalTime();
+    }
+
+    /// <summary>
+    /// Converts a <see cref="TimeSpan"/> to a human-readable string representation.
+    /// </summary>
+    /// <param name="timeSpan">The <see cref="TimeSpan"/> to convert.</param>
+    /// <returns>A human-readable string representation of the <see cref="TimeSpan"/>.</returns>
+    [Pure]
+    public static string ToHumanReadableTime(this TimeSpan timeSpan)
+    {
+        var builder = new StringBuilder();
+
+        if (timeSpan.Days > 0)
+            builder.Append($"{timeSpan.Days} day{(timeSpan.Days > 1 ? "s" : string.Empty)} ");
+
+        if (timeSpan.Hours > 0)
+            builder.Append($"{timeSpan.Hours} hour{(timeSpan.Hours > 1 ? "s" : string.Empty)} ");
+
+        if (timeSpan.Minutes > 0)
+            builder.Append($"{timeSpan.Minutes} minute{(timeSpan.Minutes > 1 ? "s" : string.Empty)} ");
+
+        if (timeSpan.Seconds > 0)
+            builder.Append($"{timeSpan.Seconds} second{(timeSpan.Seconds > 1 ? "s" : string.Empty)} ");
+
+        if (builder.Length is 0)
+            builder.Append("0 seconds");
+
+        return builder.ToString().Trim();
     }
 }

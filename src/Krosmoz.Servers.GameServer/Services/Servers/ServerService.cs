@@ -5,13 +5,13 @@
 using Krosmoz.Protocol.Datacenter.Servers;
 using Krosmoz.Protocol.Enums;
 using Krosmoz.Protocol.Enums.Custom;
-using Krosmoz.Protocol.Messages.Authorized;
 using Krosmoz.Protocol.Messages.Game.Approach;
 using Krosmoz.Protocol.Messages.Secure;
 using Krosmoz.Protocol.Types.Game.Approach;
 using Krosmoz.Servers.GameServer.Models.Options.Servers;
 using Krosmoz.Servers.GameServer.Network.Transport;
 using Krosmoz.Servers.GameServer.Services.Breeds;
+using Krosmoz.Servers.GameServer.Services.Commands;
 using Krosmoz.Servers.GameServer.Services.Datacenter;
 using Krosmoz.Servers.GameServer.Services.OptionalFeatures;
 using Microsoft.Extensions.Options;
@@ -25,6 +25,7 @@ public sealed class ServerService : IServerService
 {
     private readonly IOptionalFeatureService _optionalFeatureService;
     private readonly IBreedService _breedService;
+    private readonly ICommandService _commandService;
     private readonly sbyte _serverCommunityId;
     private readonly string _serverLanguage;
 
@@ -48,16 +49,19 @@ public sealed class ServerService : IServerService
     /// </summary>
     /// <param name="optionalFeatureService">The service for managing optional features.</param>
     /// <param name="breedService">The service for managing breed-related operations.</param>
+    /// <param name="commandService">The service for managing commands.</param>
     /// <param name="datacenterService">The service for accessing datacenter data.</param>
     /// <param name="options">The application configuration options.</param>
     public ServerService(
         IOptionalFeatureService optionalFeatureService,
         IBreedService breedService,
+        ICommandService commandService,
         IDatacenterService datacenterService,
         IOptions<ServerOptions> options)
     {
         _optionalFeatureService = optionalFeatureService;
         _breedService = breedService;
+        _commandService = commandService;
 
         var server = datacenterService.GetObjects<Server>(true).First(x => x.Id == options.Value.ServerId);
 
@@ -149,9 +153,9 @@ public sealed class ServerService : IServerService
     /// Sends trust status information asynchronously to the specified game connection.
     /// </summary>
     /// <param name="connection">The game connection to which the trust status will be sent.</param>
-    private static async Task SendTrustStatusAsync(DofusConnection connection)
+    private static ValueTask SendTrustStatusAsync(DofusConnection connection)
     {
-        await connection.SendAsync(new TrustStatusMessage
+        return connection.SendAsync(new TrustStatusMessage
         {
             Trusted = true,
             Certified = true
@@ -162,17 +166,10 @@ public sealed class ServerService : IServerService
     /// Sends the list of console commands asynchronously to the specified game connection.
     /// </summary>
     /// <param name="connection">The game connection to which the console commands will be sent.</param>
-    private static async Task SendConsoleCommandListAsync(DofusConnection connection)
+    private ValueTask SendConsoleCommandListAsync(DofusConnection connection)
     {
-        if (connection.Heroes.Account.Hierarchy < GameHierarchies.Moderator)
-            return;
-
-        // TODO: Add console commands
-        await connection.SendAsync(new ConsoleCommandsListMessage
-        {
-            Aliases = [],
-            Args = [],
-            Descriptions = []
-        });
+        return connection.Heroes.Account.Hierarchy < GameHierarchies.Moderator
+            ? ValueTask.CompletedTask
+            : _commandService.SendConsoleCommandsListAsync(connection);
     }
 }

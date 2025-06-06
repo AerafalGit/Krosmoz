@@ -30,19 +30,19 @@ namespace Krosmoz.Servers.GameServer.Database.Migrations
                     b.Property<byte>("Level")
                         .HasColumnType("smallint");
 
-                    b.Property<long?>("AlignmentHonor")
+                    b.Property<ulong?>("AlignmentHonor")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("CharacterXp")
+                    b.Property<ulong>("CharacterXp")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("GuildXp")
+                    b.Property<ulong>("GuildXp")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("JobXp")
+                    b.Property<ulong?>("JobXp")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("MountXp")
+                    b.Property<ulong?>("MountXp")
                         .HasColumnType("bigint");
 
                     b.HasKey("Level");

@@ -18,11 +18,11 @@ namespace Krosmoz.Servers.GameServer.Database.Migrations
                 columns: table => new
                 {
                     Level = table.Column<byte>(type: "smallint", nullable: false),
-                    CharacterXp = table.Column<long>(type: "bigint", nullable: false),
-                    GuildXp = table.Column<long>(type: "bigint", nullable: false),
-                    JobXp = table.Column<long>(type: "bigint", nullable: true),
-                    MountXp = table.Column<long>(type: "bigint", nullable: true),
-                    AlignmentHonor = table.Column<long>(type: "bigint", nullable: true)
+                    CharacterXp = table.Column<ulong>(type: "bigint", nullable: false),
+                    GuildXp = table.Column<ulong>(type: "bigint", nullable: false),
+                    JobXp = table.Column<ulong>(type: "bigint", nullable: true),
+                    MountXp = table.Column<ulong>(type: "bigint", nullable: true),
+                    AlignmentHonor = table.Column<ulong>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {

@@ -15,15 +15,14 @@ public sealed class Int64ArgumentConverter : IArgumentConverter<long>
     /// Converts a string argument from the command context into a 64-bit signed integer (long).
     /// </summary>
     /// <param name="context">The context in which the command is executed, containing the argument to convert.</param>
-    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>
-    /// A <see cref="ValueTask{TResult}"/> containing the converted long value if successful,
+    /// The converted long value if successful,
     /// or 0 if the conversion fails.
     /// </returns>
-    public ValueTask<long> ConvertAsync(CommandContext context, CancellationToken cancellationToken)
+    public long Convert(CommandContext context)
     {
         return long.TryParse(context.Argument, CultureInfo.InvariantCulture, out var value)
-            ? new ValueTask<long>(value)
-            : new ValueTask<long>(0);
+            ? value
+            : 0;
     }
 }

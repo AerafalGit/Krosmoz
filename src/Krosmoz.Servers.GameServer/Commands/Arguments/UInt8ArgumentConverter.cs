@@ -15,15 +15,14 @@ public sealed class UInt8ArgumentConverter : IArgumentConverter<byte>
     /// Converts a string argument from the command context into an 8-bit unsigned integer (byte).
     /// </summary>
     /// <param name="context">The context in which the command is executed, containing the argument to convert.</param>
-    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>
-    /// A <see cref="ValueTask{TResult}"/> containing the converted byte value if successful,
+    /// The converted byte value if successful,
     /// or 0 if the conversion fails.
     /// </returns>
-    public ValueTask<byte> ConvertAsync(CommandContext context, CancellationToken cancellationToken)
+    public byte Convert(CommandContext context)
     {
         return byte.TryParse(context.Argument, CultureInfo.InvariantCulture, out var value)
-            ? new ValueTask<byte>(value)
-            : new ValueTask<byte>(0);
+            ? value
+            : default;
     }
 }

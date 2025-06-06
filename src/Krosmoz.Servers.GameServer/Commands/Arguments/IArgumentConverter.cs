@@ -13,15 +13,14 @@ public interface IArgumentConverter;
 /// Defines a contract for converting a string argument into a specific type.
 /// </summary>
 /// <typeparam name="TArgument">The type of the argument to convert to.</typeparam>
-public interface IArgumentConverter<TArgument> : IArgumentConverter
+public interface IArgumentConverter<out TArgument> : IArgumentConverter
 {
     /// <summary>
     /// Converts a string argument into the specified type asynchronously.
     /// </summary>
     /// <param name="context">The context in which the command is executed.</param>
-    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>
-    /// A <see cref="ValueTask{TResult}"/> containing the converted argument of type <typeparamref name="TArgument"/>.
+    /// The converted argument of type <typeparamref name="TArgument"/>.
     /// </returns>
-    ValueTask<TArgument> ConvertAsync(CommandContext context, CancellationToken cancellationToken);
+    TArgument Convert(CommandContext context);
 }

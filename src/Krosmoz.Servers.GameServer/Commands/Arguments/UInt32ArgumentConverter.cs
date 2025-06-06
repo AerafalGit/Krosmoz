@@ -15,15 +15,14 @@ public sealed class UInt32ArgumentConverter : IArgumentConverter<uint>
     /// Converts a string argument from the command context into a 32-bit unsigned integer (uint).
     /// </summary>
     /// <param name="context">The context in which the command is executed, containing the argument to convert.</param>
-    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>
-    /// A <see cref="ValueTask{TResult}"/> containing the converted uint value if successful,
+    /// The converted uint value if successful,
     /// or 0 if the conversion fails.
     /// </returns>
-    public ValueTask<uint> ConvertAsync(CommandContext context, CancellationToken cancellationToken)
+    public uint Convert(CommandContext context)
     {
         return uint.TryParse(context.Argument, CultureInfo.InvariantCulture, out var value)
-            ? new ValueTask<uint>(value)
-            : new ValueTask<uint>(0);
+            ? value
+            : default;
     }
 }

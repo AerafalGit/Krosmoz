@@ -15,15 +15,14 @@ public sealed class Float64ArgumentConverter : IArgumentConverter<double>
     /// Converts a string argument from the command context into a 64-bit floating-point number (double).
     /// </summary>
     /// <param name="context">The context in which the command is executed, containing the argument to convert.</param>
-    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>
-    /// A <see cref="ValueTask{TResult}"/> containing the converted double value if successful,
+    /// The converted double value if successful,
     /// or 0 if the conversion fails.
     /// </returns>
-    public ValueTask<double> ConvertAsync(CommandContext context, CancellationToken cancellationToken)
+    public double Convert(CommandContext context)
     {
         return double.TryParse(context.Argument, CultureInfo.InvariantCulture, out var value)
-            ? new ValueTask<double>(value)
-            : new ValueTask<double>(0);
+            ? value
+            : 0;
     }
 }

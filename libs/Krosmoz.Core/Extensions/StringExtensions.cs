@@ -2,6 +2,7 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Security.Cryptography;
@@ -102,5 +103,65 @@ public static class StringExtensions
         }
 
         return occurences;
+    }
+
+    /// <summary>
+    /// Extracts the next argument from the specified string starting at the given position.
+    /// </summary>
+    /// <param name="text">The string to extract the argument from.</param>
+    /// <param name="position">
+    /// A reference to the current position in the string. This will be updated to the position
+    /// after the extracted argument or the end of the string.
+    /// </param>
+    /// <param name="argument">
+    /// When this method returns, contains the extracted argument if one was found; otherwise, <c>null</c>.
+    /// </param>
+    /// <returns>
+    /// <c>true</c> if an argument was successfully extracted; otherwise, <c>false</c>.
+    /// </returns>
+    public static bool ExtractNextArgument(this string text, ref int position, [NotNullWhen(true)] out string? argument)
+    {
+        argument = null;
+
+        if (string.IsNullOrWhiteSpace(text))
+            return false;
+
+        var i = position;
+
+        for (; i < text.Length; i++)
+        {
+            if (!char.IsWhiteSpace(text[i]))
+                break;
+        }
+
+        position = i;
+
+        var endPos   = -1;
+        var startPos = position;
+
+        for (i = startPos; i < text.Length; i++)
+        {
+            if (char.IsWhiteSpace(text[i]))
+                endPos = i;
+
+            if (endPos is -1)
+                continue;
+
+            position = endPos;
+
+            if (startPos == endPos)
+                return false;
+
+            argument = text.Substring(startPos, endPos - startPos);
+            return true;
+        }
+
+        position = text.Length;
+
+        if (startPos == position)
+            return false;
+
+        argument = text[startPos..];
+        return true;
     }
 }

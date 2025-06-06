@@ -15,15 +15,14 @@ public sealed class EnumArgumentConverter<TEnum> : IArgumentConverter<TEnum>
     /// Converts a string argument from the command context into an enumeration value of type <typeparamref name="TEnum"/>.
     /// </summary>
     /// <param name="context">The context in which the command is executed, containing the argument to convert.</param>
-    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>
-    /// A <see cref="ValueTask{TResult}"/> containing the converted enumeration value of type <typeparamref name="TEnum"/> if successful,
+    /// The converted enumeration value of type <typeparamref name="TEnum"/> if successful,
     /// or the default value of <typeparamref name="TEnum"/> if the conversion fails.
     /// </returns>
-    public ValueTask<TEnum> ConvertAsync(CommandContext context, CancellationToken cancellationToken)
+    public TEnum Convert(CommandContext context)
     {
         return Enum.TryParse<TEnum>(context.Argument, true, out var value)
-            ? new ValueTask<TEnum>(value)
-            : new ValueTask<TEnum>(default(TEnum));
+            ? value
+            : default;
     }
 }

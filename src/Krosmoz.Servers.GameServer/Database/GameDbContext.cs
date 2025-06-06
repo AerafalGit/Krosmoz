@@ -3,7 +3,9 @@
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
 using Krosmoz.Servers.GameServer.Database.Configurations.Experiences;
+using Krosmoz.Servers.GameServer.Database.Configurations.Interactives;
 using Krosmoz.Servers.GameServer.Database.Models.Experiences;
+using Krosmoz.Servers.GameServer.Database.Models.Interactives;
 using Microsoft.EntityFrameworkCore;
 
 namespace Krosmoz.Servers.GameServer.Database;
@@ -26,6 +28,18 @@ public sealed class GameDbContext : DbContext
     public required DbSet<ExperienceRecord> Experiences { get; set; }
 
     /// <summary>
+    /// Gets or sets the DbSet representing the collection of <see cref="InteractiveRecord"/> entities
+    /// in the database. This property is required and provides access to the "Interactives" table.
+    /// </summary>
+    public required DbSet<InteractiveRecord> Interactives { get; set; }
+
+    /// <summary>
+    /// Gets or sets the DbSet representing the collection of <see cref="InteractiveActionRecord"/> entities
+    /// in the database. This property is required and provides access to the "InteractiveActions" table.
+    /// </summary>
+    public required DbSet<InteractiveActionRecord> InteractiveActions { get; set; }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="GameDbContext"/> class with the specified options.
     /// </summary>
     /// <param name="options">The options to configure the database context.</param>
@@ -43,6 +57,8 @@ public sealed class GameDbContext : DbContext
         builder.HasCollation(CaseInsensitiveCollation, locale: "en-u-ks-primary", provider: "icu", deterministic: false);
 
         builder
-            .ApplyConfiguration(new ExperienceConfiguration());
+            .ApplyConfiguration(new ExperienceConfiguration())
+            .ApplyConfiguration(new InteractiveConfiguration())
+            .ApplyConfiguration(new InteractiveActionConfiguration());
     }
 }

@@ -16,19 +16,6 @@ public sealed class CommandCooldownAttribute : Attribute
     public TimeSpan Cooldown { get; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CommandCooldownAttribute"/> class with the specified cooldown duration.
-    /// </summary>
-    /// <param name="cooldown">The cooldown duration as a <see cref="TimeSpan"/>. Must be non-negative.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="cooldown"/> is negative.</exception>
-    public CommandCooldownAttribute(TimeSpan cooldown)
-    {
-        if (cooldown < TimeSpan.Zero)
-            throw new ArgumentOutOfRangeException(nameof(cooldown), "Cooldown must be a non-negative timespan.");
-
-        Cooldown = cooldown;
-    }
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="CommandCooldownAttribute"/> class with the specified cooldown in seconds.
     /// </summary>
     /// <param name="seconds">The cooldown duration in seconds. Must be non-negative.</param>

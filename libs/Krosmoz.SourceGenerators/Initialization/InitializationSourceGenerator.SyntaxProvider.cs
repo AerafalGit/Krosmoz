@@ -22,9 +22,8 @@ public sealed partial class InitializationSourceGenerator
     /// </returns>
     private static bool Predicate(SyntaxNode syntaxNode, CancellationToken cancellationToken)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        return syntaxNode is ClassDeclarationSyntax { BaseList: not null } declarationSyntax &&
+        return !cancellationToken.IsCancellationRequested &&
+               syntaxNode is ClassDeclarationSyntax { BaseList: not null } declarationSyntax &&
                declarationSyntax.BaseList.Types.Any(static t => t.Type.ToString() is nameof(IInitializableService) or nameof(IAsyncInitializableService));
     }
 
@@ -37,9 +36,7 @@ public sealed partial class InitializationSourceGenerator
     /// <exception cref="Exception">Thrown if the symbol cannot be retrieved from the syntax node.</exception>
     private static InitializableService Transform(GeneratorSyntaxContext context, CancellationToken cancellationToken)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        var symbol = (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!;
+        var symbol = (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node, cancellationToken)!;
 
         var symbolName = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 

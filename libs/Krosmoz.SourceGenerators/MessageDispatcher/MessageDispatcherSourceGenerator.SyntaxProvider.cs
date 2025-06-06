@@ -36,9 +36,7 @@ public sealed partial class MessageDispatcherSourceGenerator
     /// <returns>A <see cref="MessageHandler"/> representing the handler method.</returns>
     private static MessageHandler Transform(GeneratorSyntaxContext context, CancellationToken cancellationToken)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        var symbol = (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!;
+        var symbol = (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node, cancellationToken)!;
 
         var handlerName = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 

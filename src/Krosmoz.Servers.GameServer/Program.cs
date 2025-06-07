@@ -13,6 +13,8 @@ using Krosmoz.Servers.GameServer.Network.Transport;
 using Krosmoz.Servers.GameServer.Services.Characteristics;
 using Krosmoz.Servers.GameServer.Services.Chat;
 using Krosmoz.Servers.GameServer.Services.Datacenter;
+using Krosmoz.Servers.GameServer.Services.InfoMessages;
+using Krosmoz.Servers.GameServer.Services.Inventory;
 using Krosmoz.Servers.GameServer.Services.OptionalFeatures;
 using Krosmoz.Servers.GameServer.Services.Servers;
 using Krosmoz.Servers.GameServer.Services.Shortcuts;
@@ -41,7 +43,9 @@ builder.Services
     .AddSingleton<IServerService, ServerService>()
     .AddScoped<IChatService, ChatService>()
     .AddScoped<IShortcutService, ShortcutService>()
-    .AddScoped<ICharacteristicService, CharacteristicService>();
+    .AddScoped<ICharacteristicService, CharacteristicService>()
+    .AddScoped<IInventoryService, InventoryService>()
+    .AddScoped<IInfoMessageService, InfoMessageService>();
 
 builder
     .Build()

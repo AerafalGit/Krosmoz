@@ -70,5 +70,7 @@ public sealed class CharacterRecord
 
     public required Restrictions Restrictions { get; set; }
 
+    public int? SpouseId { get; set; }
+
     public DateTime? DeletedAt { get; set; }
 }

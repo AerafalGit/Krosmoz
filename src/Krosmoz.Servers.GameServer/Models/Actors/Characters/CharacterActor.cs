@@ -333,6 +333,11 @@ public sealed class CharacterActor : HumanoidActor
     public DateTime ConnectedAt { get; set; }
 
     /// <summary>
+    /// Gets or sets the spouse of the character, if any.
+    /// </summary>
+    public CharacterActor? Spouse { get; set; }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="CharacterActor"/> class.
     /// </summary>
     /// <param name="record">The character record.</param>

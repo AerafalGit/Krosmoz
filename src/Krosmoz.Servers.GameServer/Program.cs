@@ -18,6 +18,7 @@ using Krosmoz.Servers.GameServer.Services.Inventory;
 using Krosmoz.Servers.GameServer.Services.OptionalFeatures;
 using Krosmoz.Servers.GameServer.Services.Servers;
 using Krosmoz.Servers.GameServer.Services.Shortcuts;
+using Krosmoz.Servers.GameServer.Services.Social;
 using Krosmoz.Servers.GameServer.Services.World;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,7 +48,8 @@ builder.Services
     .AddScoped<ICharacteristicService, CharacteristicService>()
     .AddScoped<IInventoryService, InventoryService>()
     .AddScoped<IInfoMessageService, InfoMessageService>()
-    .AddSingleton<IWorldService, WorldService>();
+    .AddSingleton<IWorldService, WorldService>()
+    .AddScoped<ISocialService, SocialService>();
 
 builder
     .Build()

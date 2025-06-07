@@ -1,0 +1,27 @@
+﻿// Copyright (c) Krosmoz 2025.
+// Krosmoz licenses this file to you under the MIT license.
+// See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
+
+using Krosmoz.Protocol.Messages.Game.Character.Stats;
+using Krosmoz.Servers.GameServer.Models.Actors.Characters;
+
+namespace Krosmoz.Servers.GameServer.Services.Characteristics;
+
+/// <summary>
+/// Provides services for managing and sending character characteristics.
+/// </summary>
+public sealed class CharacteristicService : ICharacteristicService
+{
+    /// <summary>
+    /// Sends the characteristics of a character asynchronously.
+    /// </summary>
+    /// <param name="character">The character actor whose characteristics will be sent.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public ValueTask SendCharacterCharacteristicsAsync(CharacterActor character)
+    {
+        return character.Connection.SendAsync(new CharacterStatsListMessage
+        {
+            Stats = character.GetCharacterCharacteristicsInformations()
+        });
+    }
+}

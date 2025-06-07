@@ -10,6 +10,7 @@ using Krosmoz.Servers.GameServer.Models.Options.Breeds;
 using Krosmoz.Servers.GameServer.Models.Options.OptionalFeatures;
 using Krosmoz.Servers.GameServer.Models.Options.Servers;
 using Krosmoz.Servers.GameServer.Network.Transport;
+using Krosmoz.Servers.GameServer.Services.Characteristics;
 using Krosmoz.Servers.GameServer.Services.Chat;
 using Krosmoz.Servers.GameServer.Services.Datacenter;
 using Krosmoz.Servers.GameServer.Services.OptionalFeatures;
@@ -39,7 +40,8 @@ builder.Services
     .AddSingleton<IOptionalFeatureService, OptionalFeatureService>()
     .AddSingleton<IServerService, ServerService>()
     .AddScoped<IChatService, ChatService>()
-    .AddScoped<IShortcutService, ShortcutService>();
+    .AddScoped<IShortcutService, ShortcutService>()
+    .AddScoped<ICharacteristicService, CharacteristicService>();
 
 builder
     .Build()

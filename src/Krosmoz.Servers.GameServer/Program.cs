@@ -18,6 +18,7 @@ using Krosmoz.Servers.GameServer.Services.Inventory;
 using Krosmoz.Servers.GameServer.Services.OptionalFeatures;
 using Krosmoz.Servers.GameServer.Services.Servers;
 using Krosmoz.Servers.GameServer.Services.Shortcuts;
+using Krosmoz.Servers.GameServer.Services.World;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -45,7 +46,8 @@ builder.Services
     .AddScoped<IShortcutService, ShortcutService>()
     .AddScoped<ICharacteristicService, CharacteristicService>()
     .AddScoped<IInventoryService, InventoryService>()
-    .AddScoped<IInfoMessageService, InfoMessageService>();
+    .AddScoped<IInfoMessageService, InfoMessageService>()
+    .AddSingleton<IWorldService, WorldService>();
 
 builder
     .Build()

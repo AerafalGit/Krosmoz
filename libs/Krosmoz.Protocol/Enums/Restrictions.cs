@@ -5,7 +5,7 @@
 namespace Krosmoz.Protocol.Enums;
 
 [Flags]
-public enum PlayerCapabilities
+public enum Restrictions
 {
     None = 0,
     CantAggress = 1 << 0,

@@ -29,9 +29,11 @@ public sealed class CharacterRecord
 
     public required PlayerStatuses Status { get; set; }
 
+    public string? StatusMessage { get; set; }
+
     public required ActorLook Look { get; set; }
 
-    public required uint Kamas { get; set; }
+    public required int Kamas { get; set; }
 
     public required List<EmoticonIds> Emotes { get; set; }
 
@@ -47,13 +49,21 @@ public sealed class CharacterRecord
 
     public required HardcoreOrEpicDeathStates DeathState { get; set; }
 
+    public required AlignmentSides AlignmentSide { get; set; }
+
+    public required sbyte AlignmentValue { get; set; }
+
+    public required ushort AlignmentHonor { get; set; }
+
+    public required AggressableStatuses AlignmentStatus { get; set; }
+
     public required Dictionary<CharacteristicIds, CharacteristicData> Characteristics { get; init; }
 
     public required CharacterRemodelings PossibleChanges { get; set; }
 
     public required CharacterRemodelings MandatoryChanges { get; set; }
 
-    public required PlayerCapabilities Capabilities { get; set; }
+    public required Restrictions Restrictions { get; set; }
 
     public DateTime? DeletedAt { get; set; }
 }

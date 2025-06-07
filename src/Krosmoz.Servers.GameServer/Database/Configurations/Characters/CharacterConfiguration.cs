@@ -107,6 +107,22 @@ public sealed class CharacterConfiguration : IEntityTypeConfiguration<CharacterR
             .IsRequired();
 
         builder
+            .Property(static x => x.AlignmentSide)
+            .IsRequired();
+
+        builder
+            .Property(static x => x.AlignmentValue)
+            .IsRequired();
+
+        builder
+            .Property(static x => x.AlignmentHonor)
+            .IsRequired();
+
+        builder
+            .Property(static x => x.AlignmentStatus)
+            .IsRequired();
+
+        builder
             .Property(static x => x.PossibleChanges)
             .IsRequired();
 
@@ -120,7 +136,7 @@ public sealed class CharacterConfiguration : IEntityTypeConfiguration<CharacterR
             .IsRequired();
 
         builder
-            .Property(static x => x.Capabilities)
+            .Property(static x => x.Restrictions)
             .IsRequired();
 
         builder

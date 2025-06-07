@@ -44,6 +44,12 @@ public sealed class CharacteristicStorage
         (CharacteristicUsable)_characteristics[CharacteristicIds.PointsDenergie];
 
     /// <summary>
+    /// Gets the weight characteristic.
+    /// </summary>
+    public CharacteristicUsable Weight =>
+        (CharacteristicUsable)_characteristics[CharacteristicIds.Poids];
+
+    /// <summary>
     /// Gets the health characteristic.
     /// </summary>
     public CharacteristicHealth Health =>

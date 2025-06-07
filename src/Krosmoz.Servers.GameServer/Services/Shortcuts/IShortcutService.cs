@@ -3,7 +3,7 @@
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
 using Krosmoz.Protocol.Enums;
-using Krosmoz.Servers.GameServer.Network.Transport;
+using Krosmoz.Servers.GameServer.Models.Actors.Characters;
 
 namespace Krosmoz.Servers.GameServer.Services.Shortcuts;
 
@@ -13,10 +13,10 @@ namespace Krosmoz.Servers.GameServer.Services.Shortcuts;
 public interface IShortcutService
 {
     /// <summary>
-    /// Sends the content of a shortcut bar to the specified connection asynchronously.
+    /// Sends the content of a shortcut bar to the specified character asynchronously.
     /// </summary>
-    /// <param name="connection">The connection to which the shortcut bar content will be sent.</param>
+    /// <param name="character">The character actor to which the shortcut bar content will be sent.</param>
     /// <param name="barType">The type of the shortcut bar to send.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    ValueTask SendShortcutBarContentAsync(DofusConnection connection, ShortcutBars barType);
+    ValueTask SendShortcutBarContentAsync(CharacterActor character, ShortcutBars barType);
 }

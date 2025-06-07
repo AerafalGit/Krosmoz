@@ -4,7 +4,7 @@
 
 using Krosmoz.Protocol.Enums;
 using Krosmoz.Protocol.Messages.Game.Shortcut;
-using Krosmoz.Servers.GameServer.Network.Transport;
+using Krosmoz.Servers.GameServer.Models.Actors.Characters;
 
 namespace Krosmoz.Servers.GameServer.Services.Shortcuts;
 
@@ -13,20 +13,14 @@ namespace Krosmoz.Servers.GameServer.Services.Shortcuts;
 /// </summary>
 public sealed class ShortcutService : IShortcutService
 {
-    /// <summary>
-    /// Sends the content of a shortcut bar to the specified connection asynchronously.
-    /// </summary>
-    /// <param name="connection">The connection to which the shortcut bar content will be sent.</param>
-    /// <param name="barType">The type of the shortcut bar to send.</param>
-    /// <returns>A task that represents the asynchronous operation.</returns>
-    public ValueTask SendShortcutBarContentAsync(DofusConnection connection, ShortcutBars barType)
+    public ValueTask SendShortcutBarContentAsync(CharacterActor character, ShortcutBars barType)
     {
-        return connection.SendAsync(new ShortcutBarContentMessage
+        return character.Connection.SendAsync(new ShortcutBarContentMessage
         {
             BarType = (sbyte)barType,
             Shortcuts = barType is ShortcutBars.GeneralShortcutBar
-                ? connection.Heroes.Master.GeneralShortcutBar.Select(static s => s.GetShortcut())
-                : connection.Heroes.Master.SpellShortcutBar.Select(static s => s.GetShortcut())
+                ? character.GeneralShortcutBar.Select(static s => s.GetShortcut())
+                : character.SpellShortcutBar.Select(static s => s.GetShortcut())
         });
     }
 }

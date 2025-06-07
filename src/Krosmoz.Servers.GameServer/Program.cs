@@ -10,7 +10,9 @@ using Krosmoz.Servers.GameServer.Models.Options.Breeds;
 using Krosmoz.Servers.GameServer.Models.Options.OptionalFeatures;
 using Krosmoz.Servers.GameServer.Models.Options.Servers;
 using Krosmoz.Servers.GameServer.Network.Transport;
+using Krosmoz.Servers.GameServer.Services.Authentication;
 using Krosmoz.Servers.GameServer.Services.Characteristics;
+using Krosmoz.Servers.GameServer.Services.Characters.Creation.NameGeneration;
 using Krosmoz.Servers.GameServer.Services.Chat;
 using Krosmoz.Servers.GameServer.Services.Datacenter;
 using Krosmoz.Servers.GameServer.Services.InfoMessages;
@@ -49,7 +51,9 @@ builder.Services
     .AddScoped<IInventoryService, InventoryService>()
     .AddScoped<IInfoMessageService, InfoMessageService>()
     .AddSingleton<IWorldService, WorldService>()
-    .AddScoped<ISocialService, SocialService>();
+    .AddScoped<ISocialService, SocialService>()
+    .AddScoped<IAuthenticationService, AuthenticationService>()
+    .AddScoped<ICharacterNameGenerationService, CharacterNameGenerationService>();
 
 builder
     .Build()

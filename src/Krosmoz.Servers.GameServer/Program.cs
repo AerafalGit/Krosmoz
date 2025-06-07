@@ -14,6 +14,7 @@ using Krosmoz.Servers.GameServer.Services.Chat;
 using Krosmoz.Servers.GameServer.Services.Datacenter;
 using Krosmoz.Servers.GameServer.Services.OptionalFeatures;
 using Krosmoz.Servers.GameServer.Services.Servers;
+using Krosmoz.Servers.GameServer.Services.Shortcuts;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -37,7 +38,8 @@ builder.Services
     .AddSingleton<IDatacenterService, DatacenterService>()
     .AddSingleton<IOptionalFeatureService, OptionalFeatureService>()
     .AddSingleton<IServerService, ServerService>()
-    .AddScoped<IChatService, ChatService>();
+    .AddScoped<IChatService, ChatService>()
+    .AddScoped<IShortcutService, ShortcutService>();
 
 builder
     .Build()

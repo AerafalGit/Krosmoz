@@ -7,6 +7,7 @@ using Krosmoz.Tools.Seeds.Base;
 using Krosmoz.Tools.Seeds.Experiences;
 using Krosmoz.Tools.Seeds.Items;
 using Krosmoz.Tools.Seeds.Maps;
+using Krosmoz.Tools.Seeds.Servers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -23,6 +24,7 @@ builder.Services
     .AddScoped<BaseSeeder, ExperienceSeeder>()
     .AddScoped<BaseSeeder, ItemAppearanceSeeder>()
     .AddScoped<BaseSeeder, MapSeeder>()
+    .AddScoped<BaseSeeder, ServerSeeder>()
     .AddHttpClient("DofusBook", static client => client.BaseAddress = new Uri("https://www.dofusbook.net"));
 
 var app = builder.Build();

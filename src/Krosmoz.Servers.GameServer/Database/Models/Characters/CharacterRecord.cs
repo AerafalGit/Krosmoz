@@ -6,6 +6,7 @@ using Krosmoz.Protocol.Enums;
 using Krosmoz.Protocol.Enums.Custom;
 using Krosmoz.Servers.GameServer.Database.Models.Characteristics;
 using Krosmoz.Servers.GameServer.Models.Appearances;
+using Krosmoz.Servers.GameServer.Models.Shortcuts;
 
 namespace Krosmoz.Servers.GameServer.Database.Models.Characters;
 
@@ -38,6 +39,10 @@ public sealed class CharacterRecord
     public required List<EmoticonIds> Emotes { get; set; }
 
     public required List<SpellIds> Spells { get; set; }
+
+    public required List<ShortcutBarObject> GeneralShortcutBar { get; set; }
+
+    public required List<ShortcutBarObjectSpell> SpellShortcutBar { get; set; }
 
     public required DateTime CreatedAt { get; init; }
 

@@ -12,6 +12,7 @@ using Krosmoz.Protocol.Types.Game.Context.Roleplay;
 using Krosmoz.Servers.GameServer.Database.Models.Characters;
 using Krosmoz.Servers.GameServer.Models.Appearances;
 using Krosmoz.Servers.GameServer.Models.Characteristics;
+using Krosmoz.Servers.GameServer.Models.Shortcuts;
 using Krosmoz.Servers.GameServer.Models.Social;
 using Krosmoz.Servers.GameServer.Models.Spells;
 using Krosmoz.Servers.GameServer.Models.World;
@@ -308,6 +309,18 @@ public sealed class CharacterActor : HumanoidActor
     /// Gets the characteristic storage for the character.
     /// </summary>
     public CharacteristicStorage Characteristics { get; }
+
+    /// <summary>
+    /// Gets the list of general shortcuts for the character.
+    /// </summary>
+    public List<ShortcutBarObject> GeneralShortcutBar =>
+        Record.GeneralShortcutBar;
+
+    /// <summary>
+    /// Gets the list of spell shortcuts for the character.
+    /// </summary>
+    public List<ShortcutBarObjectSpell> SpellShortcutBar =>
+        Record.SpellShortcutBar;
 
     /// <summary>
     /// Gets or sets a value indicating whether the character is fully loaded.

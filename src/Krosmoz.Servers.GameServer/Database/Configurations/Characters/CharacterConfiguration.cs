@@ -7,6 +7,7 @@ using Krosmoz.Protocol.Enums.Custom;
 using Krosmoz.Servers.GameServer.Database.Models.Characteristics;
 using Krosmoz.Servers.GameServer.Database.Models.Characters;
 using Krosmoz.Servers.GameServer.Models.Appearances;
+using Krosmoz.Servers.GameServer.Models.Shortcuts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -133,6 +134,16 @@ public sealed class CharacterConfiguration : IEntityTypeConfiguration<CharacterR
         builder
             .Property(static x => x.Characteristics)
             .HasBlobConversion(ValueComparer.CreateDefault<Dictionary<CharacteristicIds, CharacteristicData>>(true))
+            .IsRequired();
+
+        builder
+            .Property(static x => x.GeneralShortcutBar)
+            .HasBlobConversion(ValueComparer.CreateDefault<List<ShortcutBarObject>>(true))
+            .IsRequired();
+
+        builder
+            .Property(static x => x.SpellShortcutBar)
+            .HasBlobConversion(ValueComparer.CreateDefault<List<ShortcutBarObjectSpell>>(true))
             .IsRequired();
 
         builder

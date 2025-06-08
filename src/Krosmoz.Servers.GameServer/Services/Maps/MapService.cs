@@ -31,6 +31,7 @@ public sealed class MapService : IMapService, IAsyncInitializableService
     private FrozenDictionary<int, Area> _areas;
     private FrozenDictionary<int, SubArea> _subAreas;
     private FrozenDictionary<int, Map> _maps;
+    private FrozenDictionary<int, MapScrollAction> _mapScrollActions;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MapService"/> class.
@@ -44,6 +45,7 @@ public sealed class MapService : IMapService, IAsyncInitializableService
         _areas = FrozenDictionary<int, Area>.Empty;
         _subAreas = FrozenDictionary<int, SubArea>.Empty;
         _maps = FrozenDictionary<int, Map>.Empty;
+        _mapScrollActions = FrozenDictionary<int, MapScrollAction>.Empty;
     }
 
     /// <summary>
@@ -58,6 +60,20 @@ public sealed class MapService : IMapService, IAsyncInitializableService
     public bool TryGetMap(int mapId, [NotNullWhen(true)] out Map? map)
     {
         return _maps.TryGetValue(mapId, out map);
+    }
+
+    /// <summary>
+    /// Attempts to retrieve a map scroll action by its identifier.
+    /// </summary>
+    /// <param name="mapId">The unique identifier of the map.</param>
+    /// <param name="mapScrollAction">
+    /// When this method returns, contains the map scroll action associated with the specified identifier,
+    /// if the map scroll action is found; otherwise, null. This parameter is passed uninitialized.
+    /// </param>
+    /// <returns>True if the map scroll action is found; otherwise, false.</returns>
+    public bool TryGetMapScrollAction(int mapId, [NotNullWhen(true)] out MapScrollAction? mapScrollAction)
+    {
+        return _mapScrollActions.TryGetValue(mapId, out mapScrollAction);
     }
 
     /// <summary>
@@ -203,6 +219,7 @@ public sealed class MapService : IMapService, IAsyncInitializableService
     {
         _areas = _datacenterService.GetObjects<Area>().ToFrozenDictionary(static x => x.Id);
         _subAreas = _datacenterService.GetObjects<SubArea>().ToFrozenDictionary(static x => x.Id);
+        _mapScrollActions = _datacenterService.GetObjects<MapScrollAction>().ToFrozenDictionary(static x => x.Id);
 
         await using var scope = _serviceScopeFactory.CreateAsyncScope();
         await using var dbContext = scope.ServiceProvider.GetRequiredService<GameDbContext>();

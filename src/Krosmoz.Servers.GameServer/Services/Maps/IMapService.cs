@@ -4,6 +4,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Krosmoz.Core.Network.Metadata;
+using Krosmoz.Protocol.Datacenter.World;
 using Krosmoz.Servers.GameServer.Models.Actors;
 using Krosmoz.Servers.GameServer.Models.Actors.Characters;
 using Krosmoz.Servers.GameServer.Models.World.Maps;
@@ -25,6 +26,17 @@ public interface IMapService
     /// </param>
     /// <returns>True if the map is found; otherwise, false.</returns>
     bool TryGetMap(int mapId, [NotNullWhen(true)] out Map? map);
+
+    /// <summary>
+    /// Attempts to retrieve a map scroll action by its identifier.
+    /// </summary>
+    /// <param name="mapId">The unique identifier of the map.</param>
+    /// <param name="mapScrollAction">
+    /// When this method returns, contains the map scroll action associated with the specified identifier,
+    /// if the map scroll action is found; otherwise, null. This parameter is passed uninitialized.
+    /// </param>
+    /// <returns>True if the map scroll action is found; otherwise, false.</returns>
+    bool TryGetMapScrollAction(int mapId, [NotNullWhen(true)] out MapScrollAction? mapScrollAction);
 
     /// <summary>
     /// Adds an actor to the map asynchronously.

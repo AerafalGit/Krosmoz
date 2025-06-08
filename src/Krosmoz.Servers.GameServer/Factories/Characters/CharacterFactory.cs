@@ -93,7 +93,7 @@ public sealed class CharacterFactory : ICharacterFactory
             Look = look,
             Head = (ushort)head.Id,
             Kamas = 0,
-            Position = new CharacterPosition(breed.SpawnMap, 312, 2),
+            Position = new CharacterPosition(84674563, 315, (sbyte)Directions.SouthWest),
             Emotes = [EmoticonIds.Sasseoir],
             Spells = [SpellIds.CoupDePoing, ..startSpells],
             Characteristics = CreateDefaultCharacteristics(_characterCreationOptions.CurrentValue),

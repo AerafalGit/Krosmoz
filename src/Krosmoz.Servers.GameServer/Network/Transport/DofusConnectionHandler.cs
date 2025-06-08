@@ -4,6 +4,9 @@
 
 using Krosmoz.Core.Network.Framing;
 using Krosmoz.Core.Network.Metadata;
+using Krosmoz.Protocol.Constants;
+using Krosmoz.Protocol.Messages.Game.Approach;
+using Krosmoz.Protocol.Messages.Handshake;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -54,6 +57,8 @@ public sealed class DofusConnectionHandler : ConnectionHandler
 
         logger.LogDebug("DofusConnection {ConnectionName} established", dofusConnection);
 
+        await OnConnectionEstablishedAsync(dofusConnection);
+
         try
         {
             await foreach (var message in reader.ReadAllAsync(dofusConnection.ConnectionClosed))
@@ -73,5 +78,17 @@ public sealed class DofusConnectionHandler : ConnectionHandler
         {
             logger.LogDebug("DofusConnection {ConnectionName} closed", dofusConnection);
         }
+    }
+
+    /// <summary>
+    /// Sends the required protocol version and a hello game message to the specified connection asynchronously.
+    /// </summary>
+    /// <param name="connection">The Dofus connection to which the messages will be sent.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    private static async Task OnConnectionEstablishedAsync(DofusConnection connection)
+    {
+        await connection.SendAsync(new ProtocolRequired { RequiredVersion = MetadataConstants.ProtocolRequiredBuild, CurrentVersion = MetadataConstants.ProtocolBuild });
+
+        await connection.SendAsync<HelloGameMessage>();
     }
 }

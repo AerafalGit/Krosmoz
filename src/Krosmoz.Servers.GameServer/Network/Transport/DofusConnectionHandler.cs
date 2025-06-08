@@ -22,19 +22,16 @@ public sealed class DofusConnectionHandler : ConnectionHandler
     private readonly ObjectFactory<DofusConnection> _connectionFactory;
     private readonly IServiceProvider _provider;
     private readonly IMessageFactory _messageFactory;
-    private readonly GameDbContext _dbContext;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DofusConnectionHandler"/> class.
     /// </summary>
     /// <param name="provider">The service provider for dependency injection.</param>
     /// <param name="messageFactory">The factory for creating message instances.</param>
-    /// <param name="dbContext">The database context for accessing game data.</param>
-    public DofusConnectionHandler(IServiceProvider provider, IMessageFactory messageFactory, GameDbContext dbContext)
+    public DofusConnectionHandler(IServiceProvider provider, IMessageFactory messageFactory)
     {
         _provider = provider;
         _messageFactory = messageFactory;
-        _dbContext = dbContext;
         _connectionFactory = ActivatorUtilities.CreateFactory<DofusConnection>(
         [
             typeof(ConnectionContext),
@@ -104,7 +101,9 @@ public sealed class DofusConnectionHandler : ConnectionHandler
     /// <returns>A task that represents the asynchronous operation.</returns>
     private async Task OnConnectionClosedAsync(DofusConnection connection)
     {
-        _dbContext.Characters.Update(connection.Heroes.Master.Record);
-        await _dbContext.SaveChangesAsync(connection.ConnectionClosed);
+        await using var scope = _provider.CreateAsyncScope();
+        await using var dbContext = scope.ServiceProvider.GetRequiredService<GameDbContext>();
+        dbContext.Characters.Update(connection.Heroes.Master.Record);
+        await dbContext.SaveChangesAsync(connection.ConnectionClosed);
     }
 }

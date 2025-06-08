@@ -26,6 +26,7 @@ using Krosmoz.Servers.GameServer.Services.Datacenter;
 using Krosmoz.Servers.GameServer.Services.InfoMessages;
 using Krosmoz.Servers.GameServer.Services.Inventory;
 using Krosmoz.Servers.GameServer.Services.Maps.Movements;
+using Krosmoz.Servers.GameServer.Services.Maps.Teleport;
 using Krosmoz.Servers.GameServer.Services.OptionalFeatures;
 using Krosmoz.Servers.GameServer.Services.Servers;
 using Krosmoz.Servers.GameServer.Services.Shortcuts;
@@ -71,7 +72,8 @@ builder.Services
     .AddScoped<IMapMovementService, MapMovementService>()
     .AddScoped<ICharacterDeletionService, CharacterDeletionService>()
     .AddScoped<ICharacterLoadingService, CharacterLoadingService>()
-    .AddScoped<IContextService, ContextService>();
+    .AddScoped<IContextService, ContextService>()
+    .AddScoped<IMapTeleportService, MapTeleportService>();
 
 builder
     .Build()

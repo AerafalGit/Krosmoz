@@ -420,6 +420,33 @@ public sealed class Map
     }
 
     /// <summary>
+    /// Retrieves a random free cell from the map.
+    /// </summary>
+    /// <returns>A <see cref="Cell"/> object representing a random free cell on the map.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if there are no free cells available on the map.</exception>
+    public Cell GetRandomFreeCell()
+    {
+        if (FreeCells.Length == 0)
+            throw new InvalidOperationException("No free cells available on the map.");
+
+        return FreeCells[Random.Shared.Next(FreeCells.Length)];
+    }
+
+    /// <summary>
+    /// Retrieves a walkable cell by its ID or returns the first free cell if the specified cell is not walkable.
+    /// </summary>
+    /// <param name="cellId">The ID of the cell to retrieve.</param>
+    /// <returns>
+    /// The cell with the specified ID if it is walkable; otherwise, the first free cell on the map.
+    /// </returns>
+    public Cell GetCellWalkableOrDefault(short cellId)
+    {
+        var cell = GetCell(cellId);
+
+        return IsWalkableCell(cell) ? cell : FreeCells[0];
+    }
+
+    /// <summary>
     /// Adds an actor to the map. If the actor is a character, it is also added to the characters dictionary.
     /// </summary>
     /// <param name="actor">The actor to add to the map.</param>
@@ -473,6 +500,15 @@ public sealed class Map
     public IEnumerable<CharacterActor> GetCharacters()
     {
         return Characters.Values;
+    }
+
+    /// <summary>
+    /// Retrieves all interactive elements present on the map.
+    /// </summary>
+    /// <returns>An enumerable collection of <see cref="InteractiveWrapper"/> objects representing the interactive elements.</returns>
+    public IEnumerable<InteractiveWrapper> GetInteractives()
+    {
+        return Interactives.Values;
     }
 
     /// <summary>

@@ -10,9 +10,6 @@ namespace Krosmoz.Servers.GameServer.Database.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterDatabase()
-                .Annotation("Npgsql:CollationDefinition:case_insensitive", "en-u-ks-primary,en-u-ks-primary,icu,False");
-
             migrationBuilder.CreateTable(
                 name: "experiences",
                 columns: table => new

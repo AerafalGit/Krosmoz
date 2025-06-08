@@ -343,10 +343,10 @@ public sealed class Map
         {
             foreach (var interactiveMapData in interactive.MapsData)
             {
-                if (Interactives.ContainsKey(interactive.ElementId))
+                if (Interactives.ContainsKey(interactive.Id))
                     continue;
 
-                Interactives.Add(interactive.ElementId, new InteractiveWrapper(interactive, this, interactiveMapData, interactive.InteractiveActions.ToList()));
+                Interactives.Add(interactive.Id, new InteractiveWrapper(interactive, this, interactiveMapData, interactive.InteractiveActions.ToList()));
             }
         }
     }
@@ -597,7 +597,7 @@ public sealed class Map
     /// </returns>
     private IEnumerable<StatedElement> GetStatedElements()
     {
-        return [];
+        return Interactives.Values.Where(x => x.Animated).Select(x => x.GetStatedElement());
     }
 
     /// <summary>

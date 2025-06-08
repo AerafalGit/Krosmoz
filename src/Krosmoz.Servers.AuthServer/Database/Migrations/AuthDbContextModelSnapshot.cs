@@ -19,6 +19,7 @@ namespace Krosmoz.Servers.AuthServer.Database.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasCollation("case_insensitive", locale: "en-u-ks-primary", provider: "icu", deterministic: false)
                 .HasAnnotation("ProductVersion", "9.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 

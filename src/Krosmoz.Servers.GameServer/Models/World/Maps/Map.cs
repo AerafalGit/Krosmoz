@@ -444,6 +444,29 @@ public sealed class Map
     }
 
     /// <summary>
+    /// Retrieves an actor from the map by its unique identifier.
+    /// </summary>
+    /// <param name="actorId">The unique identifier of the actor to retrieve.</param>
+    /// <returns>The actor with the specified identifier, or <c>null</c> if not found.</returns>
+    public Actor? GetActor(int actorId)
+    {
+        return Actors.GetValueOrDefault(actorId);
+    }
+
+    /// <summary>
+    /// Attempts to retrieve an actor from the map by its unique identifier.
+    /// </summary>
+    /// <param name="actorId">The unique identifier of the actor to retrieve.</param>
+    /// <param name="actor">
+    /// When this method returns, contains the actor with the specified identifier if found; otherwise, <c>null</c>.
+    /// </param>
+    /// <returns><c>true</c> if the actor was found; otherwise, <c>false</c>.</returns>
+    public bool TryGetActor(int actorId, [NotNullWhen(true)] out Actor? actor)
+    {
+        return Actors.TryGetValue(actorId, out actor);
+    }
+
+    /// <summary>
     /// Retrieves all character actors present on the map.
     /// </summary>
     /// <returns>An enumerable collection of character actors.</returns>
@@ -526,7 +549,7 @@ public sealed class Map
     private IEnumerable<InteractiveElement> GetInteractiveElements(CharacterActor character)
     {
         return Interactives.Values
-            .Where(x => x.Actions.Count > 0 && x.Actions.Any(y => y.Action is null || y.Action.CanBeExecuted(character)))
+            //.Where(x => x.Actions.Count > 0 && x.Actions.Any(y => y.Action is null || y.Action.CanBeExecuted(character)))
             .Select(x => x.GetInteractiveElement(character));
     }
 

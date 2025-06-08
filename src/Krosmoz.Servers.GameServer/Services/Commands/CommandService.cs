@@ -22,14 +22,14 @@ public sealed partial class CommandService : ICommandService
 {
     private static readonly ConcurrentDictionary<string, IArgumentConverter> s_argumentConverters = new()
     {
-        ["uint8"] = new UInt8ArgumentConverter(),
-        ["uint16"] = new UInt16ArgumentConverter(),
-        ["uint32"] = new UInt32ArgumentConverter(),
-        ["uint64"] = new UInt64ArgumentConverter(),
-        ["int8"] = new Int8ArgumentConverter(),
-        ["int16"] = new Int16ArgumentConverter(),
-        ["int32"] = new Int32ArgumentConverter(),
-        ["int64"] = new Int64ArgumentConverter(),
+        ["byte"] = new UInt8ArgumentConverter(),
+        ["ushort"] = new UInt16ArgumentConverter(),
+        ["uint"] = new UInt32ArgumentConverter(),
+        ["ulong"] = new UInt64ArgumentConverter(),
+        ["sbyte"] = new Int8ArgumentConverter(),
+        ["short"] = new Int16ArgumentConverter(),
+        ["int"] = new Int32ArgumentConverter(),
+        ["long"] = new Int64ArgumentConverter(),
         ["string"] = new StringArgumentConverter(),
         ["bool"] = new BooleanArgumentConverter(),
         ["float"] = new Float32ArgumentConverter(),

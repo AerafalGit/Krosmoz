@@ -135,8 +135,21 @@ public sealed class CharacterFactory : ICharacterFactory
                     character.Characteristics.Characteristics.Add(id, new CharacteristicHealth(character, id, characteristicData.Base) { Additional = characteristicData.Bonus });
                     break;
 
-                case CharacteristicIds.Niveau:
-                    character.Characteristics.Characteristics.Add(id, new Characteristic(character, id, character.Level));
+                case CharacteristicIds.PointsDeCaracteristiques:
+                case CharacteristicIds.PointsDeSorts:
+                    character.Characteristics.Characteristics.Add(id, new CharacteristicUsable(character, id, characteristicData.Base) { Additional = characteristicData.Bonus });
+                    break;
+
+                case CharacteristicIds.PointsDenergie:
+                    character.Characteristics.Characteristics.Add(id, new CharacteristicUsable(character, id, characteristicData.Base, 10_000) { Additional = characteristicData.Bonus });
+                    break;
+
+                case CharacteristicIds.Poids:
+                    character.Characteristics.Characteristics.Add(id, new CharacteristicUsable(character, id, characteristicData.Base) { Additional = characteristicData.Bonus });
+                    break;
+
+                case CharacteristicIds.Initiative:
+                    character.Characteristics.Characteristics.Add(id, new CharacteristicInitiative(character, id, characteristicData.Base) { Additional = characteristicData.Bonus });
                     break;
 
                 case CharacteristicIds.PointsDactionPA:
@@ -200,13 +213,13 @@ public sealed class CharacterFactory : ICharacterFactory
             [CharacteristicIds.PointsDeSorts] = new() { Base = options.Level - 1 },
             [CharacteristicIds.PointsDenergie] = new() { Base = 10_000 },
             [CharacteristicIds.Poids] = new(),
-            [CharacteristicIds.PointsDeVie] = new() { Base = 50 + (options.Level - 1) * 5 },
-            [CharacteristicIds.Initiative] = new() { Base = 50 + (options.Level - 1) * 5 },
+            [CharacteristicIds.PointsDeVie] = new(),
+            [CharacteristicIds.Initiative] = new(),
             [CharacteristicIds.Prospection] = new() { Base = 100 },
             [CharacteristicIds.PointsDactionPA] = new() { Base = options.Level >= 100 ? 7 : 6 },
             [CharacteristicIds.PointsDeMouvementPM] = new() { Base = 3 },
             [CharacteristicIds.Force] = new(),
-            [CharacteristicIds.Vitalite] = new(),
+            [CharacteristicIds.Vitalite] = new() { Base = 50 + (options.Level - 1) * 5 },
             [CharacteristicIds.Sagesse] = new(),
             [CharacteristicIds.Chance] = new(),
             [CharacteristicIds.Agilite] = new(),

@@ -6,6 +6,7 @@ namespace Krosmoz.Protocol.Enums;
 
 public enum MapNeighbours
 {
+    None = -1,
     Top,
     Bottom,
     Left,

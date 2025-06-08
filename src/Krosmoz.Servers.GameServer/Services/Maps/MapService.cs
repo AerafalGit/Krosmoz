@@ -4,10 +4,12 @@
 
 using System.Collections.Frozen;
 using System.Diagnostics.CodeAnalysis;
+using Krosmoz.Core.Network.Metadata;
 using Krosmoz.Core.Services;
 using Krosmoz.Protocol.Datacenter.World;
 using Krosmoz.Protocol.Messages.Game.Context;
 using Krosmoz.Protocol.Messages.Game.Context.Roleplay;
+using Krosmoz.Serialization.DLM;
 using Krosmoz.Servers.GameServer.Database;
 using Krosmoz.Servers.GameServer.Models.Actors;
 using Krosmoz.Servers.GameServer.Models.Actors.Characters;
@@ -169,7 +171,28 @@ public sealed class MapService : IMapService, IAsyncInitializableService
     /// <param name="character">The character to whom the current map information will be sent.</param>
     /// <param name="map">The current map to send to the character.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    public Task SendCurrentMapAsync(CharacterActor character, Map map) => throw new NotImplementedException();
+    public ValueTask SendCurrentMapAsync(CharacterActor character, Map map)
+    {
+        return character.Connection.SendAsync(new CurrentMapMessage
+        {
+            MapId = map.Id,
+            MapKey = DlmMap.MapEncryptionKey
+        });
+    }
+
+    /// <summary>
+    /// Sends a message to all characters on the specified map asynchronously.
+    /// </summary>
+    /// <param name="map">The map to which the message will be sent.</param>
+    /// <param name="message">The message to send to the characters on the map.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public Task SendAsync(Map map, DofusMessage message)
+    {
+        return Parallel.ForEachAsync(map.GetCharacters(), async (character, _) =>
+        {
+            await character.Connection.SendAsync(message);
+        });
+    }
 
     /// <summary>
     /// Initializes the map service asynchronously.
@@ -239,11 +262,8 @@ public sealed class MapService : IMapService, IAsyncInitializableService
     /// <param name="map">The map from which the actor is being removed.</param>
     /// <param name="actor">The actor being removed from the map.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    private static Task SendGameContextRemoveElementAsync(Map map, Actor actor)
+    private Task SendGameContextRemoveElementAsync(Map map, Actor actor)
     {
-        return Parallel.ForEachAsync(map.GetCharacters(), async (character, _) =>
-        {
-            await character.Connection.SendAsync(new GameContextRemoveElementMessage { Id = actor.Id });
-        });
+        return SendAsync(map, new GameContextRemoveElementMessage { Id = actor.Id });
     }
 }

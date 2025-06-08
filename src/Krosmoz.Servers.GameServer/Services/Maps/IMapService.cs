@@ -3,6 +3,7 @@
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
 using System.Diagnostics.CodeAnalysis;
+using Krosmoz.Core.Network.Metadata;
 using Krosmoz.Servers.GameServer.Models.Actors;
 using Krosmoz.Servers.GameServer.Models.Actors.Characters;
 using Krosmoz.Servers.GameServer.Models.World.Maps;
@@ -87,5 +88,13 @@ public interface IMapService
     /// <param name="character">The character to whom the current map information will be sent.</param>
     /// <param name="map">The current map to send to the character.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    Task SendCurrentMapAsync(CharacterActor character, Map map);
+    ValueTask SendCurrentMapAsync(CharacterActor character, Map map);
+
+    /// <summary>
+    /// Sends a message to all characters on the specified map asynchronously.
+    /// </summary>
+    /// <param name="map">The map to which the message will be sent.</param>
+    /// <param name="message">The message to send to the characters on the map.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    Task SendAsync(Map map, DofusMessage message);
 }

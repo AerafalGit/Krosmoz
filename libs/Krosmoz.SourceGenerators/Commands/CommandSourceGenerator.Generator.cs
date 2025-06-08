@@ -95,6 +95,8 @@ public sealed partial class CommandSourceGenerator
 
                     foreach (var (y, command) in commandGroup.Commands.Index())
                     {
+                        var parameterNameCooldown = $"{commandGroup.Name}_{command.Name}_cooldown";
+
                         builder
                             .Indent()
                             .AppendIndentedLine("case (\"{0}\", \"{1}\"):", commandGroup.Name.ToLowerInvariant(), command.Name.ToLowerInvariant())
@@ -105,9 +107,9 @@ public sealed partial class CommandSourceGenerator
                             .Indent()
                             .AppendIndentedLine("return global::Krosmoz.Servers.GameServer.Commands.CommandResult.BadHierarchy(global::Krosmoz.Protocol.Enums.GameHierarchies.{0}, connection.Heroes.Account.Hierarchy);", command.Hierarchy)
                             .Unindent()
-                            .AppendIndentedLine("if (_commandCooldowns.TryGetValue(\"{0}_{1}\", out var cooldown) && cooldown > global::System.DateTime.UtcNow)", commandGroup.Name, command.Name)
+                            .AppendIndentedLine("if (_commandCooldowns.TryGetValue(\"{0}_{1}\", out var {2}) && {2} > global::System.DateTime.UtcNow)", commandGroup.Name, command.Name, parameterNameCooldown)
                             .Indent()
-                            .AppendIndentedLine("return global::Krosmoz.Servers.GameServer.Commands.CommandResult.BadCooldown(global::System.DateTime.UtcNow - cooldown);")
+                            .AppendIndentedLine("return global::Krosmoz.Servers.GameServer.Commands.CommandResult.BadCooldown(global::System.DateTime.UtcNow - {0});", parameterNameCooldown)
                             .Unindent();
 
                         foreach (var (i, parameter) in command.Parameters.Index())

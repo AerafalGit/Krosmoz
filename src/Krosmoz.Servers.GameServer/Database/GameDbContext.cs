@@ -78,6 +78,8 @@ public sealed class GameDbContext : DbContext
     /// <param name="builder">The <see cref="ModelBuilder"/> used to configure entity mappings.</param>
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        builder.HasCollation("case_insensitive", locale: "en-u-ks-primary", provider: "icu", deterministic: false);
+
         builder
             .ApplyConfiguration(new ExperienceConfiguration())
             .ApplyConfiguration(new InteractiveConfiguration())

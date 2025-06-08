@@ -2,6 +2,7 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
+using System.Net;
 using Krosmoz.Protocol.Datacenter.Servers;
 using Krosmoz.Protocol.Enums;
 using Krosmoz.Protocol.Enums.Custom;
@@ -50,7 +51,10 @@ public sealed class ServerSeeder : BaseSeeder
                 Status = ServerStatuses.Offline,
                 JoinableHierarchy = GameHierarchies.Moderator,
                 VisibleHierarchy = GameHierarchies.Moderator,
-                Community = (ServerCommunityIds)server.CommunityId
+                Community = (ServerCommunityIds)server.CommunityId,
+                IpAddress = server.Id is 904 ? IPAddress.Parse("127.0.0.1") : null,
+                OpenedAt = server.Id is 904 ? DateTime.UtcNow : null,
+                Port = server.Id is 904 ? 5556 : null
             });
 
         AuthDbContext.Servers.AddRange(servers);

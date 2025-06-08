@@ -200,7 +200,7 @@ public sealed class InteractiveWrapper
     public InteractiveElement GetInteractiveElement(CharacterActor character)
     {
         var enabledSkills = EnabledSkills
-            .Where(x => x.Action?.Action?.CanBeExecuted(character) ?? false)
+            //.Where(x => x.Action?.Action?.CanBeExecuted(character) ?? false)
             .Select(static x => x.GetInteractiveElementSkill());
 
         var disabledSkills = DisabledSkills

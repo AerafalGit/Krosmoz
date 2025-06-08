@@ -48,7 +48,7 @@ public sealed class ServerSeeder : BaseSeeder
                 Id = (ushort)server.Id,
                 Name = server.Name,
                 Type = (ServerGameTypeIds)server.GameTypeId,
-                Status = ServerStatuses.Offline,
+                Status = server.Id is 904 ? ServerStatuses.Online : ServerStatuses.Offline,
                 JoinableHierarchy = GameHierarchies.Moderator,
                 VisibleHierarchy = GameHierarchies.Moderator,
                 Community = (ServerCommunityIds)server.CommunityId,

@@ -6,13 +6,18 @@ using Krosmoz.Core.Services;
 using Krosmoz.Protocol.Ipc;
 using Krosmoz.Servers.GameServer.Commands;
 using Krosmoz.Servers.GameServer.Database;
+using Krosmoz.Servers.GameServer.Factories.Characters;
+using Krosmoz.Servers.GameServer.Factories.World;
 using Krosmoz.Servers.GameServer.Models.Options.Breeds;
+using Krosmoz.Servers.GameServer.Models.Options.Characters;
 using Krosmoz.Servers.GameServer.Models.Options.OptionalFeatures;
 using Krosmoz.Servers.GameServer.Models.Options.Servers;
 using Krosmoz.Servers.GameServer.Network.Transport;
 using Krosmoz.Servers.GameServer.Services.Authentication;
 using Krosmoz.Servers.GameServer.Services.Characteristics;
+using Krosmoz.Servers.GameServer.Services.Characters.Creation;
 using Krosmoz.Servers.GameServer.Services.Characters.Creation.NameGeneration;
+using Krosmoz.Servers.GameServer.Services.Characters.Selection;
 using Krosmoz.Servers.GameServer.Services.Chat;
 using Krosmoz.Servers.GameServer.Services.Datacenter;
 using Krosmoz.Servers.GameServer.Services.InfoMessages;
@@ -41,6 +46,7 @@ builder.Services
     .Configure<ServerOptions>(builder.Configuration)
     .Configure<OptionalFeaturesOptions>(builder.Configuration)
     .Configure<BreedOptions>(builder.Configuration)
+    .Configure<CharacterCreationOptions>(builder.Configuration.GetSection("CharacterCreation"))
     .AddTransient<IScheduler, Scheduler>()
     .AddSingleton<IDatacenterService, DatacenterService>()
     .AddSingleton<IOptionalFeatureService, OptionalFeatureService>()
@@ -53,7 +59,11 @@ builder.Services
     .AddSingleton<IWorldService, WorldService>()
     .AddScoped<ISocialService, SocialService>()
     .AddScoped<IAuthenticationService, AuthenticationService>()
-    .AddScoped<ICharacterNameGenerationService, CharacterNameGenerationService>();
+    .AddScoped<ICharacterNameGenerationService, CharacterNameGenerationService>()
+    .AddScoped<ICharacterCreationService, CharacterCreationService>()
+    .AddScoped<ICharacterSelectionService, CharacterSelectionService>()
+    .AddScoped<ICharacterFactory, CharacterFactory>()
+    .AddScoped<IWorldPositionFactory, WorldPositionFactory>();
 
 builder
     .Build()

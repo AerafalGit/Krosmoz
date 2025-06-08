@@ -10,7 +10,7 @@ using Krosmoz.Servers.GameServer.Services.Authentication;
 namespace Krosmoz.Servers.GameServer.Network.Handlers.Authentication;
 
 /// <summary>
-/// Handles authentication-related operations for the game server.
+/// Handles authentication-related operations.
 /// </summary>
 public sealed class AuthenticationHandler
 {

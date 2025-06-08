@@ -22,6 +22,7 @@ using Krosmoz.Servers.GameServer.Services.Chat;
 using Krosmoz.Servers.GameServer.Services.Datacenter;
 using Krosmoz.Servers.GameServer.Services.InfoMessages;
 using Krosmoz.Servers.GameServer.Services.Inventory;
+using Krosmoz.Servers.GameServer.Services.Maps.Movements;
 using Krosmoz.Servers.GameServer.Services.OptionalFeatures;
 using Krosmoz.Servers.GameServer.Services.Servers;
 using Krosmoz.Servers.GameServer.Services.Shortcuts;
@@ -63,7 +64,8 @@ builder.Services
     .AddScoped<ICharacterCreationService, CharacterCreationService>()
     .AddScoped<ICharacterSelectionService, CharacterSelectionService>()
     .AddScoped<ICharacterFactory, CharacterFactory>()
-    .AddScoped<IWorldPositionFactory, WorldPositionFactory>();
+    .AddScoped<IWorldPositionFactory, WorldPositionFactory>()
+    .AddScoped<IMapMovementService, MapMovementService>();
 
 builder
     .Build()

@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using Krosmoz.Protocol.Enums;
 using Krosmoz.Protocol.Types.Game.Context;
 using Krosmoz.Protocol.Types.Game.Context.Roleplay;
+using Krosmoz.Servers.GameServer.Models.Actors.Characters;
 using Krosmoz.Servers.GameServer.Models.Appearances;
 using Krosmoz.Servers.GameServer.Models.World;
 using Krosmoz.Servers.GameServer.Models.World.Cells;
@@ -70,6 +71,25 @@ public abstract class Actor
     {
         get => Position.Orientation;
         set => Position.Orientation = value;
+    }
+
+    /// <summary>
+    /// Determines whether the actor can move.
+    /// </summary>
+    /// <returns>True if the actor can move; otherwise, false.</returns>
+    public virtual bool CanMove()
+    {
+        return true;
+    }
+
+    /// <summary>
+    /// Determines whether the actor can be seen by a specified character.
+    /// </summary>
+    /// <param name="fromCharacter">The character attempting to see the actor.</param>
+    /// <returns>True if the actor can be seen; otherwise, false.</returns>
+    public virtual bool CanBeeSeen(CharacterActor fromCharacter)
+    {
+        return true;
     }
 
     /// <summary>

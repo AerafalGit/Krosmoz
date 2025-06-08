@@ -346,6 +346,18 @@ public abstract class HumanoidActor : NamedActor
     }
 
     /// <summary>
+    /// Determines whether the humanoid actor can move.
+    /// </summary>
+    /// <returns>
+    /// True if the humanoid actor can move; otherwise, false.
+    /// The result is based on the actor's restrictions and the base implementation.
+    /// </returns>
+    public override bool CanMove()
+    {
+        return !CantMove && base.CanMove();
+    }
+
+    /// <summary>
     /// Retrieves the game roleplay actor information for the humanoid actor.
     /// </summary>
     /// <returns>

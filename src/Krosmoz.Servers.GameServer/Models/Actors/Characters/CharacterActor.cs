@@ -7,6 +7,7 @@ using Krosmoz.Protocol.Enums.Custom;
 using Krosmoz.Protocol.Ipc.Types.Accounts;
 using Krosmoz.Protocol.Types.Game.Character.Alignment;
 using Krosmoz.Protocol.Types.Game.Character.Characteristic;
+using Krosmoz.Protocol.Types.Game.Character.Choice;
 using Krosmoz.Protocol.Types.Game.Character.Status;
 using Krosmoz.Protocol.Types.Game.Context.Roleplay;
 using Krosmoz.Servers.GameServer.Database.Models.Characters;
@@ -38,9 +39,10 @@ public sealed class CharacterActor : HumanoidActor
     public DofusConnection Connection { get; set; }
 
     /// <summary>
-    /// Gets or sets the hero information associated with this character.
+    /// Gets the hero information associated with this character.
     /// </summary>
-    public Heroes.Heroes Heroes { get; set; }
+    public Heroes.Heroes Heroes =>
+        Connection.Heroes;
 
     /// <summary>
     /// Gets the IPC account associated with the character.
@@ -341,20 +343,34 @@ public sealed class CharacterActor : HumanoidActor
     /// Initializes a new instance of the <see cref="CharacterActor"/> class.
     /// </summary>
     /// <param name="record">The character record.</param>
-    /// <param name="heroes">The hero information.</param>
     /// <param name="connection">The connection associated with the character.</param>
     /// <param name="position">The world position of the character.</param>
-    /// <param name="characteristics">The characteristic storage for the character.</param>
-    public CharacterActor(CharacterRecord record, Heroes.Heroes heroes, DofusConnection connection, WorldPosition position, CharacteristicStorage characteristics)
+    public CharacterActor(CharacterRecord record, DofusConnection connection, WorldPosition position)
     {
         Record = record;
-        Heroes = heroes;
         Connection = connection;
-        Characteristics = characteristics;
+        Characteristics = new CharacteristicStorage();
         Friends = [];
         Ignored = [];
         Spells = [];
         _position = position;
+    }
+
+    /// <summary>
+    /// Retrieves the base character information for the character actor.
+    /// </summary>
+    /// <returns>An instance of <see cref="CharacterBaseInformations"/> containing the character's base information.</returns>
+    public CharacterBaseInformations GetCharacterBaseInformations()
+    {
+        return new CharacterBaseInformations
+        {
+            Id = (uint)Id,
+            Name = Name,
+            Breed = (sbyte)Breed,
+            Level = Level,
+            Sex = Sex,
+            EntityLook = Look.GetEntityLook()
+        };
     }
 
     /// <summary>

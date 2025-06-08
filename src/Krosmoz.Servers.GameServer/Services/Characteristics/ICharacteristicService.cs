@@ -17,4 +17,18 @@ public interface ICharacteristicService
     /// <param name="character">The character actor whose characteristics will be sent.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
     ValueTask SendCharacterCharacteristicsAsync(CharacterActor character);
+
+    /// <summary>
+    /// Begins the asynchronous update of a character's life points.
+    /// </summary>
+    /// <param name="character">The character actor whose life points update will begin.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    ValueTask BeginLifePointsUpdateAsync(CharacterActor character);
+
+    /// <summary>
+    /// Ends the asynchronous update of a character's life points.
+    /// </summary>
+    /// <param name="character">The character actor whose life points update will end.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    ValueTask EndLifePointsUpdateAsync(CharacterActor character);
 }

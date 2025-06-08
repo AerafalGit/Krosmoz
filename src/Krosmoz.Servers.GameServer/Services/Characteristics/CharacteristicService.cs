@@ -24,4 +24,28 @@ public sealed class CharacteristicService : ICharacteristicService
             Stats = character.GetCharacterCharacteristicsInformations()
         });
     }
+
+    /// <summary>
+    /// Begins the asynchronous update of a character's life points.
+    /// </summary>
+    /// <param name="character">The character actor whose life points update will begin.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public ValueTask BeginLifePointsUpdateAsync(CharacterActor character)
+    {
+        return ValueTask.CompletedTask;
+
+        // TODO: Implement the logic to begin life points update.
+    }
+
+    /// <summary>
+    /// Ends the asynchronous update of a character's life points.
+    /// </summary>
+    /// <param name="character">The character actor whose life points update will end.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public ValueTask EndLifePointsUpdateAsync(CharacterActor character)
+    {
+        return ValueTask.CompletedTask;
+
+        // TODO: Implement the logic to end life points update.
+    }
 }

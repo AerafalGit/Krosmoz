@@ -19,7 +19,13 @@
 
 ##  Overview
 
-Krosmoz is a C# based emulator developed as a Proof of Concept (POC) for reverse engineering the 2.14 Dofus game. Leveraging .NET ecosystem, it emphasizes code quality, maintainability, and scalability. With automated CI/CD pipelines via GitHub Actions and a modular, multi-assembly architecture, Krosmoz offers cutting-edge features while ensuring reliability and ease of use.
+Krosmoz is a C# based emulator developed as a Proof of Concept (POC) for reverse engineering the 2.29 Dofus game. Leveraging .NET ecosystem, it emphasizes code quality, maintainability, and scalability. With automated CI/CD pipelines via GitHub Actions and a modular, multi-assembly architecture, Krosmoz offers cutting-edge features while ensuring reliability and ease of use.
+
+---
+
+## Client
+
+The client is available at [Krosmoz-Client](https://github.com/AerafalGit/Krosmoz-Client).
 
 ---
 

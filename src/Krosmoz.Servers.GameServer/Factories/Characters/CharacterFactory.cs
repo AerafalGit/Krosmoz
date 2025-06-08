@@ -73,10 +73,11 @@ public sealed class CharacterFactory : ICharacterFactory
     /// <returns>A new <see cref="CharacterRecord"/> instance.</returns>
     public CharacterRecord CreateCharacterRecord(IpcAccount account, string name, Breed breed, Head head, bool sex, ActorLook look)
     {
-        var startSpells = breed.BreedSpellsId
+        var startSpells = new List<SpellIds> { SpellIds.CoupDePoing };
+
+        startSpells.AddRange(breed.BreedSpellsId
             .Where(spellId => _spellService.GetSpellLevelByCharacterLevel((int)spellId, _characterCreationOptions.CurrentValue.Level) is not null)
-            .Select(static spellId => (SpellIds)spellId)
-            .ToList();
+            .Select(static spellId => (SpellIds)spellId));
 
         var spellShortcutBar = startSpells
             .Select(static (spellId, slot) => new ShortcutBarObjectSpell((sbyte)slot, spellId))
@@ -95,7 +96,7 @@ public sealed class CharacterFactory : ICharacterFactory
             Kamas = 0,
             Position = new CharacterPosition(84674563, 315, (sbyte)Directions.SouthWest),
             Emotes = [EmoticonIds.Sasseoir],
-            Spells = [SpellIds.CoupDePoing, ..startSpells],
+            Spells = startSpells,
             Characteristics = CreateDefaultCharacteristics(_characterCreationOptions.CurrentValue),
             DeathCount = 0,
             DeathMaxLevel = 0,

@@ -144,7 +144,7 @@ public sealed class CharacterLoadingService : ICharacterLoadingService
     /// <returns>A task representing the asynchronous operation.</returns>
     private static async Task SendPlayerStatusUpdateAsync(CharacterActor character)
     {
-        if (character.Status is not PlayerStatuses.PlayerStatusAvailable)
+        if (character.Status > PlayerStatuses.PlayerStatusAvailable)
             await character.Connection.SendAsync(new PlayerStatusUpdateMessage
             {
                 AccountId = character.Account.Id,

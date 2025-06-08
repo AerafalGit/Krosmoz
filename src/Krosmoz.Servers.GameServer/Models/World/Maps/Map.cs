@@ -2,10 +2,17 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
+using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using Krosmoz.Protocol.Constants;
 using Krosmoz.Protocol.Datacenter.World;
+using Krosmoz.Protocol.Messages.Game.Context.Roleplay;
+using Krosmoz.Protocol.Types.Game.Context.Fight;
+using Krosmoz.Protocol.Types.Game.House;
+using Krosmoz.Protocol.Types.Game.Interactive;
 using Krosmoz.Servers.GameServer.Database.Models.Maps;
+using Krosmoz.Servers.GameServer.Models.Actors;
+using Krosmoz.Servers.GameServer.Models.Actors.Characters;
 using Krosmoz.Servers.GameServer.Models.World.Cells;
 using Krosmoz.Servers.GameServer.Models.World.Interactives;
 
@@ -25,6 +32,21 @@ public sealed class Map
     /// Gets the array of free cells on the map.
     /// </summary>
     private Cell[] FreeCells { get; }
+
+    /// <summary>
+    /// Gets the dictionary of interactive elements on the map, indexed by their IDs.
+    /// </summary>
+    private Dictionary<int, InteractiveWrapper> Interactives { get; }
+
+    /// <summary>
+    /// Gets the dictionary of actors on the map, indexed by their IDs.
+    /// </summary>
+    private Dictionary<int, Actor> Actors { get; }
+
+    /// <summary>
+    /// Gets the dictionary of characters on the map, indexed by their IDs.
+    /// </summary>
+    private ConcurrentDictionary<int, CharacterActor> Characters { get; }
 
     /// <summary>
     /// Gets the area associated with the map.
@@ -312,6 +334,21 @@ public sealed class Map
             .Where(x => IsWalkableCell(x) && !x.FarmCell)
             .OrderBy(static x => MapPoint.Middle.ManhattanDistanceTo(MapPoint.Points[x.Id]))
             .ToArray();
+
+        Interactives = [];
+        Actors = [];
+        Characters = [];
+
+        foreach (var interactive in record.Interactives)
+        {
+            foreach (var interactiveMapData in interactive.MapsData)
+            {
+                if (Interactives.ContainsKey(interactive.ElementId))
+                    continue;
+
+                Interactives.Add(interactive.ElementId, new InteractiveWrapper(interactive, this, interactiveMapData, interactive.InteractiveActions.ToList()));
+            }
+        }
     }
 
     /// <summary>
@@ -380,6 +417,128 @@ public sealed class Map
     public bool IsWalkableCellDuringFight(Cell cell)
     {
         return cell is { Mov: true, NonWalkableDuringFight: true };
+    }
+
+    /// <summary>
+    /// Adds an actor to the map. If the actor is a character, it is also added to the characters dictionary.
+    /// </summary>
+    /// <param name="actor">The actor to add to the map.</param>
+    public void AddActor(Actor actor)
+    {
+        if (actor is CharacterActor character)
+            Characters.TryAdd(character.Id, character);
+
+        Actors.Add(actor.Id, actor);
+    }
+
+    /// <summary>
+    /// Removes an actor from the map. If the actor is a character, it is also removed from the characters dictionary.
+    /// </summary>
+    /// <param name="actor">The actor to remove from the map.</param>
+    public void RemoveActor(Actor actor)
+    {
+        if (actor is CharacterActor character)
+            Characters.Remove(character.Id, out _);
+
+        Actors.Remove(actor.Id);
+    }
+
+    /// <summary>
+    /// Retrieves all character actors present on the map.
+    /// </summary>
+    /// <returns>An enumerable collection of character actors.</returns>
+    public IEnumerable<CharacterActor> GetCharacters()
+    {
+        return Characters.Values;
+    }
+
+    /// <summary>
+    /// Creates a message containing complementary information about the map.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="MapComplementaryInformationsDataMessage"/> object containing details about the map,
+    /// including its ID, sub-area ID, actors, fights, houses, interactive elements, obstacles, and stated elements.
+    /// </returns>
+    public MapComplementaryInformationsDataMessage GetMapComplementaryInformationsDataMessage(CharacterActor character)
+    {
+        return new MapComplementaryInformationsDataMessage
+        {
+            MapId = Id,
+            SubAreaId = (ushort)SubArea.Id,
+            Actors = Actors.Values.Select(static x => x.GetGameRolePlayActorInformations()),
+            Fights = GetFightsInformations(),
+            Houses = GetHousesInformations(),
+            InteractiveElements = GetInteractiveElements(character),
+            Obstacles = GetObstaclesInformations(),
+            StatedElements = GetStatedElements()
+        };
+    }
+
+    /// <summary>
+    /// Retrieves fight information for the map.
+    /// </summary>
+    /// <returns>
+    /// An <see cref="IEnumerable{FightCommonInformations}"/> containing fight details.
+    /// Currently, it returns an empty list as a placeholder.
+    /// </returns>
+    private IEnumerable<FightCommonInformations> GetFightsInformations()
+    {
+        // This method should return fight information for the map.
+        // Currently, it returns an empty list as a placeholder.
+        return [];
+    }
+
+    /// <summary>
+    /// Retrieves house information for the map.
+    /// </summary>
+    /// <returns>
+    /// An <see cref="IEnumerable{HouseInformations}"/> containing house details.
+    /// Currently, it returns an empty list as a placeholder.
+    /// </returns>
+    private IEnumerable<HouseInformations> GetHousesInformations()
+    {
+        // This method should return house information for the map.
+        // Currently, it returns an empty list as a placeholder.
+        return [];
+    }
+
+    /// <summary>
+    /// Retrieves obstacle information for the map.
+    /// </summary>
+    /// <returns>
+    /// An <see cref="IEnumerable{MapObstacle}"/> containing obstacle details.
+    /// Currently, it returns an empty list as a placeholder.
+    /// </returns>
+    private IEnumerable<MapObstacle> GetObstaclesInformations()
+    {
+        // This method should return obstacle information for the map.
+        // Currently, it returns an empty list as a placeholder.
+        return [];
+    }
+
+    /// <summary>
+    /// Retrieves interactive elements for the map based on the specified character.
+    /// </summary>
+    /// <param name="character">The character interacting with the elements.</param>
+    /// <returns>
+    /// An <see cref="IEnumerable{InteractiveElement}"/> containing interactive element details.
+    /// </returns>
+    private IEnumerable<InteractiveElement> GetInteractiveElements(CharacterActor character)
+    {
+        return Interactives.Values
+            .Where(x => x.Actions.Count > 0 && x.Actions.Any(y => y.Action is null || y.Action.CanBeExecuted(character)))
+            .Select(x => x.GetInteractiveElement(character));
+    }
+
+    /// <summary>
+    /// Retrieves stated elements for the map.
+    /// </summary>
+    /// <returns>
+    /// An <see cref="IEnumerable{StatedElement}"/> containing stated element details.
+    /// </returns>
+    private IEnumerable<StatedElement> GetStatedElements()
+    {
+        return [];
     }
 
     /// <summary>

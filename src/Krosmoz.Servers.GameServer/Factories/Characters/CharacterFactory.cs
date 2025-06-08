@@ -23,6 +23,9 @@ using Microsoft.Extensions.Options;
 
 namespace Krosmoz.Servers.GameServer.Factories.Characters;
 
+/// <summary>
+/// Factory class responsible for creating and initializing character-related objects for the game server.
+/// </summary>
 public sealed class CharacterFactory : ICharacterFactory
 {
     private static readonly CharacteristicFormulas s_formulasChanceDependant =
@@ -39,6 +42,13 @@ public sealed class CharacterFactory : ICharacterFactory
     private readonly IWorldPositionFactory _worldPositionFactory;
     private readonly IOptionsMonitor<CharacterCreationOptions> _characterCreationOptions;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CharacterFactory"/> class.
+    /// </summary>
+    /// <param name="spellService">Service for managing spells.</param>
+    /// <param name="experienceService">Service for managing experience levels.</param>
+    /// <param name="worldPositionFactory">Factory for creating world positions.</param>
+    /// <param name="characterCreationOptions">Options for character creation.</param>
     public CharacterFactory(
         ISpellService spellService,
         IExperienceService experienceService,
@@ -51,6 +61,16 @@ public sealed class CharacterFactory : ICharacterFactory
         _characterCreationOptions = characterCreationOptions;
     }
 
+    /// <summary>
+    /// Creates a new character record with the specified parameters.
+    /// </summary>
+    /// <param name="account">The account associated with the character.</param>
+    /// <param name="name">The name of the character.</param>
+    /// <param name="breed">The breed of the character.</param>
+    /// <param name="head">The head appearance of the character.</param>
+    /// <param name="sex">The gender of the character.</param>
+    /// <param name="look">The visual appearance of the character.</param>
+    /// <returns>A new <see cref="CharacterRecord"/> instance.</returns>
     public CharacterRecord CreateCharacterRecord(IpcAccount account, string name, Breed breed, Head head, bool sex, ActorLook look)
     {
         var startSpells = breed.BreedSpellsId
@@ -94,6 +114,13 @@ public sealed class CharacterFactory : ICharacterFactory
         };
     }
 
+    /// <summary>
+    /// Creates a new character actor from the specified character record and connection.
+    /// </summary>
+    /// <param name="connection">The connection associated with the character.</param>
+    /// <param name="characterRecord">The character record to initialize the actor from.</param>
+    /// <returns>A new <see cref="CharacterActor"/> instance.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the character's position is invalid.</exception>
     public CharacterActor CreateCharacter(DofusConnection connection, CharacterRecord characterRecord)
     {
         if (!_worldPositionFactory.TryCreateWorldPosition(characterRecord.Position.MapId, characterRecord.Position.CellId, (Directions)characterRecord.Position.Orientation, out var position))
@@ -125,6 +152,10 @@ public sealed class CharacterFactory : ICharacterFactory
         return character;
     }
 
+    /// <summary>
+    /// Populates the characteristics of the specified character actor.
+    /// </summary>
+    /// <param name="character">The character actor to populate characteristics for.</param>
     private static void PopulateCharacteristics(CharacterActor character)
     {
         foreach (var (id, characteristicData) in character.Record.Characteristics)
@@ -186,6 +217,11 @@ public sealed class CharacterFactory : ICharacterFactory
         }
     }
 
+    /// <summary>
+    /// Populates the spells of the specified character actor.
+    /// </summary>
+    /// <param name="character">The character actor to populate spells for.</param>
+    /// <exception cref="InvalidOperationException">Thrown if a spell or its level is not found.</exception>
     private void PopulateSpells(CharacterActor character)
     {
         byte spellPositon = 64;
@@ -205,6 +241,11 @@ public sealed class CharacterFactory : ICharacterFactory
         }
     }
 
+    /// <summary>
+    /// Creates the default characteristics for a character based on the specified options.
+    /// </summary>
+    /// <param name="options">The character creation options.</param>
+    /// <returns>A dictionary of default characteristics.</returns>
     private static Dictionary<CharacteristicIds, CharacteristicData> CreateDefaultCharacteristics(CharacterCreationOptions options)
     {
         return new Dictionary<CharacteristicIds, CharacteristicData>

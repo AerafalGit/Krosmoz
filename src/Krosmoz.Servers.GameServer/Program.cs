@@ -8,6 +8,7 @@ using Krosmoz.Servers.GameServer.Commands;
 using Krosmoz.Servers.GameServer.Database;
 using Krosmoz.Servers.GameServer.Factories.Characters;
 using Krosmoz.Servers.GameServer.Factories.World;
+using Krosmoz.Servers.GameServer.Models.Context;
 using Krosmoz.Servers.GameServer.Models.Options.Breeds;
 using Krosmoz.Servers.GameServer.Models.Options.Characters;
 using Krosmoz.Servers.GameServer.Models.Options.OptionalFeatures;
@@ -17,6 +18,8 @@ using Krosmoz.Servers.GameServer.Services.Authentication;
 using Krosmoz.Servers.GameServer.Services.Characteristics;
 using Krosmoz.Servers.GameServer.Services.Characters.Creation;
 using Krosmoz.Servers.GameServer.Services.Characters.Creation.NameGeneration;
+using Krosmoz.Servers.GameServer.Services.Characters.Deletion;
+using Krosmoz.Servers.GameServer.Services.Characters.Loading;
 using Krosmoz.Servers.GameServer.Services.Characters.Selection;
 using Krosmoz.Servers.GameServer.Services.Chat;
 using Krosmoz.Servers.GameServer.Services.Datacenter;
@@ -65,7 +68,10 @@ builder.Services
     .AddScoped<ICharacterSelectionService, CharacterSelectionService>()
     .AddScoped<ICharacterFactory, CharacterFactory>()
     .AddScoped<IWorldPositionFactory, WorldPositionFactory>()
-    .AddScoped<IMapMovementService, MapMovementService>();
+    .AddScoped<IMapMovementService, MapMovementService>()
+    .AddScoped<ICharacterDeletionService, CharacterDeletionService>()
+    .AddScoped<ICharacterLoadingService, CharacterLoadingService>()
+    .AddScoped<IContextService, ContextService>();
 
 builder
     .Build()

@@ -8,7 +8,7 @@ namespace Krosmoz.Servers.GameServer.Database.Models.Interactives;
 
 public sealed class InteractiveActionRecord : GameActionRecord
 {
-    public required int Id { get; init; }
+    public int Id { get; init; }
 
     public required int InteractiveId { get; init; }
 

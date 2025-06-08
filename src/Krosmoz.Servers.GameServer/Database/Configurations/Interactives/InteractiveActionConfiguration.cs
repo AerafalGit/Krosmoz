@@ -23,7 +23,7 @@ public sealed class InteractiveActionConfiguration : IEntityTypeConfiguration<In
 
         builder
             .Property(static x => x.Id)
-            .ValueGeneratedNever();
+            .ValueGeneratedOnAdd();
 
         builder
             .Property(static x => x.InteractiveId)

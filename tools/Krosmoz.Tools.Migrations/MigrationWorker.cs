@@ -46,11 +46,6 @@ public sealed class MigrationWorker : BackgroundService
             var authDbContext = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
             var gameDbContext = scope.ServiceProvider.GetRequiredService<GameDbContext>();
 
-            _logger.LogInformation("Ensuring databases exist");
-            await EnsureDatabaseExistsAsync(authDbContext, cancellationToken);
-            await EnsureDatabaseExistsAsync(gameDbContext, cancellationToken);
-            _logger.LogInformation("Databases ensured successfully");
-
             _logger.LogInformation("Starting migrations for Auth database");
             await MigrateDatabaseAsync(authDbContext, cancellationToken);
             _logger.LogInformation("Auth database migrations completed successfully");
@@ -67,17 +62,6 @@ public sealed class MigrationWorker : BackgroundService
         {
             _applicationLifetime.StopApplication();
         }
-    }
-
-    /// <summary>
-    /// Ensures that the database exists by creating it if it does not already exist.
-    /// </summary>
-    /// <param name="context">The database context to ensure the database for.</param>
-    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>A task that represents the asynchronous operation.</returns>
-    private static Task<bool> EnsureDatabaseExistsAsync(DbContext context, CancellationToken cancellationToken)
-    {
-        return context.Database.CreateExecutionStrategy().ExecuteAsync(context.Database.EnsureCreatedAsync, cancellationToken);
     }
 
     /// <summary>

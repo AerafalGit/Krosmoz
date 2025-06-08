@@ -44,7 +44,7 @@ public sealed class MapMovementService : IMapMovementService
     {
         return !map.TryGetActor(actorId, out var actor)
             ? Task.CompletedTask
-            : ChangeOrientationAsync(map, actor, direction);
+            : OnChangeOrientationAsync(map, actor, direction);
     }
 
     /// <summary>
@@ -54,7 +54,7 @@ public sealed class MapMovementService : IMapMovementService
     /// <param name="actor">The actor whose orientation is changing.</param>
     /// <param name="direction">The new direction of the actor.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    public Task ChangeOrientationAsync(Map map, Actor actor, Directions direction)
+    public Task OnChangeOrientationAsync(Map map, Actor actor, Directions direction)
     {
         if ((sbyte)direction < 0 || (sbyte)direction > 7)
             return Task.CompletedTask;

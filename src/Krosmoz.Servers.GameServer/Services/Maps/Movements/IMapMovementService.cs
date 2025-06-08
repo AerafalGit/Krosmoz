@@ -30,7 +30,7 @@ public interface IMapMovementService
     /// <param name="actor">The actor whose orientation is changing.</param>
     /// <param name="direction">The new direction of the actor.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    Task ChangeOrientationAsync(Map map, Actor actor, Directions direction);
+    Task OnChangeOrientationAsync(Map map, Actor actor, Directions direction);
 
     /// <summary>
     /// Handles a map movement request for the specified actor asynchronously.

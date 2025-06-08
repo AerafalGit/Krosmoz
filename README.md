@@ -55,7 +55,7 @@ Ensure you have the following dependencies installed on your system:
 
 * **.NET9 SDK**: The software development kit required to build and run C# applications.
 * **C#**: The programming language used to develop this project.
-* **PostgreSQL**: The database management system used by this project.
+* **Docker**: The platform used for containerization, allowing you to run applications in isolated environments.
 
 ###  Installation
 

@@ -7,6 +7,7 @@ using Krosmoz.Core.Network.Metadata;
 using Krosmoz.Protocol.Constants;
 using Krosmoz.Protocol.Messages.Game.Approach;
 using Krosmoz.Protocol.Messages.Handshake;
+using Krosmoz.Servers.GameServer.Database;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -21,16 +22,19 @@ public sealed class DofusConnectionHandler : ConnectionHandler
     private readonly ObjectFactory<DofusConnection> _connectionFactory;
     private readonly IServiceProvider _provider;
     private readonly IMessageFactory _messageFactory;
+    private readonly GameDbContext _dbContext;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DofusConnectionHandler"/> class.
     /// </summary>
     /// <param name="provider">The service provider for dependency injection.</param>
     /// <param name="messageFactory">The factory for creating message instances.</param>
-    public DofusConnectionHandler(IServiceProvider provider, IMessageFactory messageFactory)
+    /// <param name="dbContext">The database context for accessing game data.</param>
+    public DofusConnectionHandler(IServiceProvider provider, IMessageFactory messageFactory, GameDbContext dbContext)
     {
         _provider = provider;
         _messageFactory = messageFactory;
+        _dbContext = dbContext;
         _connectionFactory = ActivatorUtilities.CreateFactory<DofusConnection>(
         [
             typeof(ConnectionContext),
@@ -90,5 +94,17 @@ public sealed class DofusConnectionHandler : ConnectionHandler
         await connection.SendAsync(new ProtocolRequired { RequiredVersion = MetadataConstants.ProtocolRequiredBuild, CurrentVersion = MetadataConstants.ProtocolBuild });
 
         await connection.SendAsync<HelloGameMessage>();
+    }
+
+    /// <summary>
+    /// Handles the closure of a Dofus connection asynchronously by updating the character's record
+    /// in the database and saving the changes.
+    /// </summary>
+    /// <param name="connection">The Dofus connection being closed.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    private async Task OnConnectionClosedAsync(DofusConnection connection)
+    {
+        _dbContext.Characters.Update(connection.Heroes.Master.Record);
+        await _dbContext.SaveChangesAsync(connection.ConnectionClosed);
     }
 }

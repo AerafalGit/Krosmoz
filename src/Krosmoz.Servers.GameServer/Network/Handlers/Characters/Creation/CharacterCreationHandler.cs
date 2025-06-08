@@ -8,7 +8,7 @@ using Krosmoz.Protocol.Messages.Game.Character.Creation;
 using Krosmoz.Servers.GameServer.Network.Transport;
 using Krosmoz.Servers.GameServer.Services.Characters.Creation;
 
-namespace Krosmoz.Servers.GameServer.Network.Handlers.Characters;
+namespace Krosmoz.Servers.GameServer.Network.Handlers.Characters.Creation;
 
 /// <summary>
 /// Handles character creation-related operations.

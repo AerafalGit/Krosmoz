@@ -2,7 +2,11 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
+using System.Collections.Frozen;
+using Krosmoz.Protocol.Datacenter.Jobs;
 using Krosmoz.Protocol.Datacenter.World;
+using Krosmoz.Protocol.Enums;
+using Krosmoz.Protocol.Enums.Custom;
 using Krosmoz.Serialization.D2P;
 using Krosmoz.Serialization.DLM;
 using Krosmoz.Serialization.DLM.Elements;
@@ -24,6 +28,94 @@ namespace Krosmoz.Tools.Seeds.Maps;
 /// </summary>
 public sealed class MapSeeder : BaseSeeder
 {
+    private static readonly FrozenDictionary<int, InteractiveIds> s_gfxIdToInteractiveId = new Dictionary<int, InteractiveIds>
+    {
+        // Common
+        [224] = InteractiveIds.Puits,
+
+        // Paysan
+        [660] = InteractiveIds.Ble,
+        [661] = InteractiveIds.Houblon,
+        [662] = InteractiveIds.Lin,
+        [663] = InteractiveIds.Chanvre,
+        [664] = InteractiveIds.Orge,
+        [665] = InteractiveIds.Seigle,
+        [667] = InteractiveIds.Malt,
+        [683] = InteractiveIds.Riz,
+        [701] = InteractiveIds.Avoine,
+        [1245] = InteractiveIds.Frostiz,
+
+        // Alchimiste
+        [3212] = InteractiveIds.Ortie,
+        [3213] = InteractiveIds.Sauge,
+        [677] = InteractiveIds.TrefleA5Feuilles,
+        [678] = InteractiveIds.MentheSauvage,
+        [679] = InteractiveIds.OrchideeFreyesque,
+        [680] = InteractiveIds.Edelweiss,
+        [684] = InteractiveIds.Pandouille,
+        [1288] = InteractiveIds.PerceNeige,
+        [3234] = InteractiveIds.Ginseng,
+        [3223] = InteractiveIds.Belladone,
+        [3226] = InteractiveIds.Mandragore,
+
+        // Bucheron
+        [650] = InteractiveIds.Frene,
+        [653] = InteractiveIds.Chene,
+        [655] = InteractiveIds.If,
+        [657] = InteractiveIds.Ebene,
+        [659] = InteractiveIds.Orme,
+        [654] = InteractiveIds.Erable,
+        [658] = InteractiveIds.Charme,
+        [651] = InteractiveIds.Chataignier,
+        [652] = InteractiveIds.Noyer,
+
+        // Pecheur
+        [1018] = InteractiveIds.PetitsPoissonsDeRiviere,
+        [1019] = InteractiveIds.PoissonsDeRiviere,
+        [1021] = InteractiveIds.PoissonsDeRiviereGeants,
+
+        // Mineur
+        [1081] = InteractiveIds.Fer,
+        [2204] = InteractiveIds.Fer,
+        [4918] = InteractiveIds.Fer,
+        [1075] = InteractiveIds.PierreCuivree,
+        [1080] = InteractiveIds.PierreCuivree,
+        [2200] = InteractiveIds.PierreCuivree,
+        [4920] = InteractiveIds.PierreCuivree,
+        [1074] = InteractiveIds.Bronze,
+        [2188] = InteractiveIds.Bronze,
+        [4921] = InteractiveIds.Bronze,
+        [1063] = InteractiveIds.PierreDeKobalte,
+        [2205] = InteractiveIds.PierreDeKobalte,
+        [4922] = InteractiveIds.PierreDeKobalte,
+        [1072] = InteractiveIds.Argent,
+        [2186] = InteractiveIds.Argent,
+        [1079] = InteractiveIds.Or,
+        [2208] = InteractiveIds.Or,
+        [1073] = InteractiveIds.PierreDeBauxite,
+        [2187] = InteractiveIds.PierreDeBauxite,
+        [1077] = InteractiveIds.Etain,
+        [2203] = InteractiveIds.Etain,
+        [1078] = InteractiveIds.Manganese,
+        [2209] = InteractiveIds.Manganese,
+        [2206] = InteractiveIds.Manganese,
+        [1076] = InteractiveIds.Silicate,
+        [2202] = InteractiveIds.Silicate,
+        [4919] = InteractiveIds.Silicate,
+        [1290] = InteractiveIds.Obsidienne,
+        [2207] = InteractiveIds.Obsidienne,
+
+        // Zaaps & Zaapis
+        [5247] = InteractiveIds.Zaap,
+        [24193] = InteractiveIds.Zaap,
+        [21830] = InteractiveIds.Zaap,
+        [37410] = InteractiveIds.Zaap,
+        [37411] = InteractiveIds.Zaap,
+        [38001] = InteractiveIds.Zaap,
+        [38002] = InteractiveIds.Zaap,
+        [38003] = InteractiveIds.Zaap
+    }.ToFrozenDictionary();
+
     private readonly Dictionary<int, IdentifiableElement[]> _elements;
     private readonly List<MapRecord> _maps;
     private readonly List<InteractiveRecord> _interactives;
@@ -53,6 +145,8 @@ public sealed class MapSeeder : BaseSeeder
 
         var d2PFile = DatacenterService.GetMaps();
         var eleFile = DatacenterService.GetEle();
+
+        var skills = DatacenterService.GetObjects<Skill>();
 
         foreach (var mapPosition in DatacenterService.GetObjects<MapPosition>())
             GenerateMap(d2PFile, mapPosition, eleFile);
@@ -86,6 +180,27 @@ public sealed class MapSeeder : BaseSeeder
                 }).ToArray(),
                 InteractiveActions = []
             });
+        }
+
+        foreach (var interactive in _interactives)
+        {
+            foreach (var _ in interactive.MapsData.Where(static x => x.OnMap))
+            {
+                if (s_gfxIdToInteractiveId.TryGetValue(interactive.GfxId, out var interactiveId))
+                {
+                    foreach (var skill in skills.Where(x => x.InteractiveId == (int)interactiveId && x.ClientDisplay))
+                    {
+                        interactive.InteractiveActions.Add(new InteractiveActionRecord
+                        {
+                            InteractiveId = interactive.Id,
+                            InteractiveTemplateId = (int)interactiveId,
+                            SkillId = skill.Id,
+                            Type = GenerateTypeBasedOnSkillId(skill),
+                            Parameters = [skill.GatheredRessourceItem.ToString(), skill.Id.ToString()]
+                        });
+                    }
+                }
+            }
         }
 
         GameDbContext.Maps.AddRange(_maps);
@@ -193,6 +308,32 @@ public sealed class MapSeeder : BaseSeeder
             default:
                 return -1;
         }
+    }
+
+    /// <summary>
+    /// Generates a game action type based on the provided skill's ID.
+    /// </summary>
+    /// <param name="skill">The skill for which to determine the game action type.</param>
+    /// <returns>
+    /// A <see cref="GameActionTypes"/> value representing the type of action associated with the skill.
+    /// </returns>
+    private static GameActionTypes GenerateTypeBasedOnSkillId(Skill skill)
+    {
+        if (skill.GatheredRessourceItem is not -1)
+            return GameActionTypes.Gathering;
+
+        return (SkillIds)skill.Id switch
+        {
+            SkillIds.BriserDesObjets => GameActionTypes.BreakItems,
+            SkillIds.FusionnerDesRessources => GameActionTypes.OpenCraft,
+            SkillIds.Costumager => GameActionTypes.OpenSmithMagic,
+            SkillIds.Joaillomager => GameActionTypes.OpenSmithMagic,
+            SkillIds.Cordomager => GameActionTypes.OpenSmithMagic,
+            SkillIds.Sculptemager => GameActionTypes.OpenSmithMagic,
+            SkillIds.Forgemager => GameActionTypes.OpenSmithMagic,
+            SkillIds.Acceder => GameActionTypes.OpenPaddock,
+            _ => GameActionTypes.Unknown
+        };
     }
 
     /// <summary>

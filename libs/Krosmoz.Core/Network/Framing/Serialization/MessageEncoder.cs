@@ -4,8 +4,9 @@
 
 using System.Buffers;
 using Krosmoz.Core.IO.Binary;
+using Krosmoz.Core.Network.Metadata;
 
-namespace Krosmoz.Core.Network.Metadata;
+namespace Krosmoz.Core.Network.Framing.Serialization;
 
 /// <summary>
 /// Encodes Dofus network messages into a sequence of bytes.

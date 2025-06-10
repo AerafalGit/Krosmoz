@@ -5,8 +5,9 @@
 using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using Krosmoz.Core.IO.Binary;
+using Krosmoz.Core.Network.Metadata;
 
-namespace Krosmoz.Core.Network.Metadata;
+namespace Krosmoz.Core.Network.Framing.Serialization;
 
 /// <summary>
 /// Decodes Dofus network messages from a sequence of bytes.

@@ -8,7 +8,6 @@ using System.IO.Pipelines;
 using System.Runtime.CompilerServices;
 using Krosmoz.Core.Network.Framing.Factory;
 using Krosmoz.Core.Network.Framing.Serialization;
-using Krosmoz.Core.Network.Metadata;
 using Krosmoz.Core.Network.Transport;
 
 namespace Krosmoz.Core.Network.Framing;
@@ -19,7 +18,7 @@ namespace Krosmoz.Core.Network.Framing;
 /// </summary>
 public sealed class FrameReader : IAsyncDisposable
 {
-    private static readonly ActivitySource s_activitySource = new("Boufbowl.Framing");
+    public static readonly ActivitySource ActivitySource = new("Boufbowl.Framing");
 
     private readonly PipeReader _reader;
     private readonly MessageDecoder _decoder;
@@ -75,7 +74,7 @@ public sealed class FrameReader : IAsyncDisposable
                 if (readResult.Message is null || readResult.MessageName is null)
                     throw new InvalidDataException("The read operation returned a null message.");
 
-                using var activity = s_activitySource.CreateActivity("message.read", ActivityKind.Internal);
+                using var activity = ActivitySource.CreateActivity("message.read", ActivityKind.Internal);
 
                 activity?.SetTag("connection.id", _socketConnectionMetrics.ConnectionId);
                 activity?.SetTag("connection.endpoint", _socketConnectionMetrics.RemoteEndPoint);

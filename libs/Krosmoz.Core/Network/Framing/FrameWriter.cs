@@ -17,7 +17,7 @@ namespace Krosmoz.Core.Network.Framing;
 /// </summary>
 public sealed class FrameWriter : IAsyncDisposable
 {
-    private static readonly ActivitySource s_activitySource = new("Boufbowl.Framing");
+    public static readonly ActivitySource ActivitySource = new("Boufbowl.Framing");
 
     private readonly PipeWriter _writer;
     private readonly SemaphoreSlim _semaphore;
@@ -62,7 +62,7 @@ public sealed class FrameWriter : IAsyncDisposable
 
             var messageLength = MessageEncoder.EncodeMessage(_writer, message);
 
-            using var activity = s_activitySource.CreateActivity("message.write", ActivityKind.Internal);
+            using var activity = ActivitySource.CreateActivity("message.write", ActivityKind.Internal);
 
             activity?.SetTag("connection.id", _socketConnectionMetrics.ConnectionId);
             activity?.SetTag("connection.endpoint", _socketConnectionMetrics.RemoteEndPoint);

@@ -2,8 +2,10 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
+using Krosmoz.Core.Network.Dispatcher;
 using Krosmoz.Core.Network.Framing;
-using Krosmoz.Core.Network.Metadata;
+using Krosmoz.Core.Network.Framing.Factory;
+using Krosmoz.Core.Network.Framing.Serialization;
 using Krosmoz.Protocol.Constants;
 using Krosmoz.Protocol.Messages.Game.Approach;
 using Krosmoz.Protocol.Messages.Handshake;
@@ -35,8 +37,7 @@ public sealed class DofusConnectionHandler : ConnectionHandler
         _connectionFactory = ActivatorUtilities.CreateFactory<DofusConnection>(
         [
             typeof(ConnectionContext),
-            typeof(FrameWriter<DofusMessage>),
-            typeof(IMessageFactory),
+            typeof(FrameWriter),
             typeof(ILogger<DofusConnection>)
         ]);
     }
@@ -48,9 +49,12 @@ public sealed class DofusConnectionHandler : ConnectionHandler
     /// <returns>A task that represents the asynchronous operation.</returns>
     public override async Task OnConnectedAsync(ConnectionContext connection)
     {
-        await using var reader = connection.CreateReader(new DofusMessageDecoder(_messageFactory));
+        connection.Features.Set(_messageFactory);
+        connection.Features.Set(new MessageDecoder(_messageFactory));
 
-        var writer = connection.CreateWriter(new DofusMessageEncoder());
+        await using var reader = connection.CreateReader();
+
+        var writer = connection.CreateWriter();
         var logger = _provider.GetRequiredService<ILogger<DofusConnection>>();
         var dispatcher = _provider.GetRequiredService<IMessageDispatcher<DofusConnection>>();
 
@@ -62,13 +66,13 @@ public sealed class DofusConnectionHandler : ConnectionHandler
 
         try
         {
-            await foreach (var message in reader.ReadAllAsync(dofusConnection.ConnectionClosed))
+            await foreach (var readResult in reader.ReadAllAsync(dofusConnection.ConnectionClosed))
             {
-                var messageName = _messageFactory.CreateMessageName(message.ProtocolId);
+                var messageName = _messageFactory.CreateMessageName(readResult.Message!.ProtocolId);
 
-                logger.LogDebug("DofusConnection {ConnectionName} received message {MessageName} ({MessageId})", dofusConnection, messageName, message.ProtocolId);
+                logger.LogDebug("DofusConnection {ConnectionName} received message {MessageName} ({MessageId})", dofusConnection, messageName, readResult.Message.ProtocolId);
 
-                await dispatcher.DispatchMessageAsync(dofusConnection, message);
+                await dispatcher.DispatchMessageAsync(dofusConnection, readResult.Message);
             }
         }
         catch (Exception e)
@@ -77,6 +81,8 @@ public sealed class DofusConnectionHandler : ConnectionHandler
         }
         finally
         {
+            await OnConnectionClosedAsync(dofusConnection);
+
             logger.LogDebug("DofusConnection {ConnectionName} closed", dofusConnection);
         }
     }

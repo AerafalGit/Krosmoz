@@ -4,6 +4,7 @@
 
 using System.Net;
 using Krosmoz.Core.Network.Framing;
+using Krosmoz.Core.Network.Framing.Factory;
 using Krosmoz.Core.Network.Metadata;
 using Krosmoz.Servers.AuthServer.Database.Models.Accounts;
 using Microsoft.AspNetCore.Connections;
@@ -17,7 +18,7 @@ namespace Krosmoz.Servers.AuthServer.Network.Transport;
 public sealed class DofusConnection : IAsyncDisposable
 {
     private readonly ConnectionContext _connection;
-    private readonly FrameWriter<DofusMessage> _writer;
+    private readonly FrameWriter _writer;
     private readonly IMessageFactory _messageFactory;
     private readonly ILogger<DofusConnection> _logger;
 
@@ -62,17 +63,15 @@ public sealed class DofusConnection : IAsyncDisposable
     /// </summary>
     /// <param name="connection">The connection context.</param>
     /// <param name="writer">The frame writer for sending messages.</param>
-    /// <param name="messageFactory">The factory for creating message instances.</param>
     /// <param name="logger">The logger for logging connection events.</param>
     public DofusConnection(
         ConnectionContext connection,
-        FrameWriter<DofusMessage> writer,
-        IMessageFactory messageFactory,
+        FrameWriter writer,
         ILogger<DofusConnection> logger)
     {
         _connection = connection;
         _writer = writer;
-        _messageFactory = messageFactory;
+        _messageFactory = connection.Features.Get<IMessageFactory>()!;
         _logger = logger;
     }
 

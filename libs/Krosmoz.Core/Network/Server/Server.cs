@@ -7,29 +7,31 @@ using System.Net;
 using Krosmoz.Core.Extensions;
 using Krosmoz.Core.Network.Internal;
 using Microsoft.AspNetCore.Connections;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Krosmoz.Core.Network.Server;
 
 /// <summary>
-/// Represents a server that manages listeners and connections, providing functionality
-/// for starting, stopping, and handling server operations.
+/// Represents a server that manages multiple listeners and connections.
+/// Provides functionality for starting, stopping, and managing server connections.
 /// </summary>
 public sealed class Server
 {
     private readonly ServerBuilder _builder;
     private readonly ILogger<Server> _logger;
+    private readonly List<RunningListener> _listeners;
     private readonly TaskCompletionSource<object?> _shutdownTcs;
     private readonly PeriodicTimer _timer;
+    private readonly ServerMetrics _serverMetrics;
 
     private Task _timerTask;
-    private RunningListener? _listener;
 
     /// <summary>
-    /// Gets the endpoint on which the server is listening.
+    /// Gets the collection of endpoints associated with the server listeners.
     /// </summary>
-    public EndPoint? EndPoint =>
-        _listener?.Listener.EndPoint;
+    public IEnumerable<EndPoint> EndPoints =>
+        _listeners.Select(static listener => listener.Listener.EndPoint);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Server"/> class.
@@ -39,13 +41,15 @@ public sealed class Server
     {
         _builder = builder;
         _logger = builder.ApplicationServices.GetLoggerFactory().CreateLogger<Server>();
+        _serverMetrics = builder.ApplicationServices.GetRequiredService<ServerMetrics>();
+        _listeners = [];
         _shutdownTcs = new TaskCompletionSource<object?>(TaskCreationOptions.RunContinuationsAsynchronously);
         _timer = new PeriodicTimer(builder.HeartBeatInterval);
         _timerTask = Task.CompletedTask;
     }
 
     /// <summary>
-    /// Starts the server asynchronously, binding listener and initializing connections.
+    /// Starts the server asynchronously, binding listeners and initializing connections.
     /// </summary>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
@@ -55,11 +59,15 @@ public sealed class Server
         {
             await foreach (var listener in _builder.Binding!.BindAsync(cancellationToken).ConfigureAwait(false))
             {
-                _listener = new RunningListener(this, _builder.Binding, listener);
+                var runningListener = new RunningListener(this, _builder.Binding, listener);
+
+                _listeners.Add(runningListener);
+
+                _serverMetrics.IncrementListenersActive(listener.EndPoint);
 
                 _logger.LogInformation("Now listening on: {EndPoint}", listener.EndPoint);
 
-                _listener.Start();
+                runningListener.Start();
             }
         }
         catch
@@ -72,17 +80,31 @@ public sealed class Server
     }
 
     /// <summary>
-    /// Stops the server asynchronously, unbinding listener and shutting down connections.
+    /// Stops the server asynchronously, unbinding listeners and shutting down connections.
     /// </summary>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     public async Task StopAsync(CancellationToken cancellationToken)
     {
-        await _listener!.Listener.UnbindAsync(cancellationToken).ConfigureAwait(false);
+        var tasks = new Task[_listeners.Count];
+
+        for (var i = 0; i < _listeners.Count; i++)
+        {
+            var listener = _listeners[i];
+
+            _serverMetrics.DecrementListenersActive(listener.Listener.EndPoint);
+
+            tasks[i] = listener.Listener.UnbindAsync(cancellationToken).AsTask();
+        }
+
+        await Task.WhenAll(tasks).ConfigureAwait(false);
 
         _shutdownTcs.TrySetResult(null);
 
-        var shutdownTask = _listener.ExecutionTask;
+        for (var i = 0; i < _listeners.Count; i++)
+            tasks[i] = _listeners[i].ExecutionTask;
+
+        var shutdownTask = Task.WhenAll(tasks);
 
         if (cancellationToken.CanBeCanceled)
             await shutdownTask.WithCancellation(cancellationToken).ConfigureAwait(false);
@@ -105,7 +127,10 @@ public sealed class Server
         using (_timer)
         {
             while (await _timer.WaitForNextTickAsync().ConfigureAwait(false))
-                _listener!.TickHeartbeat();
+            {
+                foreach (var listener in _listeners)
+                    listener.TickHeartbeat();
+            }
         }
     }
 
@@ -267,3 +292,4 @@ public sealed class Server
         }
     }
 }
+

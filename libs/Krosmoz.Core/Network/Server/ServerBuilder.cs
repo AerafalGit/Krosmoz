@@ -6,6 +6,8 @@ using Krosmoz.Core.Extensions;
 using Krosmoz.Core.Network.Internal;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace Krosmoz.Core.Network.Server;
@@ -93,10 +95,13 @@ public sealed class ServerBuilder
     /// </exception>
     public ServerBuilder ListenFromEnvironment(Action<IConnectionBuilder> configure)
     {
-        if (!int.TryParse(Environment.GetEnvironmentVariable("SERVER_PORT"), out var port))
-            throw new ArgumentException("Environment variable 'SERVER_PORT' is not set or is not a valid port number.");
+        var configuration = ApplicationServices.GetRequiredService<IConfiguration>();
 
-        return ListenLocalhost(port, configure);
+        var connectionString = configuration.GetConnectionString("socket-server");
+
+        var uri = new Uri(connectionString!);
+
+        return ListenLocalhost(uri.Port, configure);
     }
 
     /// <summary>

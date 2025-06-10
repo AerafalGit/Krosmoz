@@ -13,13 +13,13 @@ namespace Krosmoz.Core.Network.Hosting;
 /// </summary>
 public sealed class ServerHostedService : IHostedService
 {
-    private readonly CompositeServer _server;
+    private readonly Server.Server _server;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ServerHostedService"/> class.
     /// </summary>
     /// <param name="server">The composite server instance to manage.</param>
-    public ServerHostedService(CompositeServer server)
+    public ServerHostedService(Server.Server server)
     {
         _server = server;
     }

@@ -19,7 +19,7 @@ public static class ServiceCollectionExtensions
     /// <param name="builder">The host builder to configure.</param>
     /// <param name="configure">An action to configure the composite server builder.</param>
     /// <returns>The configured <see cref="IHostBuilder"/>.</returns>
-    public static IHostBuilder UseCompositeServer(this IHostBuilder builder, Action<CompositeServerBuilder> configure)
+    public static IHostBuilder UseCompositeServer(this IHostBuilder builder, Action<ServerBuilder> configure)
     {
         builder.ConfigureServices(services =>
         {
@@ -35,7 +35,7 @@ public static class ServiceCollectionExtensions
     /// <param name="builder">The application builder to configure.</param>
     /// <param name="configure">An action to configure the composite server builder.</param>
     /// <returns>The configured <see cref="IHostApplicationBuilder"/>.</returns>
-    public static IHostApplicationBuilder UseCompositeServer(this IHostApplicationBuilder builder, Action<CompositeServerBuilder> configure)
+    public static IHostApplicationBuilder UseCompositeServer(this IHostApplicationBuilder builder, Action<ServerBuilder> configure)
     {
         ConfigureServices(builder.Services, configure);
 
@@ -47,11 +47,11 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The service collection to configure.</param>
     /// <param name="configure">An action to configure the composite server builder.</param>
-    private static void ConfigureServices(IServiceCollection services, Action<CompositeServerBuilder> configure)
+    private static void ConfigureServices(IServiceCollection services, Action<ServerBuilder> configure)
     {
         services.AddHostedService(provider =>
         {
-            var builder = new CompositeServerBuilder(provider);
+            var builder = new ServerBuilder(provider);
             configure(builder);
             return new ServerHostedService(builder.Build());
         });

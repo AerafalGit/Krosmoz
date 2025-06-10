@@ -5,22 +5,21 @@
 using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using Krosmoz.Core.IO.Binary;
-using Krosmoz.Core.Network.Framing.Serialization;
 
 namespace Krosmoz.Core.Network.Metadata;
 
 /// <summary>
 /// Decodes Dofus network messages from a sequence of bytes.
 /// </summary>
-public sealed class DofusMessageDecoder : IMessageDecoder<DofusMessage>
+public sealed class MessageDecoder
 {
     private readonly IMessageFactory _messageFactory;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DofusMessageDecoder"/> class.
+    /// Initializes a new instance of the <see cref="MessageDecoder"/> class.
     /// </summary>
     /// <param name="messageFactory">The factory used to create Dofus messages.</param>
-    public DofusMessageDecoder(IMessageFactory messageFactory)
+    public MessageDecoder(IMessageFactory messageFactory)
     {
         _messageFactory = messageFactory;
     }
@@ -31,10 +30,12 @@ public sealed class DofusMessageDecoder : IMessageDecoder<DofusMessage>
     /// <param name="sequence">The sequence of bytes to decode the message from.</param>
     /// <param name="consumed">The position in the sequence up to which data has been consumed.</param>
     /// <param name="examined">The position in the sequence up to which data has been examined.</param>
+    /// <param name="messageLength">The length of the decoded message.</param>
     /// <param name="message">The decoded Dofus message, or null if decoding fails.</param>
     /// <returns><c>true</c> if the message was successfully decoded; otherwise, <c>false</c>.</returns>
-    public bool TryDecodeMessage(in ReadOnlySequence<byte> sequence, ref SequencePosition consumed, ref SequencePosition examined, [NotNullWhen(true)] out DofusMessage? message)
+    public bool TryDecodeMessage(in ReadOnlySequence<byte> sequence, ref SequencePosition consumed, ref SequencePosition examined, out int messageLength, [NotNullWhen(true)] out DofusMessage? message)
     {
+        messageLength = 0;
         message = null;
 
         var reader = new BigEndianReader(sequence);
@@ -51,8 +52,6 @@ public sealed class DofusMessageDecoder : IMessageDecoder<DofusMessage>
 
         if (reader.Remaining < messageSize)
             return false;
-
-        var messageLength = 0;
 
         for (var i = messageSize - 1; i >= 0; i--)
             messageLength |= reader.ReadUInt8() << (i * sizeof(long));

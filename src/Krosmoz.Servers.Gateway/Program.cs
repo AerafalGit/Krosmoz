@@ -1,3 +1,4 @@
+using System.Net.Sockets;
 using Krosmoz.Servers.Gateway.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,7 +31,17 @@ var auth = builder
     .WaitFor(nats)
     .WithReference(authDb)
     .WithReference(nats)
-    .WithEnvironment("SERVER_PORT", "5555");
+    .WithEndpoint("socket-server", e =>
+    {
+        e.UriScheme = "tcp";
+        e.Port = 5555;
+        e.TargetPort = 5555;
+        e.IsExternal = true;
+        e.IsProxied = false;
+        e.Protocol = ProtocolType.Tcp;
+    });
+
+auth.WithEnvironment("ConnectionStrings__socket-server", auth.GetEndpoint("socket-server"));
 
 var game = builder
     .AddProject<Krosmoz_Servers_GameServer>("krosmoz-game-server")
@@ -39,7 +50,17 @@ var game = builder
     .WaitFor(nats)
     .WithReference(gameDb)
     .WithReference(nats)
-    .WithEnvironment("SERVER_PORT", "5556");
+    .WithEndpoint("socket-server", e =>
+    {
+        e.UriScheme = "tcp";
+        e.Port = 5556;
+        e.TargetPort = 5556;
+        e.IsExternal = true;
+        e.IsProxied = false;
+        e.Protocol = ProtocolType.Tcp;
+    });
+
+game.WithEnvironment("ConnectionStrings__socket-server", game.GetEndpoint("socket-server"));
 
 IResourceBuilder<ProjectResource>? migrator = null;
 

@@ -24,7 +24,12 @@ builder
     .AddServiceDefaults()
     .UseNpgsqlDbContext<AuthDbContext>("krosmoz-auth-db")
     .UseNats("krosmoz-nats", IpcJsonSerializerContext.WithCustomConverters)
-    .UseCompositeServer(static server => server.ListenFromEnvironment(static connection => connection.UseConnectionHandler<DofusConnectionHandler>()));
+    .UseServer(static server => server.ListenFromEnvironment(static connection =>
+    {
+        connection
+            .UseTelemetry()
+            .UseConnectionHandler<DofusConnectionHandler>();
+    }));
 
 builder.Services
     .AddDofusProtocol()

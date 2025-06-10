@@ -21,12 +21,14 @@ public static class HostBuilderExtensions
     /// <returns>The configured host builder.</returns>
     public static IHostApplicationBuilder UseServer(this IHostApplicationBuilder builder, Action<ServerBuilder> configure)
     {
-        builder.Services.AddHostedService(provider =>
-        {
-            var serverBuilder = new ServerBuilder(provider);
-            configure(serverBuilder);
-            return new ServerHostedService(serverBuilder.Build());
-        });
+        builder.Services
+            .AddSingleton<ServerMetrics>()
+            .AddHostedService(provider =>
+            {
+                var serverBuilder = new ServerBuilder(provider);
+                configure(serverBuilder);
+                return new ServerHostedService(serverBuilder.Build());
+            });
 
         return builder;
     }

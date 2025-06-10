@@ -63,7 +63,6 @@ builder.Services
     .AddSingleton<IServerService, ServerService>()
     .AddScoped<IChatService, ChatService>()
     .AddScoped<IShortcutService, ShortcutService>()
-    .AddScoped<ICharacteristicService, CharacteristicService>()
     .AddScoped<IInventoryService, InventoryService>()
     .AddScoped<IInfoMessageService, InfoMessageService>()
     .AddSingleton<IWorldService, WorldService>()

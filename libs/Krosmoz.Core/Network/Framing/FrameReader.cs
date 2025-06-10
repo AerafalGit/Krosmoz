@@ -3,9 +3,12 @@
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
 using System.Buffers;
+using System.Diagnostics;
 using System.IO.Pipelines;
 using System.Runtime.CompilerServices;
 using Krosmoz.Core.Network.Framing.Serialization;
+using Krosmoz.Core.Network.Metadata;
+using Krosmoz.Core.Network.Transport;
 
 namespace Krosmoz.Core.Network.Framing;
 
@@ -13,12 +16,14 @@ namespace Krosmoz.Core.Network.Framing;
 /// Represents a reader for processing frames from a stream or pipe.
 /// Provides methods for reading and decoding messages asynchronously.
 /// </summary>
-/// <typeparam name="TMessage">The type of the message to decode.</typeparam>
-public sealed class FrameReader<TMessage> : IAsyncDisposable
-    where TMessage : class
+public sealed class FrameReader : IAsyncDisposable
 {
+    private static readonly ActivitySource s_activitySource = new("Boufbowl.Framing");
+
     private readonly PipeReader _reader;
-    private readonly IMessageDecoder<TMessage> _decoder;
+    private readonly MessageDecoder _decoder;
+    private readonly IMessageFactory _factory;
+    private readonly SocketConnectionMetrics _socketConnectionMetrics;
 
     private ReadOnlySequence<byte> _buffer;
     private SequencePosition _consumed;
@@ -29,23 +34,22 @@ public sealed class FrameReader<TMessage> : IAsyncDisposable
     private bool _isCompleted;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="FrameReader{TMessage}"/> class using a stream.
-    /// </summary>
-    /// <param name="stream">The stream to read frames from.</param>
-    /// <param name="decoder">The decoder to use for decoding messages.</param>
-    public FrameReader(Stream stream, IMessageDecoder<TMessage> decoder) : this(PipeReader.Create(stream), decoder)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FrameReader{TMessage}"/> class using a pipe reader.
+    /// Initializes a new instance of the <see cref="FrameReader"/> class using a pipe reader.
     /// </summary>
     /// <param name="reader">The pipe reader to read frames from.</param>
     /// <param name="decoder">The decoder to use for decoding messages.</param>
-    public FrameReader(PipeReader reader, IMessageDecoder<TMessage> decoder)
+    /// <param name="factory">The factory used to create messages.</param>
+    /// <param name="socketConnectionMetrics">Metrics for tracking socket connection performance.</param>
+    public FrameReader(
+        PipeReader reader,
+        MessageDecoder decoder,
+        IMessageFactory factory,
+        SocketConnectionMetrics socketConnectionMetrics)
     {
         _reader = reader;
         _decoder = decoder;
+        _factory = factory;
+        _socketConnectionMetrics = socketConnectionMetrics;
     }
 
     /// <summary>
@@ -53,24 +57,35 @@ public sealed class FrameReader<TMessage> : IAsyncDisposable
     /// </summary>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>An asynchronous enumerable of decoded messages.</returns>
-    public async IAsyncEnumerable<TMessage> ReadAllAsync([EnumeratorCancellation] CancellationToken cancellationToken)
+    public async IAsyncEnumerable<FrameReadResult> ReadAllAsync([EnumeratorCancellation] CancellationToken cancellationToken)
     {
         while (!cancellationToken.IsCancellationRequested)
         {
             try
             {
-                var (message, isCanceled, isCompleted) = await ReadAsync(cancellationToken).ConfigureAwait(false);
+                var readResult = await ReadAsync(cancellationToken).ConfigureAwait(false);
 
-                if (isCanceled)
+                if (readResult.IsCanceled)
                     throw new OperationCanceledException("The read operation was canceled.", cancellationToken);
 
-                if (isCompleted)
+                if (readResult.IsCompleted)
                     yield break;
 
-                if (message is null)
+                if (readResult.Message is null || readResult.MessageName is null)
                     throw new InvalidDataException("The read operation returned a null message.");
 
-                yield return message;
+                using var activity = s_activitySource.CreateActivity("message.read", ActivityKind.Internal);
+
+                activity?.SetTag("connection.id", _socketConnectionMetrics.ConnectionId);
+                activity?.SetTag("connection.endpoint", _socketConnectionMetrics.RemoteEndPoint);
+
+                activity?.SetTag("message.id", readResult.Message.ProtocolId);
+                activity?.SetTag("message.name", readResult.MessageName);
+                activity?.SetTag("message.length", readResult.MessageLength);
+
+                _socketConnectionMetrics.IncrementMessageReceived(readResult.MessageName, readResult.MessageLength);
+
+                yield return readResult;
             }
             finally
             {
@@ -84,7 +99,7 @@ public sealed class FrameReader<TMessage> : IAsyncDisposable
     /// </summary>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task representing the result of the read operation.</returns>
-    public ValueTask<FrameReadResult<TMessage>> ReadAsync(CancellationToken cancellationToken)
+    private ValueTask<FrameReadResult> ReadAsync(CancellationToken cancellationToken)
     {
         ObjectDisposedException.ThrowIf(_disposed, GetType());
 
@@ -94,10 +109,10 @@ public sealed class FrameReader<TMessage> : IAsyncDisposable
         if (_consumed.GetObject() is null)
             return DoAsyncRead(cancellationToken);
 
-        if (_decoder.TryDecodeMessage(_buffer, ref _consumed, ref _examined, out var message))
+        if (_decoder.TryDecodeMessage(_buffer, ref _consumed, ref _examined, out var messageLength, out var message))
         {
             _hasMessage = true;
-            return new ValueTask<FrameReadResult<TMessage>>(new FrameReadResult<TMessage>(message, _isCanceled, false));
+            return new ValueTask<FrameReadResult>(new FrameReadResult(messageLength, _factory.CreateMessageName(message.ProtocolId), message, _isCanceled, false));
         }
 
         _reader.AdvanceTo(_consumed, _examined);
@@ -114,7 +129,7 @@ public sealed class FrameReader<TMessage> : IAsyncDisposable
             if (!_buffer.IsEmpty)
                 throw new InvalidDataException("Connection terminated while reading a message.");
 
-            return new ValueTask<FrameReadResult<TMessage>>(new FrameReadResult<TMessage>(_isCanceled, _isCompleted));
+            return new ValueTask<FrameReadResult>(new FrameReadResult(_isCanceled, _isCompleted));
         }
 
         return DoAsyncRead(cancellationToken);
@@ -125,7 +140,7 @@ public sealed class FrameReader<TMessage> : IAsyncDisposable
     /// </summary>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task representing the result of the read operation.</returns>
-    private ValueTask<FrameReadResult<TMessage>> DoAsyncRead(CancellationToken cancellationToken)
+    private ValueTask<FrameReadResult> DoAsyncRead(CancellationToken cancellationToken)
     {
         while (true)
         {
@@ -141,13 +156,13 @@ public sealed class FrameReader<TMessage> : IAsyncDisposable
             var (shouldContinue, hasMessage) = TrySetMessage(result, out var protocolReadResult);
 
             if (hasMessage)
-                return new ValueTask<FrameReadResult<TMessage>>(protocolReadResult);
+                return new ValueTask<FrameReadResult>(protocolReadResult);
 
             if (!shouldContinue)
                 break;
         }
 
-        return new ValueTask<FrameReadResult<TMessage>>(new FrameReadResult<TMessage>(_isCanceled, _isCompleted));
+        return new ValueTask<FrameReadResult>(new FrameReadResult(_isCanceled, _isCompleted));
     }
 
     /// <summary>
@@ -156,7 +171,7 @@ public sealed class FrameReader<TMessage> : IAsyncDisposable
     /// <param name="readTask">The task representing the read operation.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task representing the result of the read operation.</returns>
-    private async ValueTask<FrameReadResult<TMessage>> ContinueDoAsyncRead(ValueTask<ReadResult> readTask, CancellationToken cancellationToken)
+    private async ValueTask<FrameReadResult> ContinueDoAsyncRead(ValueTask<ReadResult> readTask, CancellationToken cancellationToken)
     {
         while (true)
         {
@@ -175,7 +190,7 @@ public sealed class FrameReader<TMessage> : IAsyncDisposable
             readTask = _reader.ReadAsync(cancellationToken);
         }
 
-        return new FrameReadResult<TMessage>(_isCanceled, _isCompleted);
+        return new FrameReadResult(_isCanceled, _isCompleted);
     }
 
     /// <summary>
@@ -184,7 +199,7 @@ public sealed class FrameReader<TMessage> : IAsyncDisposable
     /// <param name="result">The result of the read operation.</param>
     /// <param name="readResult">The result of the frame read operation.</param>
     /// <returns>A tuple indicating whether to continue and whether a message was decoded.</returns>
-    private (bool ShouldContinue, bool HasMessage) TrySetMessage(ReadResult result, out FrameReadResult<TMessage> readResult)
+    private (bool ShouldContinue, bool HasMessage) TrySetMessage(ReadResult result, out FrameReadResult readResult)
     {
         _buffer = result.Buffer;
         _isCanceled = result.IsCanceled;
@@ -194,14 +209,14 @@ public sealed class FrameReader<TMessage> : IAsyncDisposable
 
         if (_isCanceled)
         {
-            readResult = FrameReadResult<TMessage>.Empty;
+            readResult = FrameReadResult.Empty;
             return (false, false);
         }
 
-        if (_decoder.TryDecodeMessage(_buffer, ref _consumed, ref _examined, out var message))
+        if (_decoder.TryDecodeMessage(_buffer, ref _consumed, ref _examined, out var messageLength, out var message))
         {
             _hasMessage = true;
-            readResult = new FrameReadResult<TMessage>(message, _isCanceled, false);
+            readResult = new FrameReadResult(messageLength, _factory.CreateMessageName(message.ProtocolId), message, _isCanceled, false);
             return (false, true);
         }
 
@@ -219,11 +234,11 @@ public sealed class FrameReader<TMessage> : IAsyncDisposable
             if (!_buffer.IsEmpty)
                 throw new InvalidDataException("Connection terminated while reading a message.");
 
-            readResult = FrameReadResult<TMessage>.Empty;
+            readResult = FrameReadResult.Empty;
             return (false, false);
         }
 
-        readResult = FrameReadResult<TMessage>.Empty;
+        readResult = FrameReadResult.Empty;
         return (true, false);
     }
 

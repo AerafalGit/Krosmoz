@@ -58,7 +58,7 @@ public sealed class DofusConnectionHandler : ConnectionHandler
         var logger = _provider.GetRequiredService<ILogger<DofusConnection>>();
         var dispatcher = _provider.GetRequiredService<IMessageDispatcher<DofusConnection>>();
 
-        await using var dofusConnection = _connectionFactory(_provider, [connection, writer, _messageFactory, logger]);
+        await using var dofusConnection = _connectionFactory(_provider, [connection, writer, logger]);
 
         logger.LogDebug("DofusConnection {ConnectionName} established", dofusConnection);
 

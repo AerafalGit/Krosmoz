@@ -19,16 +19,15 @@ public static class HostBuilderExtensions
     /// <param name="builder">The host builder to configure.</param>
     /// <param name="configure">An action to configure the <see cref="ServerBuilder"/>.</param>
     /// <returns>The configured host builder.</returns>
-    public static IHostBuilder UseServer(this IHostBuilder builder, Action<ServerBuilder> configure)
+    public static IHostApplicationBuilder UseServer(this IHostApplicationBuilder builder, Action<ServerBuilder> configure)
     {
-        return builder.ConfigureServices(services =>
+        builder.Services.AddHostedService(provider =>
         {
-            services.AddHostedService(provider =>
-            {
-                var serverBuilder = new ServerBuilder(provider);
-                configure(serverBuilder);
-                return new ServerHostedService(serverBuilder.Build());
-            });
+            var serverBuilder = new ServerBuilder(provider);
+            configure(serverBuilder);
+            return new ServerHostedService(serverBuilder.Build());
         });
+
+        return builder;
     }
 }

@@ -3,52 +3,48 @@
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
 using Krosmoz.Core.Network.Framing.Serialization;
+using Krosmoz.Core.Network.Metadata;
+using Krosmoz.Core.Network.Transport;
 using Microsoft.AspNetCore.Connections;
 
 namespace Krosmoz.Core.Network.Framing;
 
 /// <summary>
-/// Provides static methods for creating frame readers and writers for a connection context.
+/// Provides extension methods for creating frame readers and writers
+/// from a <see cref="ConnectionContext"/>.
 /// </summary>
 public static class FrameExtensions
 {
     /// <summary>
-    /// Creates a <see cref="FrameReader{TMessage}"/> for the specified connection context and decoder.
+    /// Creates a <see cref="FrameReader"/> for the specified connection context.
     /// </summary>
-    /// <typeparam name="TMessage">The type of the message to decode.</typeparam>
-    /// <param name="context">The connection context to read frames from.</param>
-    /// <param name="decoder">The decoder to use for decoding messages.</param>
-    /// <returns>A <see cref="FrameReader{TMessage}"/> instance.</returns>
-    public static FrameReader<TMessage> CreateReader<TMessage>(this ConnectionContext context, IMessageDecoder<TMessage> decoder)
-        where TMessage : class
+    /// <param name="context">The connection context.</param>
+    /// <returns>A new instance of <see cref="FrameReader"/>.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if required features are not available in the connection context.
+    /// </exception>
+    public static FrameReader CreateReader(this ConnectionContext context)
     {
-        return new FrameReader<TMessage>(context.Transport.Input, decoder);
+        var decoder = context.Features.Get<MessageDecoder>()!;
+        var factory = context.Features.Get<IMessageFactory>()!;
+        var metrics = context.Features.Get<SocketConnectionMetrics>()!;
+
+        return new FrameReader(context.Transport.Input, decoder, factory, metrics);
     }
 
     /// <summary>
-    /// Creates a <see cref="FrameWriter{TMessage}"/> for the specified connection context and encoder.
+    /// Creates a <see cref="FrameWriter"/> for the specified connection context.
     /// </summary>
-    /// <typeparam name="TMessage">The type of the message to encode.</typeparam>
-    /// <param name="context">The connection context to write frames to.</param>
-    /// <param name="encoder">The encoder to use for encoding messages.</param>
-    /// <returns>A <see cref="FrameWriter{TMessage}"/> instance.</returns>
-    public static FrameWriter<TMessage> CreateWriter<TMessage>(this ConnectionContext context, IMessageEncoder<TMessage> encoder)
-        where TMessage : class
+    /// <param name="context">The connection context.</param>
+    /// <returns>A new instance of <see cref="FrameWriter"/>.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if required features are not available in the connection context.
+    /// </exception>
+    public static FrameWriter CreateWriter(this ConnectionContext context)
     {
-        return new FrameWriter<TMessage>(context.Transport.Output, encoder);
-    }
+        var factory = context.Features.Get<IMessageFactory>()!;
+        var metrics = context.Features.Get<SocketConnectionMetrics>()!;
 
-    /// <summary>
-    /// Creates a pair of <see cref="FrameReader{TMessage}"/> and <see cref="FrameWriter{TMessage}"/> for the specified connection context.
-    /// </summary>
-    /// <typeparam name="TMessage">The type of the message to encode and decode.</typeparam>
-    /// <param name="context">The connection context to read and write frames.</param>
-    /// <param name="decoder">The decoder to use for decoding messages.</param>
-    /// <param name="encoder">The encoder to use for encoding messages.</param>
-    /// <returns>A tuple containing the <see cref="FrameReader{TMessage}"/> and <see cref="FrameWriter{TMessage}"/>.</returns>
-    public static (FrameReader<TMessage> Reader, FrameWriter<TMessage> Writer) CreateReaderWriterPair<TMessage>(this ConnectionContext context, IMessageDecoder<TMessage> decoder, IMessageEncoder<TMessage> encoder)
-        where TMessage : class
-    {
-        return (context.CreateReader(decoder), context.CreateWriter(encoder));
+        return new FrameWriter(context.Transport.Output, factory, metrics);
     }
 }

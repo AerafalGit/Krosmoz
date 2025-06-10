@@ -41,10 +41,10 @@ public sealed partial class MessageDispatcherSourceGenerator
             .AppendLine()
             .AppendLine("#nullable enable")
             .AppendLine()
-            .AppendLine("namespace Krosmoz.Core.Network.Metadata;")
+            .AppendLine("namespace Krosmoz.Core.Network.Dispatcher;")
             .AppendLine()
             .AppendLine("[global::System.CodeDom.Compiler.GeneratedCode(\"Krosmoz.SourceGenerators.MessageDispatcher\", \"1.0.0\")]")
-            .AppendLine("internal sealed class MessageDispatcher : global::Krosmoz.Core.Network.Metadata.IMessageDispatcher<global::Krosmoz.Servers.{0}.Network.Transport.DofusConnection>", suffix);
+            .AppendLine("internal sealed class MessageDispatcher : global::Krosmoz.Core.Network.Dispatcher.IMessageDispatcher<global::Krosmoz.Servers.{0}.Network.Transport.DofusConnection>", suffix);
 
         using (builder.CreateScope())
         {
@@ -131,8 +131,8 @@ public sealed partial class MessageDispatcherSourceGenerator
             using (builder.CreateScope())
             {
                 builder
-                    .AppendIndentedLine("global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::Krosmoz.Core.Network.Metadata.IMessageFactory, global::Krosmoz.Protocol.Messages.MessageFactory>(services);")
-                    .AppendIndentedLine("global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddTransient<global::Krosmoz.Core.Network.Metadata.IMessageDispatcher<global::Krosmoz.Servers.{0}.Network.Transport.DofusConnection>, global::Krosmoz.Core.Network.Metadata.MessageDispatcher>(services);", suffix);
+                    .AppendIndentedLine("global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::Krosmoz.Core.Network.Framing.Factory.IMessageFactory, global::Krosmoz.Protocol.Messages.MessageFactory>(services);")
+                    .AppendIndentedLine("global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddTransient<global::Krosmoz.Core.Network.Dispatcher.IMessageDispatcher<global::Krosmoz.Servers.{0}.Network.Transport.DofusConnection>, global::Krosmoz.Core.Network.Dispatcher.MessageDispatcher>(services);", suffix);
 
                 foreach (var handler in handlers)
                     builder.AppendIndentedLine("global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddScoped<{0}>(services);", handler.Name);

@@ -71,6 +71,8 @@ public sealed class FrameWriter : IAsyncDisposable
             activity?.SetTag("message.name", messageName);
             activity?.SetTag("message.length", messageLength);
 
+            _socketConnectionMetrics.IncrementMessageSent(messageName, messageLength);
+
             var result = await _writer.FlushAsync(cancellationToken).ConfigureAwait(false);
 
             if (result.IsCanceled)

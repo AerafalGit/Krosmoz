@@ -12,41 +12,40 @@ using Microsoft.Extensions.Logging;
 namespace Krosmoz.Core.Network.Server;
 
 /// <summary>
-/// Represents a composite server that manages multiple listeners and connections.
-/// Provides functionality for starting, stopping, and managing server connections.
+/// Represents a server that manages listeners and connections, providing functionality
+/// for starting, stopping, and handling server operations.
 /// </summary>
-public sealed class CompositeServer
+public sealed class Server
 {
-    private readonly CompositeServerBuilder _builder;
-    private readonly ILogger<CompositeServer> _logger;
-    private readonly List<RunningListener> _listeners;
+    private readonly ServerBuilder _builder;
+    private readonly ILogger<Server> _logger;
     private readonly TaskCompletionSource<object?> _shutdownTcs;
     private readonly PeriodicTimer _timer;
 
     private Task _timerTask;
+    private RunningListener? _listener;
 
     /// <summary>
-    /// Gets the collection of endpoints associated with the server listeners.
+    /// Gets the endpoint on which the server is listening.
     /// </summary>
-    public IEnumerable<EndPoint> EndPoints =>
-        _listeners.Select(static listener => listener.Listener.EndPoint);
+    public EndPoint? EndPoint =>
+        _listener?.Listener.EndPoint;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompositeServer"/> class.
+    /// Initializes a new instance of the <see cref="Server"/> class.
     /// </summary>
     /// <param name="builder">The builder used to configure the server.</param>
-    internal CompositeServer(CompositeServerBuilder builder)
+    internal Server(ServerBuilder builder)
     {
         _builder = builder;
-        _logger = builder.ApplicationServices.GetLoggerFactory().CreateLogger<CompositeServer>();
-        _listeners = [];
+        _logger = builder.ApplicationServices.GetLoggerFactory().CreateLogger<Server>();
         _shutdownTcs = new TaskCompletionSource<object?>(TaskCreationOptions.RunContinuationsAsynchronously);
         _timer = new PeriodicTimer(builder.HeartBeatInterval);
         _timerTask = Task.CompletedTask;
     }
 
     /// <summary>
-    /// Starts the server asynchronously, binding listeners and initializing connections.
+    /// Starts the server asynchronously, binding listener and initializing connections.
     /// </summary>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
@@ -54,17 +53,13 @@ public sealed class CompositeServer
     {
         try
         {
-            foreach (var binding in _builder.Bindings)
+            await foreach (var listener in _builder.Binding!.BindAsync(cancellationToken).ConfigureAwait(false))
             {
-                await foreach (var listener in binding.BindAsync(cancellationToken).ConfigureAwait(false))
-                {
-                    var runningListener = new RunningListener(this, binding, listener);
+                _listener = new RunningListener(this, _builder.Binding, listener);
 
-                    _listeners.Add(runningListener);
-                    _logger.LogInformation("Now listening on: {EndPoint}", listener.EndPoint);
+                _logger.LogInformation("Now listening on: {EndPoint}", listener.EndPoint);
 
-                    runningListener.Start();
-                }
+                _listener.Start();
             }
         }
         catch
@@ -77,25 +72,17 @@ public sealed class CompositeServer
     }
 
     /// <summary>
-    /// Stops the server asynchronously, unbinding listeners and shutting down connections.
+    /// Stops the server asynchronously, unbinding listener and shutting down connections.
     /// </summary>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     public async Task StopAsync(CancellationToken cancellationToken)
     {
-        var tasks = new Task[_listeners.Count];
-
-        for (var i = 0; i < _listeners.Count; i++)
-            tasks[i] = _listeners[i].Listener.UnbindAsync(cancellationToken).AsTask();
-
-        await Task.WhenAll(tasks).ConfigureAwait(false);
+        await _listener!.Listener.UnbindAsync(cancellationToken).ConfigureAwait(false);
 
         _shutdownTcs.TrySetResult(null);
 
-        for (var i = 0; i < _listeners.Count; i++)
-            tasks[i] = _listeners[i].ExecutionTask;
-
-        var shutdownTask = Task.WhenAll(tasks);
+        var shutdownTask = _listener.ExecutionTask;
 
         if (cancellationToken.CanBeCanceled)
             await shutdownTask.WithCancellation(cancellationToken).ConfigureAwait(false);
@@ -118,10 +105,7 @@ public sealed class CompositeServer
         using (_timer)
         {
             while (await _timer.WaitForNextTickAsync().ConfigureAwait(false))
-            {
-                foreach (var listener in _listeners)
-                    listener.TickHeartbeat();
-            }
+                _listener!.TickHeartbeat();
         }
     }
 
@@ -131,7 +115,7 @@ public sealed class CompositeServer
     private sealed class RunningListener
     {
         private readonly ConcurrentDictionary<long, (ServerConnection Connection, Task ExecutionTask)> _connections;
-        private readonly CompositeServer _server;
+        private readonly Server _server;
         private readonly ServerBinding _binding;
 
         /// <summary>
@@ -150,7 +134,7 @@ public sealed class CompositeServer
         /// <param name="server">The composite server managing this listener.</param>
         /// <param name="binding">The server binding associated with this listener.</param>
         /// <param name="listener">The connection listener.</param>
-        public RunningListener(CompositeServer server, ServerBinding binding, IConnectionListener listener)
+        public RunningListener(Server server, ServerBinding binding, IConnectionListener listener)
         {
             _server = server;
             _binding = binding;

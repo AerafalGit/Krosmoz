@@ -11,10 +11,10 @@ using Microsoft.Extensions.Options;
 namespace Krosmoz.Core.Network.Server;
 
 /// <summary>
-/// Represents a builder for creating a composite server.
-/// Provides functionality to configure server bindings, heartbeat intervals, and shutdown timeouts.
+/// Represents a builder for creating a server.
+/// Provides functionality to configure server binding, heartbeat intervals, and shutdown timeouts.
 /// </summary>
-public sealed class CompositeServerBuilder
+public sealed class ServerBuilder
 {
     /// <summary>
     /// Gets the transport options for socket-based connections.
@@ -22,9 +22,9 @@ public sealed class CompositeServerBuilder
     public SocketTransportOptions TransportOptions { get; }
 
     /// <summary>
-    /// Gets the list of server bindings associated with the composite server.
+    /// Gets the server bindings for the composite server.
     /// </summary>
-    public IList<ServerBinding> Bindings { get; }
+    public ServerBinding? Binding { get; set; }
 
     /// <summary>
     /// Gets or sets the timeout duration for server shutdown.
@@ -42,20 +42,19 @@ public sealed class CompositeServerBuilder
     public IServiceProvider ApplicationServices { get; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompositeServerBuilder"/> class with default settings.
+    /// Initializes a new instance of the <see cref="ServerBuilder"/> class with default settings.
     /// </summary>
-    public CompositeServerBuilder() : this(EmptyServiceProvider.Instance)
+    public ServerBuilder() : this(EmptyServiceProvider.Instance)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompositeServerBuilder"/> class.
+    /// Initializes a new instance of the <see cref="ServerBuilder"/> class.
     /// </summary>
     /// <param name="services">The service provider for application services.</param>
-    public CompositeServerBuilder(IServiceProvider services)
+    public ServerBuilder(IServiceProvider services)
     {
         ApplicationServices = services;
-        Bindings = [];
         ShutdownTimeout = TimeSpan.FromSeconds(5);
         HeartBeatInterval = TimeSpan.FromSeconds(1);
         TransportOptions = new SocketTransportOptions();
@@ -66,11 +65,11 @@ public sealed class CompositeServerBuilder
     /// </summary>
     /// <param name="port">The port number to listen on.</param>
     /// <param name="configure">A delegate to configure the connection builder.</param>
-    /// <returns>The current instance of <see cref="CompositeServerBuilder"/>.</returns>
+    /// <returns>The current instance of <see cref="ServerBuilder"/>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if the port number is less than or equal to zero, or greater than 65535.
     /// </exception>
-    public CompositeServerBuilder ListenLocalhost(int port, Action<IConnectionBuilder> configure)
+    public ServerBuilder ListenLocalhost(int port, Action<IConnectionBuilder> configure)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(port);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(port, ushort.MaxValue);
@@ -79,7 +78,7 @@ public sealed class CompositeServerBuilder
 
         configure(connectionBuilder);
 
-        Bindings.Add(new ServerBinding(port, connectionBuilder.Build(), new SocketTransportFactory(Options.Create(TransportOptions), ApplicationServices.GetLoggerFactory())));
+        Binding = new ServerBinding(port, connectionBuilder.Build(), new SocketTransportFactory(Options.Create(TransportOptions), ApplicationServices.GetLoggerFactory()));
 
         return this;
     }
@@ -88,11 +87,11 @@ public sealed class CompositeServerBuilder
     /// Configures the server to listen on a port specified by an environment variable.
     /// </summary>
     /// <param name="configure">A delegate to configure the connection builder.</param>
-    /// <returns>The current instance of <see cref="CompositeServerBuilder"/>.</returns>
+    /// <returns>The current instance of <see cref="ServerBuilder"/>.</returns>
     /// <exception cref="ArgumentException">
     /// Thrown if the environment variable is not set or does not contain a valid port number.
     /// </exception>
-    public CompositeServerBuilder ListenFromEnvironment(Action<IConnectionBuilder> configure)
+    public ServerBuilder ListenFromEnvironment(Action<IConnectionBuilder> configure)
     {
         if (!int.TryParse(Environment.GetEnvironmentVariable("SERVER_PORT"), out var port))
             throw new ArgumentException("Environment variable 'SERVER_PORT' is not set or is not a valid port number.");
@@ -101,11 +100,14 @@ public sealed class CompositeServerBuilder
     }
 
     /// <summary>
-    /// Builds and returns a new instance of the <see cref="CompositeServer"/> class.
+    /// Builds and returns a new instance of the <see cref="Server"/> class.
     /// </summary>
     /// <returns>A new composite server instance.</returns>
-    public CompositeServer Build()
+    public Server Build()
     {
-        return new CompositeServer(this);
+        if (Binding is null)
+            throw new InvalidOperationException("Server binding must be configured before building the server.");
+
+        return new Server(this);
     }
 }

@@ -2,6 +2,7 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
+using Krosmoz.Core.Network.Framing.Factory;
 using Krosmoz.Core.Network.Framing.Serialization;
 using Krosmoz.Core.Network.Metadata;
 using Krosmoz.Core.Network.Transport;

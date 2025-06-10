@@ -2,6 +2,8 @@
 // Krosmoz licenses this file to you under the MIT license.
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
+using Krosmoz.Core.Network.Metadata;
+
 namespace Krosmoz.Core.Network.Dispatcher;
 
 /// <summary>
@@ -9,10 +11,8 @@ namespace Krosmoz.Core.Network.Dispatcher;
 /// to connections in the network.
 /// </summary>
 /// <typeparam name="TConnection">The type of the connection.</typeparam>
-/// <typeparam name="TMessage">The type of the message.</typeparam>
-public interface IMessageDispatcher<in TConnection, in TMessage> : IAsyncDisposable
+public interface IMessageDispatcher<in TConnection> : IAsyncDisposable
     where TConnection : class
-    where TMessage : class
 {
     /// <summary>
     /// Dispatches a message asynchronously to the specified connection.
@@ -20,5 +20,5 @@ public interface IMessageDispatcher<in TConnection, in TMessage> : IAsyncDisposa
     /// <param name="connection">The connection to which the message will be dispatched.</param>
     /// <param name="message">The message to be dispatched.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    Task DispatchMessageAsync(TConnection connection, TMessage message);
+    Task DispatchMessageAsync(TConnection connection, DofusMessage message);
 }

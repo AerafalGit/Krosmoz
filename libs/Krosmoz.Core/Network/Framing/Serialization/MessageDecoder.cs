@@ -5,6 +5,7 @@
 using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using Krosmoz.Core.IO.Binary;
+using Krosmoz.Core.Network.Framing.Factory;
 using Krosmoz.Core.Network.Metadata;
 
 namespace Krosmoz.Core.Network.Framing.Serialization;

@@ -6,6 +6,7 @@ using System.Buffers;
 using System.Diagnostics;
 using System.IO.Pipelines;
 using System.Runtime.CompilerServices;
+using Krosmoz.Core.Network.Framing.Factory;
 using Krosmoz.Core.Network.Framing.Serialization;
 using Krosmoz.Core.Network.Metadata;
 using Krosmoz.Core.Network.Transport;

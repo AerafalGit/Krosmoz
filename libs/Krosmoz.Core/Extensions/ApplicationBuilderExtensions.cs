@@ -3,6 +3,9 @@
 // See the license here https://github.com/AerafalGit/Krosmoz/blob/main/LICENSE.
 
 using System.Text.Json.Serialization;
+using Krosmoz.Core.Network.Framing;
+using Krosmoz.Core.Network.Server;
+using Krosmoz.Core.Network.Transport;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -115,14 +118,18 @@ public static class ApplicationBuilderExtensions
                 metrics
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
-                    .AddRuntimeInstrumentation();
+                    .AddRuntimeInstrumentation()
+                    .AddMeter(ServerMetrics.MeterName)
+                    .AddMeter(SocketConnectionMetrics.MeterName);
             })
             .WithTracing(tracing =>
             {
                 tracing
                     .AddSource(builder.Environment.ApplicationName)
                     .AddAspNetCoreInstrumentation(static options => options.Filter = static context => !context.Request.Path.StartsWithSegments(HealthEndpointPath) && !context.Request.Path.StartsWithSegments(AlivenessEndpointPath))
-                    .AddHttpClientInstrumentation();
+                    .AddHttpClientInstrumentation()
+                    .AddSource(FrameReader.ActivitySource.Name)
+                    .AddSource(FrameWriter.ActivitySource.Name);
             });
 
         builder.AddOpenTelemetryExporters();
